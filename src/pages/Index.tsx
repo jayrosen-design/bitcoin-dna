@@ -1,15 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { UnlockModal } from '@/components/UnlockModal';
-import { SeedPhrase } from '@/components/SeedPhrase';
-import { Bitcoin, Coins } from 'lucide-react';
-import { WalletDashboard } from '@/components/WalletDashboard';
-import { WalletTable } from '@/components/WalletTable';
+import ThemeToggle from '@/components/ThemeToggle';
+import UnlockModal from '@/components/UnlockModal';
+import SeedPhrase from '@/components/SeedPhrase';
+import { Bitcoin, Coins, Loader, RefreshCw, Play } from 'lucide-react';
+import WalletDashboard from '@/components/WalletDashboard';
+import WalletTable from '@/components/WalletTable';
 import CryptoNavigation from '@/components/CryptoNavigation';
 import { Link } from 'react-router-dom';
-
 import { 
   generateSeedPhrase, 
   deriveAddress, 
@@ -18,9 +18,20 @@ import {
   getExplorerUrl,
   CryptoType
 } from '@/utils/walletUtils';
-import { WalletVisualizer } from '@/components/WalletVisualizer';
+import WalletVisualizer from '@/components/WalletVisualizer';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 import { Switch } from '@/components/ui/switch';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// Define the WalletEntry type that's missing
+interface WalletEntry {
+  id: string;
+  seedPhrase: string[];
+  address: string;
+  balance: string;
+  timestamp: Date;
+  cryptoType: CryptoType;
+}
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
