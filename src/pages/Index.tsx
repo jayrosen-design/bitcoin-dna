@@ -1,7 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { UnlockModal } from '@/components/UnlockModal';
+import { SeedPhrase } from '@/components/SeedPhrase';
+import { Bitcoin, Coins } from 'lucide-react';
+import { WalletDashboard } from '@/components/WalletDashboard';
+import { WalletTable } from '@/components/WalletTable';
+import CryptoNavigation from '@/components/CryptoNavigation';
+import { Link } from 'react-router-dom';
+
 import { 
   generateSeedPhrase, 
   deriveAddress, 
@@ -10,17 +18,9 @@ import {
   getExplorerUrl,
   CryptoType
 } from '@/utils/walletUtils';
-import SeedPhrase from '@/components/SeedPhrase';
-import WalletVisualizer from '@/components/WalletVisualizer';
-import WalletDashboard from '@/components/WalletDashboard';
-import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader, Play, RefreshCw, Lock, Unlock, Bitcoin, Coins } from 'lucide-react';
-import CryptoNavigation from '@/components/CryptoNavigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { WalletVisualizer } from '@/components/WalletVisualizer';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
-import UnlockModal from '@/components/UnlockModal';
 import { Switch } from '@/components/ui/switch';
-import ThemeToggle from '@/components/ThemeToggle';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -304,7 +304,7 @@ const Index = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
-              <Bitcoin className="h-5 w-5 text-bitcoin mr-2" />
+              <Bitcoin className="h-5 w-5 text-bitcoin" />
               Bitcoin Metrics
             </CardTitle>
           </CardHeader>
@@ -339,7 +339,7 @@ const Index = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
-              <Coins className="h-5 w-5 text-ethereum mr-2" />
+              <Coins className="h-5 w-5 text-ethereum" />
               Ethereum Metrics
             </CardTitle>
           </CardHeader>
@@ -440,53 +440,28 @@ const Index = () => {
 
   const getCryptoIcon = () => {
     return activeCrypto === 'bitcoin' ? 
-      <Bitcoin className="text-bitcoin" /> : 
-      <Coins className="text-ethereum" />;
+      <Bitcoin className="h-5 w-5 text-bitcoin" /> : 
+      <Coins className="h-5 w-5 text-ethereum" />;
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <header className="border-b py-4 px-4 md:px-6 w-full bg-background/95 backdrop-blur-sm fixed top-0 z-10">
-        <div className="w-full mx-auto flex justify-between items-center">
+    <div className="flex flex-col min-h-screen">
+      <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center justify-between">
           <div className="flex items-center space-x-2">
             {getCryptoIcon()}
             <h1 className="text-xl font-medium tracking-tight">
               Quantum Crypto Keybreaker
             </h1>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <CryptoNavigation 
-              activeCrypto={activeCrypto} 
-              onCryptoChange={handleCryptoChange}
-            />
-            
-            {isAutoGenerating && (
-              <div className="text-xs px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 rounded-full flex items-center">
-                <Loader className="h-3 w-3 mr-1 animate-spin" /> 
-                Auto-generating... {autoCount}
-              </div>
-            )}
-            
-            <ThemeToggle />
-            
-            <Button 
-              variant="outline" 
-              onClick={toggleUnlockModal}
-              className="text-sm"
-            >
-              {isAccessUnlocked ? (
-                <>
-                  <Unlock className="h-4 w-4 mr-1" />
-                  Seed Unlocked
-                </>
-              ) : (
-                <>
-                  <Lock className="h-4 w-4 mr-1" />
-                  Unlock Seed
-                </>
-              )}
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/">Home</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/about">About</Link>
+            </Button>
+            <ThemeToggle />
           </div>
         </div>
       </header>
