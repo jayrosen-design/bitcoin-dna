@@ -221,12 +221,13 @@ const Index = () => {
         </div>
         
         <div>
-          {walletHistory.length > 0 && (
-            <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
-              <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
-              <WalletTable wallets={walletHistory} />
-            </div>
-          )}
+          <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
+            <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
+            <WalletTable 
+              wallets={walletHistory} 
+              emptyMessage="This table will store generated wallets. Click Generate or Auto Generate to begin." 
+            />
+          </div>
         </div>
       </div>
     );
@@ -313,3 +314,4 @@ const Index = () => {
 };
 
 export default Index;
+

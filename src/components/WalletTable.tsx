@@ -20,9 +20,13 @@ type SortDirection = 'asc' | 'desc';
 
 interface WalletTableProps {
   wallets: WalletEntry[];
+  emptyMessage?: string;
 }
 
-const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
+const WalletTable: React.FC<WalletTableProps> = ({ 
+  wallets, 
+  emptyMessage = 'No wallets generated yet with balance' 
+}) => {
   const [sortField, setSortField] = useState<SortField>('timestamp');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
@@ -162,8 +166,8 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
-                No wallets generated yet with balance
+              <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                {emptyMessage}
               </TableCell>
             </TableRow>
           )}
