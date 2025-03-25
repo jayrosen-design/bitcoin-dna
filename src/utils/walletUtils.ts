@@ -1,6 +1,6 @@
 
 import { wordList } from './wordList';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 // Generate a random seed phrase
 export const generateSeedPhrase = (): string[] => {
