@@ -63,8 +63,16 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
   };
 
   const openInExplorer = (address: string) => {
-    // Using blockchair.com as the explorer, but any Bitcoin explorer would work
-    window.open(`https://blockchair.com/bitcoin/address/${address}`, '_blank');
+    // Using mempool.space which has a better interface for Bitcoin addresses
+    // If this is a testnet or simulated address, inform the user
+    const isSimulated = address.startsWith('bc1q');
+    
+    if (isSimulated) {
+      toast.info('This is a simulated address. Opening a Bitcoin explorer to demonstrate how it would work with a real address.');
+    }
+    
+    // Use mempool.space as it has a cleaner interface
+    window.open(`https://mempool.space/address/${address}`, '_blank');
   };
 
   return (
