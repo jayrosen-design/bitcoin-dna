@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -467,13 +468,14 @@ const Index = () => {
               About
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/">Home</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/about">About</Link>
-            </Button>
+          
+          <div className="flex items-center gap-3">
+            <CryptoNavigation 
+              activeCrypto={activeCrypto} 
+              onCryptoChange={handleCryptoChange}
+              isAccessUnlocked={isAccessUnlocked}
+              onToggleUnlock={toggleUnlockModal}
+            />
             <ThemeToggle />
           </div>
         </div>
