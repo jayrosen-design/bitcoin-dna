@@ -7,8 +7,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { useNavigate } from 'react-router-dom';
-import { Bitcoin, Ethereum } from 'lucide-react';
+import { Bitcoin, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CryptoNavigationProps {
@@ -45,7 +44,7 @@ const CryptoNavigation: React.FC<CryptoNavigationProps> = ({
             )}
             onClick={() => onCryptoChange('ethereum')}
           >
-            <Ethereum className="h-4 w-4 text-ethereum" />
+            <Coins className="h-4 w-4 text-ethereum" />
             Ethereum
           </NavigationMenuLink>
         </NavigationMenuItem>

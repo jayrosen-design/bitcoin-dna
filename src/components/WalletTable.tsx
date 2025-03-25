@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { formatDate, shortenAddress, formatCrypto, type CryptoType } from '@/utils/walletUtils';
-import { Bitcoin, Ethereum, Eye, ReceiptText } from 'lucide-react';
+import { Bitcoin, Coins, Eye, ReceiptText } from 'lucide-react';
 
 export interface WalletEntry {
   id: string;
@@ -78,7 +78,7 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
 
   const getCryptoIcon = (type?: CryptoType) => {
     return type === 'ethereum' ? 
-      <Ethereum className="h-4 w-4 text-ethereum" /> : 
+      <Coins className="h-4 w-4 text-ethereum" /> : 
       <Bitcoin className="h-4 w-4 text-bitcoin" />;
   };
 

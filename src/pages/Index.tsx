@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -14,7 +13,7 @@ import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader, Play, RefreshCw, Eye, EyeOff, Bitcoin, Ethereum } from 'lucide-react';
+import { Loader, Play, RefreshCw, Eye, EyeOff, Bitcoin, Coins } from 'lucide-react';
 import CryptoNavigation from '@/components/CryptoNavigation';
 
 const Index = () => {
@@ -252,7 +251,7 @@ const Index = () => {
   const getCryptoIcon = () => {
     return activeCrypto === 'bitcoin' ? 
       <Bitcoin className="text-bitcoin" /> : 
-      <Ethereum className="text-ethereum" />;
+      <Coins className="text-ethereum" />;
   };
 
   return (
