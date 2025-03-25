@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -12,7 +11,7 @@ import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader, Play, Refresh } from 'lucide-react';
+import { Loader, Play, RefreshCw } from 'lucide-react';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -35,12 +34,10 @@ const Index = () => {
   const [isAutoGenerating, setIsAutoGenerating] = useState(false);
   const [autoCount, setAutoCount] = useState(0);
 
-  // Generate a seed phrase when the component mounts
   useEffect(() => {
     generateNewSeedPhrase();
   }, []);
 
-  // Handle auto-generation
   useEffect(() => {
     let autoGenInterval: NodeJS.Timeout;
 
@@ -48,7 +45,7 @@ const Index = () => {
       autoGenInterval = setTimeout(() => {
         generateAndCheck();
         setAutoCount(prev => prev + 1);
-      }, 3000); // Generate every 3 seconds
+      }, 3000);
     }
 
     return () => {
@@ -61,7 +58,6 @@ const Index = () => {
     setWalletStatus('idle');
     setWalletData({});
     
-    // Simulate some processing time
     setTimeout(() => {
       const newSeedPhrase = generateSeedPhrase();
       setSeedPhrase(newSeedPhrase);
@@ -89,7 +85,6 @@ const Index = () => {
           transactions: result.transactions
         });
 
-        // Add wallet to history if it has a balance
         if (result.balance) {
           const newWallet: WalletEntry = {
             id: Math.random().toString(36).substring(2, 9),
@@ -101,7 +96,6 @@ const Index = () => {
           setWalletHistory(prev => [...prev, newWallet]);
         }
         
-        // Simulate the unlocking process
         setTimeout(() => {
           setWalletStatus('unlocking');
           
@@ -125,7 +119,6 @@ const Index = () => {
   const generateAndCheck = () => {
     generateNewSeedPhrase();
     
-    // Wait for seed generation to complete, then check balance
     setTimeout(() => {
       checkWalletBalance();
     }, 800);
@@ -193,7 +186,7 @@ const Index = () => {
             className="min-w-36"
             size="lg"
           >
-            <Refresh className="mr-2 h-4 w-4" />
+            <RefreshCw className="mr-2 h-4 w-4" />
             Generate & Check
           </Button>
           
