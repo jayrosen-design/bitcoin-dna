@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { formatBitcoin, shortenAddress } from '@/utils/walletUtils';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Copy, ExternalLink } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { toast } from 'sonner';
 
 export type WalletEntry = {
   id: string;
@@ -55,12 +57,23 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
     });
   };
 
+  const copyToClipboard = (text: string, type: 'address' | 'seed phrase') => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${type === 'address' ? 'Address' : 'Seed phrase'} copied to clipboard`);
+  };
+
+  const openInExplorer = (address: string) => {
+    // Using blockchair.com as the explorer, but any Bitcoin explorer would work
+    window.open(`https://blockchair.com/bitcoin/address/${address}`, '_blank');
+  };
+
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Address</TableHead>
+            <TableHead>Seed Phrase</TableHead>
             <TableHead>
               <Button 
                 variant="ghost" 
@@ -91,14 +104,63 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
           {sortedWallets.length > 0 ? (
             sortedWallets.map((wallet) => (
               <TableRow key={wallet.id}>
-                <TableCell className="font-mono">{shortenAddress(wallet.address)}</TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      className="font-mono text-primary hover:underline flex items-center"
+                      onClick={() => openInExplorer(wallet.address)}
+                    >
+                      {shortenAddress(wallet.address)}
+                      <ExternalLink className="ml-1 h-3 w-3" />
+                    </button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6" 
+                      onClick={() => copyToClipboard(wallet.address, 'address')}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-6">
+                        View Seed Phrase
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto max-w-sm p-4 bg-background border">
+                      <div className="space-y-2">
+                        <div className="font-medium text-sm">Seed Phrase</div>
+                        <div className="text-xs grid grid-cols-3 gap-2">
+                          {wallet.seedPhrase.map((word, i) => (
+                            <div key={i} className="flex items-center">
+                              <span className="text-muted-foreground mr-1">{i+1}.</span>
+                              {word}
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="w-full mt-2"
+                          onClick={() => copyToClipboard(wallet.seedPhrase.join(' '), 'seed phrase')}
+                        >
+                          <Copy className="mr-2 h-3 w-3" />
+                          Copy Seed Phrase
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </TableCell>
                 <TableCell>{formatBitcoin(wallet.balance)}</TableCell>
                 <TableCell>{formatDate(wallet.timestamp)}</TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={3} className="text-center py-6 text-muted-foreground">
+              <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
                 No wallets generated yet with balance
               </TableCell>
             </TableRow>
