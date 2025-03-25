@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { formatBitcoin, shortenAddress } from '@/utils/walletUtils';
@@ -63,16 +62,9 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
   };
 
   const openInExplorer = (address: string) => {
-    // Using mempool.space which has a better interface for Bitcoin addresses
-    // If this is a testnet or simulated address, inform the user
-    const isSimulated = address.startsWith('bc1q');
+    toast.info('This is a simulated address. Opening a Bitcoin explorer to demonstrate how it would work with a real address.');
     
-    if (isSimulated) {
-      toast.info('This is a simulated address. Opening a Bitcoin explorer to demonstrate how it would work with a real address.');
-    }
-    
-    // Use mempool.space as it has a cleaner interface
-    window.open(`https://mempool.space/address/${address}`, '_blank');
+    window.open(`https://www.blockchain.com/explorer/search?search=${address}`, '_blank');
   };
 
   return (
