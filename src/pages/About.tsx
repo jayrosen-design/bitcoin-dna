@@ -5,7 +5,6 @@ import { Bitcoin, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Link } from 'react-router-dom';
-import CryptoNavigation from '@/components/CryptoNavigation';
 
 const About = () => {
   return (
@@ -28,6 +27,7 @@ const About = () => {
           </div>
         </div>
       </header>
+      
       <main className="flex-1 container py-6">
         <div className="prose dark:prose-invert max-w-none">
           <h1>About Quantum Crypto Keybreaker</h1>
@@ -114,6 +114,7 @@ const About = () => {
           <p className="mt-8">By studying Quantum Crypto Keybreaker, students learn how seemingly compelling services can be designed to lure users into risky actions, and they gain insight into how to protect themselves against such scams.</p>
         </div>
       </main>
+      
       <footer className="border-t py-4">
         <div className="container flex justify-between items-center">
           <p className="text-sm text-muted-foreground">
