@@ -8,12 +8,14 @@ interface SeedPhraseProps {
   seedPhrase: string[];
   onRegenerateSeed: () => void;
   className?: string;
+  privacyEnabled?: boolean;
 }
 
 const SeedPhrase: React.FC<SeedPhraseProps> = ({ 
   seedPhrase, 
   onRegenerateSeed,
-  className
+  className,
+  privacyEnabled = true
 }) => {
   const [revealed, setRevealed] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -21,7 +23,6 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
   // Reset animation state when seed phrase changes
   useEffect(() => {
     setAnimationComplete(false);
-    setRevealed(false);
     
     const timer = setTimeout(() => {
       setAnimationComplete(true);
@@ -29,6 +30,15 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
     
     return () => clearTimeout(timer);
   }, [seedPhrase]);
+
+  // Reset revealed state when privacy setting changes
+  useEffect(() => {
+    if (privacyEnabled) {
+      setRevealed(false);
+    } else {
+      setRevealed(true);
+    }
+  }, [privacyEnabled]);
 
   const handleReveal = () => {
     setRevealed(true);
@@ -50,7 +60,7 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
       </div>
       
       <div className="relative">
-        {!revealed ? (
+        {(!revealed && privacyEnabled) ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-background/80 backdrop-blur-sm rounded-lg">
             <p className="text-sm text-muted-foreground mb-3">
               Seed phrase is hidden for security
@@ -67,7 +77,7 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
         
         <div className={cn(
           "grid grid-cols-3 gap-2 md:gap-3 p-4 bg-secondary/50 rounded-lg transition-all duration-500",
-          !revealed && "blur-sm select-none"
+          (!revealed && privacyEnabled) && "blur-sm select-none"
         )}>
           {seedPhrase.map((word, index) => (
             <div 

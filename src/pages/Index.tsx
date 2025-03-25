@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Toggle } from '@/components/ui/toggle';
 import { toast } from 'sonner';
 import { 
   generateSeedPhrase, 
@@ -11,7 +13,7 @@ import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader, Play, RefreshCw } from 'lucide-react';
+import { Loader, Play, RefreshCw, Eye, EyeOff } from 'lucide-react';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -33,6 +35,7 @@ const Index = () => {
   const [walletHistory, setWalletHistory] = useState<WalletEntry[]>([]);
   const [isAutoGenerating, setIsAutoGenerating] = useState(false);
   const [autoCount, setAutoCount] = useState(0);
+  const [privacyEnabled, setPrivacyEnabled] = useState(true);
 
   useEffect(() => {
     generateNewSeedPhrase();
@@ -134,6 +137,11 @@ const Index = () => {
     setIsAutoGenerating(!isAutoGenerating);
   };
 
+  const togglePrivacy = () => {
+    setPrivacyEnabled(!privacyEnabled);
+    toast.info(privacyEnabled ? 'Seed phrase visible' : 'Seed phrase hidden');
+  };
+
   const renderContent = () => {
     if (walletStatus === 'unlocked' && walletData.balance) {
       return (
@@ -160,6 +168,7 @@ const Index = () => {
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
           className="animate-fade-up"
+          privacyEnabled={privacyEnabled && !isAutoGenerating}
         />
         
         <div className="flex justify-center gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
@@ -236,7 +245,7 @@ const Index = () => {
                 fill="currentColor"
               />
             </svg>
-            <h1 className="text-xl font-medium tracking-tight">Bitcoin Wallet Simulator</h1>
+            <h1 className="text-xl font-medium tracking-tight">Bitcoin Wallet</h1>
           </div>
           
           <div className="flex items-center gap-2">
@@ -248,11 +257,20 @@ const Index = () => {
             )}
             <Button 
               variant="outline" 
-              onClick={generateNewSeedPhrase}
-              disabled={isGenerating || isAutoGenerating}
+              onClick={togglePrivacy}
               className="text-sm"
             >
-              New Wallet
+              {privacyEnabled ? (
+                <>
+                  <Eye className="h-4 w-4 mr-1" />
+                  Show Seed
+                </>
+              ) : (
+                <>
+                  <EyeOff className="h-4 w-4 mr-1" />
+                  Hide Seed
+                </>
+              )}
             </Button>
           </div>
         </div>
@@ -279,7 +297,7 @@ const Index = () => {
       <footer className="py-6 px-6 border-t w-full">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
           <p className="text-sm text-muted-foreground">
-            Bitcoin Wallet Simulator - For educational purposes only
+            Bitcoin Wallet - For educational purposes only
           </p>
           <div className="text-sm text-muted-foreground">
             <span>Built with precision and care</span>
