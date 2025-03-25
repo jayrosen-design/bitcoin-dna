@@ -17,6 +17,7 @@ import WalletTable, { WalletEntry } from '@/components/WalletTable';
 import { Loader, Play, RefreshCw, Eye, EyeOff, Bitcoin, Coins } from 'lucide-react';
 import CryptoNavigation from '@/components/CryptoNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -40,6 +41,10 @@ const Index = () => {
   const [autoCount, setAutoCount] = useState(0);
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
   const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
+  const [totalGenerations, setTotalGenerations] = useState(0); // Track total generations for success rate
+  
+  // Fetch live crypto prices using our custom hook
+  const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
 
   useEffect(() => {
     generateNewSeedPhrase();
@@ -52,6 +57,7 @@ const Index = () => {
       autoGenInterval = setTimeout(() => {
         generateAndCheck();
         setAutoCount(prev => prev + 1);
+        setTotalGenerations(prev => prev + 1); // Increment total generations
       }, 3000);
     }
 
@@ -91,6 +97,7 @@ const Index = () => {
     
     setIsLoading(true);
     setWalletStatus('checking');
+    setTotalGenerations(prev => prev + 1); // Increment total generations when checking manually
     
     try {
       const result = await checkAddressBalance(address, activeCrypto);
@@ -148,6 +155,7 @@ const Index = () => {
       setAutoCount(0);
     } else {
       toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
+      // Don't reset totalGenerations here to maintain cumulative count
     }
     setIsAutoGenerating(!isAutoGenerating);
   };
@@ -246,20 +254,23 @@ const Index = () => {
       return total + amount;
     }, 0);
     
-    // Mock price data (in a real app, this would come from an API)
-    const btcPrice = 61432.50;
-    const ethPrice = 3389.75;
+    // Calculate success rate based on total generations
+    const successRate = totalGenerations > 0 
+      ? ((bitcoinWallets.length + ethereumWallets.length) / totalGenerations * 100)
+      : 0;
     
     return {
-      btcPrice,
-      ethPrice,
+      btcPrice: btcPrice || 0,
+      ethPrice: ethPrice || 0,
       totalBTC,
       totalETH,
-      btcValue: totalBTC * btcPrice,
-      ethValue: totalETH * ethPrice,
+      btcValue: totalBTC * (btcPrice || 0),
+      ethValue: totalETH * (ethPrice || 0),
       totalWallets: walletHistory.length,
       bitcoinWallets: bitcoinWallets.length,
-      ethereumWallets: ethereumWallets.length
+      ethereumWallets: ethereumWallets.length,
+      successRate,
+      totalGenerations
     };
   };
 
@@ -279,7 +290,13 @@ const Index = () => {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Current Price:</span>
-                <span className="font-medium">${metrics.btcPrice.toLocaleString()}</span>
+                <span className="font-medium">
+                  {isPriceLoading ? (
+                    <Loader className="h-3 w-3 animate-spin inline mr-1" />
+                  ) : (
+                    `$${metrics.btcPrice.toLocaleString()}`
+                  )}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">BTC Found:</span>
@@ -308,7 +325,13 @@ const Index = () => {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Current Price:</span>
-                <span className="font-medium">${metrics.ethPrice.toLocaleString()}</span>
+                <span className="font-medium">
+                  {isPriceLoading ? (
+                    <Loader className="h-3 w-3 animate-spin inline mr-1" />
+                  ) : (
+                    `$${metrics.ethPrice.toLocaleString()}`
+                  )}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">ETH Found:</span>
@@ -343,9 +366,10 @@ const Index = () => {
               <div>
                 <span className="text-muted-foreground">Success Rate:</span>
                 <span className="font-semibold text-xl ml-2">
-                  {metrics.totalWallets > 0 
-                    ? ((metrics.bitcoinWallets + metrics.ethereumWallets) / metrics.totalWallets * 100).toFixed(2) 
-                    : 0}%
+                  {metrics.successRate.toFixed(2)}%
+                </span>
+                <span className="text-xs text-muted-foreground ml-1">
+                  ({metrics.totalWallets}/{metrics.totalGenerations})
                 </span>
               </div>
             </div>
