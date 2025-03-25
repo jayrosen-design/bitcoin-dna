@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -43,11 +42,10 @@ const Index = () => {
   const [autoCount, setAutoCount] = useState(0);
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
   const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
-  const [totalGenerations, setTotalGenerations] = useState(0); // Track total generations for success rate
+  const [totalGenerations, setTotalGenerations] = useState(0);
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
   
-  // Fetch live crypto prices using our custom hook
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
 
   useEffect(() => {
@@ -61,7 +59,7 @@ const Index = () => {
       autoGenInterval = setTimeout(() => {
         generateAndCheck();
         setAutoCount(prev => prev + 1);
-        setTotalGenerations(prev => prev + 1); // Increment total generations
+        setTotalGenerations(prev => prev + 1);
       }, 3000);
     }
 
@@ -101,7 +99,7 @@ const Index = () => {
     
     setIsLoading(true);
     setWalletStatus('checking');
-    setTotalGenerations(prev => prev + 1); // Increment total generations when checking manually
+    setTotalGenerations(prev => prev + 1);
     
     try {
       const result = await checkAddressBalance(address, activeCrypto);
@@ -159,7 +157,6 @@ const Index = () => {
       setAutoCount(0);
     } else {
       toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
-      // Don't reset totalGenerations here to maintain cumulative count
     }
     setIsAutoGenerating(!isAutoGenerating);
   };
@@ -209,7 +206,9 @@ const Index = () => {
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
           className="animate-fade-up"
-          privacyEnabled={privacyEnabled && !isAutoGenerating && !isAccessUnlocked}
+          privacyEnabled={privacyEnabled && !isAutoGenerating}
+          isAccessLocked={!isAccessUnlocked}
+          onRequestUnlock={() => setIsUnlockModalOpen(true)}
         />
         
         <div className="flex flex-col sm:flex-row gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
@@ -262,13 +261,10 @@ const Index = () => {
     );
   };
 
-  // Calculate metrics for the dashboard
   const calculateMetrics = () => {
-    // Count wallets by type
     const bitcoinWallets = walletHistory.filter(w => w.cryptoType === 'bitcoin');
     const ethereumWallets = walletHistory.filter(w => w.cryptoType === 'ethereum');
     
-    // Get total BTC/ETH found
     const totalBTC = bitcoinWallets.reduce((total, wallet) => {
       const amount = parseFloat(wallet.balance) || 0;
       return total + amount;
@@ -279,7 +275,6 @@ const Index = () => {
       return total + amount;
     }, 0);
     
-    // Calculate success rate based on total generations
     const successRate = totalGenerations > 0 
       ? ((bitcoinWallets.length + ethereumWallets.length) / totalGenerations * 100)
       : 0;
@@ -431,7 +426,9 @@ const Index = () => {
             <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
             <WalletTable 
               wallets={walletHistory} 
-              emptyMessage="This table will store generated wallets. Click Generate or Auto Generate to begin." 
+              emptyMessage="This table will store generated wallets. Click Generate or Auto Generate to begin."
+              isAccessLocked={!isAccessUnlocked}
+              onRequestUnlock={() => setIsUnlockModalOpen(true)}
             />
           </div>
         </div>

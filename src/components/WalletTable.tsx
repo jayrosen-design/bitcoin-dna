@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { formatDate, shortenAddress, formatCrypto, getExplorerUrl, type CryptoType } from '@/utils/walletUtils';
-import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy } from 'lucide-react';
+import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface WalletEntry {
@@ -33,6 +32,8 @@ export interface WalletEntry {
 interface WalletTableProps {
   wallets: WalletEntry[];
   emptyMessage?: string;
+  isAccessLocked?: boolean;
+  onRequestUnlock?: () => void;
 }
 
 type TransactionType = {
@@ -42,19 +43,32 @@ type TransactionType = {
   type: 'incoming' | 'outgoing';
 };
 
-const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
+const WalletTable: React.FC<WalletTableProps> = ({ 
+  wallets, 
+  emptyMessage, 
+  isAccessLocked = false,
+  onRequestUnlock 
+}) => {
   const [selectedSeedPhrase, setSelectedSeedPhrase] = useState<string[]>([]);
   const [selectedTransactions, setSelectedTransactions] = useState<TransactionType[]>([]);
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogMode, setDialogMode] = useState<'seedPhrase' | 'transactions'>('seedPhrase');
 
   const handleViewSeedPhrase = (seedPhrase: string[]) => {
+    if (isAccessLocked) {
+      onRequestUnlock?.();
+      return;
+    }
     setSelectedSeedPhrase(seedPhrase);
     setDialogTitle('Seed Phrase');
     setDialogMode('seedPhrase');
   };
 
   const handleViewTransactions = (address: string, cryptoType: CryptoType = 'bitcoin') => {
+    if (isAccessLocked) {
+      onRequestUnlock?.();
+      return;
+    }
     // Generate mock transactions for demonstration
     const mockTransactions: TransactionType[] = Array(Math.floor(Math.random() * 5) + 2)
       .fill(null)
@@ -84,11 +98,19 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
   };
 
   const copyToClipboard = (text: string, description: string) => {
+    if (isAccessLocked) {
+      onRequestUnlock?.();
+      return;
+    }
     navigator.clipboard.writeText(text);
     toast.success(`${description} copied to clipboard`);
   };
 
   const openExplorer = (address: string, cryptoType: CryptoType = 'bitcoin') => {
+    if (isAccessLocked) {
+      onRequestUnlock?.();
+      return;
+    }
     const url = getExplorerUrl(address, 'address', cryptoType);
     window.open(url, '_blank');
   };
@@ -128,8 +150,11 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <div 
-                      className="font-mono text-xs cursor-pointer hover:underline hover:text-primary"
-                      onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
+                      className={cn(
+                        "font-mono text-xs",
+                        !isAccessLocked && "cursor-pointer hover:underline hover:text-primary"
+                      )}
+                      onClick={() => !isAccessLocked && openExplorer(wallet.address, wallet.cryptoType)}
                     >
                       {shortenAddress(wallet.address)}
                     </div>
@@ -138,16 +163,18 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                       size="icon" 
                       className="h-5 w-5" 
                       onClick={() => copyToClipboard(wallet.address, 'Address')}
+                      disabled={isAccessLocked}
                     >
-                      <Copy className="h-3 w-3" />
+                      {isAccessLocked ? <Lock className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="icon"
                       className="h-5 w-5"
                       onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
+                      disabled={isAccessLocked}
                     >
-                      <ExternalLink className="h-3 w-3" />
+                      {isAccessLocked ? <Lock className="h-3 w-3" /> : <ExternalLink className="h-3 w-3" />}
                     </Button>
                   </div>
                 </TableCell>
@@ -155,46 +182,107 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                   {formatCrypto(wallet.balance, wallet.cryptoType)}
                 </TableCell>
                 <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleViewSeedPhrase(wallet.seedPhrase)}
-                      >
-                        <Eye className="h-3 w-3 mr-1" />
-                        Seed Phrase
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{dialogTitle}</DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4">
-                        {dialogMode === 'seedPhrase' ? (
-                          <div>
-                            <div className="flex justify-end mb-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => copyToClipboard(wallet.seedPhrase.join(' '), 'Seed phrase')}
-                              >
-                                <Copy className="h-3 w-3 mr-1" />
-                                Copy All
-                              </Button>
+                  {isAccessLocked ? (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={onRequestUnlock}
+                    >
+                      <Lock className="h-3 w-3 mr-1" />
+                      Unlock to View
+                    </Button>
+                  ) : (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleViewSeedPhrase(wallet.seedPhrase)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Seed Phrase
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{dialogTitle}</DialogTitle>
+                        </DialogHeader>
+                        <div className="mt-4">
+                          {dialogMode === 'seedPhrase' ? (
+                            <div>
+                              <div className="flex justify-end mb-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => copyToClipboard(wallet.seedPhrase.join(' '), 'Seed phrase')}
+                                >
+                                  <Copy className="h-3 w-3 mr-1" />
+                                  Copy All
+                                </Button>
+                              </div>
+                              <div className="grid grid-cols-3 gap-2">
+                                {selectedSeedPhrase.map((word, i) => (
+                                  <div key={i} className="flex items-center space-x-2">
+                                    <span className="text-muted-foreground text-xs">
+                                      {(i + 1).toString().padStart(2, '0')}
+                                    </span>
+                                    <span className="font-medium">{word}</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <div className="grid grid-cols-3 gap-2">
-                              {selectedSeedPhrase.map((word, i) => (
-                                <div key={i} className="flex items-center space-x-2">
-                                  <span className="text-muted-foreground text-xs">
-                                    {(i + 1).toString().padStart(2, '0')}
-                                  </span>
-                                  <span className="font-medium">{word}</span>
+                          ) : (
+                            <div className="space-y-3">
+                              {selectedTransactions.map((tx, i) => (
+                                <div key={i} className="border p-3 rounded-md">
+                                  <div className="flex justify-between items-center">
+                                    <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
+                                      {tx.type === 'incoming' ? '+ ' : '- '}
+                                      {formatCrypto(tx.amount, wallet.cryptoType)}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                      {formatDate(tx.timestamp)}
+                                    </div>
+                                  </div>
+                                  <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
+                                    {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
+                                  </div>
                                 </div>
                               ))}
                             </div>
-                          </div>
-                        ) : (
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {isAccessLocked ? (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={onRequestUnlock}
+                    >
+                      <Lock className="h-3 w-3 mr-1" />
+                      Locked
+                    </Button>
+                  ) : (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleViewTransactions(wallet.address, wallet.cryptoType)}
+                        >
+                          <ReceiptText className="h-3 w-3 mr-1" />
+                          Transactions
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{dialogTitle}</DialogTitle>
+                        </DialogHeader>
+                        <div className="mt-4">
                           <div className="space-y-3">
                             {selectedTransactions.map((tx, i) => (
                               <div key={i} className="border p-3 rounded-md">
@@ -213,49 +301,10 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                               </div>
                             ))}
                           </div>
-                        )}
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleViewTransactions(wallet.address, wallet.cryptoType)}
-                      >
-                        <ReceiptText className="h-3 w-3 mr-1" />
-                        Transactions
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{dialogTitle}</DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4">
-                        <div className="space-y-3">
-                          {selectedTransactions.map((tx, i) => (
-                            <div key={i} className="border p-3 rounded-md">
-                              <div className="flex justify-between items-center">
-                                <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
-                                  {tx.type === 'incoming' ? '+ ' : '- '}
-                                  {formatCrypto(tx.amount, wallet.cryptoType)}
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                  {formatDate(tx.timestamp)}
-                                </div>
-                              </div>
-                              <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
-                                {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
-                              </div>
-                            </div>
-                          ))}
                         </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogContent>
+                    </Dialog>
+                  )}
                 </TableCell>
                 <TableCell className="text-right">
                   {formatDate(wallet.timestamp.toISOString())}
@@ -267,6 +316,11 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
       </Table>
     </>
   );
+};
+
+// Helper function for class names
+const cn = (...classes: (string | boolean | undefined)[]) => {
+  return classes.filter(Boolean).join(' ');
 };
 
 export default WalletTable;

@@ -9,13 +9,17 @@ interface SeedPhraseProps {
   onRegenerateSeed: () => void;
   className?: string;
   privacyEnabled?: boolean;
+  isAccessLocked?: boolean;
+  onRequestUnlock?: () => void;
 }
 
 const SeedPhrase: React.FC<SeedPhraseProps> = ({ 
   seedPhrase, 
   onRegenerateSeed,
   className,
-  privacyEnabled = true
+  privacyEnabled = true,
+  isAccessLocked = false,
+  onRequestUnlock
 }) => {
   const [revealed, setRevealed] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -41,7 +45,11 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
   }, [privacyEnabled]);
 
   const handleReveal = () => {
-    setRevealed(true);
+    if (isAccessLocked) {
+      onRequestUnlock?.();
+    } else {
+      setRevealed(true);
+    }
   };
 
   return (
@@ -63,14 +71,14 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
         {(!revealed && privacyEnabled) ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-background/80 backdrop-blur-sm rounded-lg">
             <p className="text-sm text-muted-foreground mb-3">
-              Seed phrase is hidden for security
+              {isAccessLocked ? 'Access locked - Unlock to view seed phrases' : 'Seed phrase is hidden for security'}
             </p>
             <Button 
               onClick={handleReveal} 
               variant="secondary"
               className="transition-all hover:shadow-md"
             >
-              Reveal Seed Phrase
+              {isAccessLocked ? 'Unlock Access' : 'Reveal Seed Phrase'}
             </Button>
           </div>
         ) : null}
