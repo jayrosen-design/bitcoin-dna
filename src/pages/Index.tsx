@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 import UnlockModal from '@/components/UnlockModal';
 import { Switch } from '@/components/ui/switch';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -460,11 +461,14 @@ const Index = () => {
             />
             
             {isAutoGenerating && (
-              <div className="text-xs px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full flex items-center">
+              <div className="text-xs px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 rounded-full flex items-center">
                 <Loader className="h-3 w-3 mr-1 animate-spin" /> 
                 Auto-generating... {autoCount}
               </div>
             )}
+            
+            <ThemeToggle />
+            
             <Button 
               variant="outline" 
               onClick={toggleUnlockModal}
