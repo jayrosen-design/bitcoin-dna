@@ -35,14 +35,14 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
     return () => clearTimeout(timer);
   }, [seedPhrase]);
 
-  // Reset revealed state when privacy setting changes
+  // Reset revealed state when privacy setting or access lock changes
   useEffect(() => {
-    if (privacyEnabled) {
+    if (privacyEnabled || isAccessLocked) {
       setRevealed(false);
     } else {
       setRevealed(true);
     }
-  }, [privacyEnabled]);
+  }, [privacyEnabled, isAccessLocked]);
 
   const handleReveal = () => {
     if (isAccessLocked) {
