@@ -2,6 +2,9 @@
 import { wordList } from './wordList';
 import { toast } from 'sonner';
 
+// Define crypto types
+export type CryptoType = 'bitcoin' | 'ethereum';
+
 // Generate a random seed phrase
 export const generateSeedPhrase = (): string[] => {
   const seedPhrase: string[] = [];
@@ -15,10 +18,10 @@ export const generateSeedPhrase = (): string[] => {
   return seedPhrase;
 };
 
-// Mock function to derive Bitcoin address from seed phrase
-export const deriveAddress = (seedPhrase: string[]): string => {
+// Mock function to derive address from seed phrase
+export const deriveAddress = (seedPhrase: string[], cryptoType: CryptoType = 'bitcoin'): string => {
   // In a real implementation, this would use a proper BIP39/BIP32/BIP44 library
-  // For demo purposes, we'll create a deterministic but fake Bitcoin address
+  // For demo purposes, we'll create a deterministic but fake address
   
   // Create a simple hash of the seed phrase
   const seedString = seedPhrase.join(' ');
@@ -32,8 +35,13 @@ export const deriveAddress = (seedPhrase: string[]): string => {
   // Convert to a hex string and use as part of the address
   const hashHex = Math.abs(hash).toString(16).padStart(8, '0');
   
-  // Format as a Bitcoin address (this is just for simulation)
-  return `bc1q${hashHex}${getRandomHex(24)}`;
+  // Format address based on crypto type
+  if (cryptoType === 'ethereum') {
+    return `0x${hashHex}${getRandomHex(32)}`;
+  } else {
+    // Bitcoin address
+    return `bc1q${hashHex}${getRandomHex(24)}`;
+  }
 };
 
 // Helper to generate random hex characters
@@ -47,7 +55,7 @@ const getRandomHex = (length: number): string => {
 };
 
 // Simulate checking if an address has a balance
-export const checkAddressBalance = async (address: string): Promise<{
+export const checkAddressBalance = async (address: string, cryptoType: CryptoType = 'bitcoin'): Promise<{
   hasBalance: boolean;
   balance?: string;
   transactions?: Array<{
@@ -68,7 +76,7 @@ export const checkAddressBalance = async (address: string): Promise<{
       return { hasBalance: false };
     }
     
-    // Generate a random balance between 0.001 and 2 BTC
+    // Generate a random balance between 0.001 and 2 units of the crypto
     const balance = (0.001 + Math.random() * 1.999).toFixed(8);
     
     // Generate some fake transactions
@@ -111,12 +119,22 @@ export const checkAddressBalance = async (address: string): Promise<{
   }
 };
 
-// Format a Bitcoin amount with the BTC symbol
-export const formatBitcoin = (amount: string | number): string => {
+// Get explorer URL for transaction or address
+export const getExplorerUrl = (hash: string, type: 'transaction' | 'address', cryptoType: CryptoType = 'bitcoin'): string => {
+  if (cryptoType === 'ethereum') {
+    return `https://etherscan.io/${type === 'transaction' ? 'tx' : 'address'}/${hash}`;
+  } else {
+    return `https://mempool.space/${type}/${hash}`;
+  }
+};
+
+// Format a cryptocurrency amount with the symbol
+export const formatCrypto = (amount: string | number, cryptoType: CryptoType = 'bitcoin'): string => {
+  const symbol = cryptoType === 'ethereum' ? 'ETH' : 'BTC';
   return `${Number(amount).toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 8,
-  })} BTC`;
+  })} ${symbol}`;
 };
 
 // Format a date for display

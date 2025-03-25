@@ -1,18 +1,21 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Toggle } from '@/components/ui/toggle';
 import { toast } from 'sonner';
 import { 
   generateSeedPhrase, 
   deriveAddress, 
   checkAddressBalance,
-  formatBitcoin
+  formatCrypto,
+  getExplorerUrl,
+  CryptoType
 } from '@/utils/walletUtils';
 import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader, Play, RefreshCw, Eye, EyeOff } from 'lucide-react';
+import { Loader, Play, RefreshCw, Eye, EyeOff, Bitcoin, Ethereum } from 'lucide-react';
+import CryptoNavigation from '@/components/CryptoNavigation';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -35,6 +38,7 @@ const Index = () => {
   const [isAutoGenerating, setIsAutoGenerating] = useState(false);
   const [autoCount, setAutoCount] = useState(0);
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
+  const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
 
   useEffect(() => {
     generateNewSeedPhrase();
@@ -53,7 +57,17 @@ const Index = () => {
     return () => {
       if (autoGenInterval) clearTimeout(autoGenInterval);
     };
-  }, [isAutoGenerating, isLoading, isGenerating, autoCount]);
+  }, [isAutoGenerating, isLoading, isGenerating, autoCount, activeCrypto]);
+
+  const handleCryptoChange = (crypto: CryptoType) => {
+    if (crypto !== activeCrypto) {
+      setActiveCrypto(crypto);
+      setWalletStatus('idle');
+      setWalletData({});
+      generateNewSeedPhrase();
+      toast.success(`Switched to ${crypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet`);
+    }
+  };
 
   const generateNewSeedPhrase = () => {
     setIsGenerating(true);
@@ -63,7 +77,7 @@ const Index = () => {
     setTimeout(() => {
       const newSeedPhrase = generateSeedPhrase();
       setSeedPhrase(newSeedPhrase);
-      const newAddress = deriveAddress(newSeedPhrase);
+      const newAddress = deriveAddress(newSeedPhrase, activeCrypto);
       setAddress(newAddress);
       setIsGenerating(false);
       
@@ -78,7 +92,7 @@ const Index = () => {
     setWalletStatus('checking');
     
     try {
-      const result = await checkAddressBalance(address);
+      const result = await checkAddressBalance(address, activeCrypto);
       
       if (result.hasBalance) {
         setWalletStatus('has-balance');
@@ -93,7 +107,8 @@ const Index = () => {
             seedPhrase: [...seedPhrase],
             address,
             balance: result.balance,
-            timestamp: new Date()
+            timestamp: new Date(),
+            cryptoType: activeCrypto
           };
           setWalletHistory(prev => [...prev, newWallet]);
         }
@@ -194,7 +209,7 @@ const Index = () => {
         
         {walletStatus !== 'idle' && (
           <div className="mt-6 animate-fade-up" style={{ animationDelay: '400ms' }}>
-            <WalletVisualizer status={walletStatus} address={address} />
+            <WalletVisualizer status={walletStatus} address={address} cryptoType={activeCrypto} />
           </div>
         )}
       </div>
@@ -209,6 +224,7 @@ const Index = () => {
             address={address}
             balance={walletData.balance}
             transactions={walletData.transactions || []}
+            cryptoType={activeCrypto}
           />
         </div>
       );
@@ -233,27 +249,29 @@ const Index = () => {
     );
   };
 
+  const getCryptoIcon = () => {
+    return activeCrypto === 'bitcoin' ? 
+      <Bitcoin className="text-bitcoin" /> : 
+      <Ethereum className="text-ethereum" />;
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="border-b py-4 px-4 md:px-6 w-full bg-background/95 backdrop-blur-sm fixed top-0 z-10">
         <div className="w-full mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <svg 
-              width="28" 
-              height="28" 
-              viewBox="0 0 24 24" 
-              fill="none"
-              className="text-bitcoin"
-            >
-              <path
-                d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.954 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.33-.54 2.165c-.285-.067-.565-.132-.84-.2l-1.815-.45-.35 1.407s.975.225.955.236c.535.136.63.486.615.766l-1.477 5.92c-.075.166-.24.415-.614.322.015.02-.96-.24-.96-.24l-.66 1.51 1.71.426.93.242-.54 2.19 1.32.327.54-2.17c.36.1.705.19 1.05.273l-.54 2.143 1.32.33.54-2.18c2.24.427 3.93.255 4.64-1.774.57-1.637-.03-2.58-1.217-3.196.854-.193 1.5-.76 1.68-1.93h.01zm-3.01 4.22c-.404 1.64-3.157.75-4.05.53l.72-2.9c.896.23 3.757.67 3.33 2.37zm.41-4.24c-.37 1.49-2.662.735-3.405.55l.654-2.64c.744.185 3.137.53 2.75 2.084l.002.006z"
-                fill="currentColor"
-              />
-            </svg>
-            <h1 className="text-xl font-medium tracking-tight">Bitcoin Wallet</h1>
+            {getCryptoIcon()}
+            <h1 className="text-xl font-medium tracking-tight">
+              {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Wallet
+            </h1>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <CryptoNavigation 
+              activeCrypto={activeCrypto} 
+              onCryptoChange={handleCryptoChange}
+            />
+            
             {isAutoGenerating && (
               <div className="text-xs px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full flex items-center">
                 <Loader className="h-3 w-3 mr-1 animate-spin" /> 
@@ -284,14 +302,14 @@ const Index = () => {
       <main className="flex-1 pt-20 pb-8 px-3 sm:px-4">
         <div className="w-full">
           <div className="mb-8 text-center">
-            <div className="inline-block px-3 py-1 bg-bitcoin/10 text-xs font-medium rounded-full mb-3">
-              Bitcoin Seed Phrase Generator & Wallet Simulator
+            <div className="inline-block px-3 py-1 bg-accent/20 text-xs font-medium rounded-full mb-3">
+              {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase Generator & Wallet Simulator
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-              Generate a Bitcoin Seed Phrase
+              Generate a {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase
             </h2>
             <p className="text-muted-foreground mx-auto text-balance max-w-2xl">
-              Create a random 12-word seed phrase and check if the derived Bitcoin wallet contains funds.
+              Create a random 12-word seed phrase and check if the derived {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet contains funds.
             </p>
           </div>
           
@@ -302,7 +320,7 @@ const Index = () => {
       <footer className="py-4 px-4 border-t w-full">
         <div className="w-full mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 text-xs">
           <p className="text-muted-foreground">
-            Bitcoin Wallet - For educational purposes only
+            {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Wallet - For educational purposes only
           </p>
           <div className="text-muted-foreground">
             <span>Built with precision and care</span>
@@ -314,4 +332,3 @@ const Index = () => {
 };
 
 export default Index;
-

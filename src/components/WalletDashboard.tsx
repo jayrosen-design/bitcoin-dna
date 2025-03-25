@@ -1,125 +1,123 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { formatBitcoin, formatDate, shortenAddress } from '@/utils/walletUtils';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CircleArrowUp, CircleArrowDown, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-
-interface Transaction {
-  hash: string;
-  amount: string;
-  timestamp: string;
-  type: 'incoming' | 'outgoing';
-}
+import { Button } from '@/components/ui/button';
+import { ExternalLink, Copy } from 'lucide-react';
+import { toast } from 'sonner';
+import { formatCrypto, formatDate, getExplorerUrl, CryptoType } from '@/utils/walletUtils';
 
 interface WalletDashboardProps {
   address: string;
   balance: string;
-  transactions: Transaction[];
-  className?: string;
+  transactions: Array<{
+    hash: string;
+    amount: string;
+    timestamp: string;
+    type: 'incoming' | 'outgoing';
+  }>;
+  cryptoType?: CryptoType;
 }
 
-const WalletDashboard: React.FC<WalletDashboardProps> = ({
-  address,
-  balance,
+const WalletDashboard: React.FC<WalletDashboardProps> = ({ 
+  address, 
+  balance, 
   transactions,
-  className,
+  cryptoType = 'bitcoin'
 }) => {
+  const copyToClipboard = (text: string, description: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${description} copied to clipboard`);
+  };
+
+  const openExplorer = (hash: string, type: 'transaction' | 'address') => {
+    const url = getExplorerUrl(hash, type, cryptoType);
+    window.open(url, '_blank');
+  };
+
   return (
-    <div className={cn("w-full max-w-2xl mx-auto space-y-6", className)}>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">
+          Wallet Dashboard
+        </h2>
+        <Button variant="outline" size="sm" onClick={() => openExplorer(address, 'address')}>
+          <ExternalLink className="h-4 w-4 mr-2" />
+          View on {cryptoType === 'bitcoin' ? 'Explorer' : 'Etherscan'}
+        </Button>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="bg-card shadow-sm overflow-hidden animate-slide-up" style={{ animationDelay: '0ms' }}>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-medium">Wallet Address</CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>Wallet Details</CardTitle>
+            <CardDescription>
+              Manage your {cryptoType === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div className="font-mono text-sm bg-secondary/50 p-2 rounded overflow-hidden overflow-ellipsis">
-                {address}
+          <CardContent className="space-y-4">
+            <div>
+              <div className="text-sm font-medium text-muted-foreground mb-1">Address</div>
+              <div className="flex items-center justify-between">
+                <code className="text-xs bg-muted p-2 rounded font-mono break-all">
+                  {address}
+                </code>
+                <Button variant="ghost" size="icon" onClick={() => copyToClipboard(address, 'Address')}>
+                  <Copy className="h-4 w-4" />
+                </Button>
               </div>
-              <Button variant="ghost" size="icon" className="ml-2 flex-shrink-0">
-                <ExternalLink className="h-4 w-4" />
-              </Button>
+            </div>
+
+            <div>
+              <div className="text-sm font-medium text-muted-foreground mb-1">Balance</div>
+              <div className="text-3xl font-bold">{formatCrypto(balance, cryptoType)}</div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-card shadow-sm overflow-hidden animate-slide-up" style={{ animationDelay: '100ms' }}>
-          <CardHeader className="pb-2 bg-bitcoin/10">
-            <CardTitle className="text-lg font-medium">Balance</CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>Transaction History</CardTitle>
+            <CardDescription>
+              Recent {cryptoType === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} transactions
+            </CardDescription>
           </CardHeader>
-          <CardContent className="pt-4">
-            <div className="flex flex-col">
-              <div className="text-3xl font-bold tracking-tighter text-foreground">
-                {formatBitcoin(balance)}
-              </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                Last updated: {formatDate(new Date().toISOString())}
-              </div>
+          <CardContent>
+            <div className="space-y-4">
+              {transactions.map((tx, index) => (
+                <div key={index}>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
+                        {tx.type === 'incoming' ? '+ ' : '- '}
+                        {formatCrypto(tx.amount, cryptoType)}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {formatDate(tx.timestamp)}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Badge variant="outline">
+                        {tx.type === 'incoming' ? 'Received' : 'Sent'}
+                      </Badge>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6" 
+                        onClick={() => openExplorer(tx.hash, 'transaction')}
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  {index < transactions.length - 1 && <Separator className="my-2" />}
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
-
-      <Card className="bg-card shadow-sm overflow-hidden animate-slide-up" style={{ animationDelay: '200ms' }}>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium">Recent Transactions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {transactions.length === 0 ? (
-            <div className="py-6 text-center text-muted-foreground">
-              No transactions found
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {transactions.map((tx, index) => (
-                <div key={tx.hash} className="animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={cn(
-                        "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
-                        tx.type === 'incoming' ? "bg-success/10" : "bg-muted/50"
-                      )}>
-                        {tx.type === 'incoming' ? (
-                          <CircleArrowDown className="h-5 w-5 text-success" />
-                        ) : (
-                          <CircleArrowUp className="h-5 w-5 text-foreground" />
-                        )}
-                      </div>
-                      <div>
-                        <div className="font-medium">
-                          {tx.type === 'incoming' ? 'Received' : 'Sent'}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {formatDate(tx.timestamp)}
-                        </div>
-                      </div>
-                    </div>
-                    <div className={cn(
-                      "text-right font-medium",
-                      tx.type === 'incoming' ? "text-success" : ""
-                    )}>
-                      {tx.type === 'incoming' ? '+' : '-'}
-                      {formatBitcoin(tx.amount)}
-                    </div>
-                  </div>
-                  {index < transactions.length - 1 && (
-                    <Separator className="my-4" />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="border-t bg-secondary/30 px-6 py-3">
-          <Button variant="link" className="text-sm mx-auto">
-            View All Transactions
-            <ExternalLink className="ml-1 h-3 w-3" />
-          </Button>
-        </CardFooter>
-      </Card>
     </div>
   );
 };
