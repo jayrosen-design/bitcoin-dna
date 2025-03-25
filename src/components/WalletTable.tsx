@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { formatBitcoin, shortenAddress } from '@/utils/walletUtils';
@@ -64,7 +65,8 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets }) => {
   const openInExplorer = (address: string) => {
     toast.info('This is a simulated address. Opening a Bitcoin explorer to demonstrate how it would work with a real address.');
     
-    window.open(`https://www.blockchain.com/explorer/search?search=${address}`, '_blank');
+    // Using blockchain.com explorer with the full address
+    window.open(`https://blockchair.com/bitcoin/address/${address}`, '_blank');
   };
 
   return (
