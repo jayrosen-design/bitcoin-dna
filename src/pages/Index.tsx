@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -450,7 +451,7 @@ const Index = () => {
           <div className="flex items-center space-x-2">
             {getCryptoIcon()}
             <h1 className="text-xl font-medium tracking-tight">
-              Quantum Crypto Keybreaker: {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Module
+              Quantum Crypto Keybreaker
             </h1>
           </div>
           
