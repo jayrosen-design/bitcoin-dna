@@ -5,11 +5,13 @@ import { toast } from 'sonner';
 import { 
   generateSeedPhrase, 
   deriveAddress, 
-  checkAddressBalance 
+  checkAddressBalance,
+  formatBitcoin
 } from '@/utils/walletUtils';
 import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
+import WalletTable, { WalletEntry } from '@/components/WalletTable';
 import { Loader } from 'lucide-react';
 
 const Index = () => {
@@ -29,6 +31,7 @@ const Index = () => {
   }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [walletHistory, setWalletHistory] = useState<WalletEntry[]>([]);
 
   // Generate a seed phrase when the component mounts
   useEffect(() => {
@@ -67,6 +70,18 @@ const Index = () => {
           balance: result.balance,
           transactions: result.transactions
         });
+
+        // Add wallet to history if it has a balance
+        if (result.balance) {
+          const newWallet: WalletEntry = {
+            id: Math.random().toString(36).substring(2, 9),
+            seedPhrase: [...seedPhrase],
+            address,
+            balance: result.balance,
+            timestamp: new Date()
+          };
+          setWalletHistory(prev => [...prev, newWallet]);
+        }
         
         // Simulate the unlocking process
         setTimeout(() => {
@@ -92,12 +107,19 @@ const Index = () => {
   const renderContent = () => {
     if (walletStatus === 'unlocked' && walletData.balance) {
       return (
-        <div className="animate-fade-up">
+        <div className="animate-fade-up space-y-8">
           <WalletDashboard
             address={address}
             balance={walletData.balance}
             transactions={walletData.transactions || []}
           />
+          
+          {walletHistory.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
+              <WalletTable wallets={walletHistory} />
+            </div>
+          )}
         </div>
       );
     }
@@ -131,6 +153,13 @@ const Index = () => {
         {walletStatus !== 'idle' && (
           <div className="mt-10 animate-fade-up" style={{ animationDelay: '400ms' }}>
             <WalletVisualizer status={walletStatus} address={address} />
+          </div>
+        )}
+        
+        {walletHistory.length > 0 && (
+          <div className="mt-10 animate-fade-up" style={{ animationDelay: '500ms' }}>
+            <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
+            <WalletTable wallets={walletHistory} />
           </div>
         )}
       </div>
