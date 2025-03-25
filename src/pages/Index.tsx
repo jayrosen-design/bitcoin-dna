@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import ThemeToggle from '@/components/ThemeToggle';
 import UnlockModal from '@/components/UnlockModal';
 import SeedPhrase from '@/components/SeedPhrase';
-import { Bitcoin, Coins, Loader, RefreshCw, Play } from 'lucide-react';
+import { Bitcoin, Coins, Loader, RefreshCw, Play, Info } from 'lucide-react';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable from '@/components/WalletTable';
 import CryptoNavigation from '@/components/CryptoNavigation';
@@ -23,7 +22,6 @@ import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-// Define the WalletEntry type that's missing
 interface WalletEntry {
   id: string;
   seedPhrase: string[];
@@ -459,11 +457,15 @@ const Index = () => {
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4">
             {getCryptoIcon()}
             <h1 className="text-xl font-medium tracking-tight">
               Quantum Crypto Keybreaker
             </h1>
+            <Link to="/about" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+              <Info className="h-4 w-4 mr-1" />
+              About
+            </Link>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
