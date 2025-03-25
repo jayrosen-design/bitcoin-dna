@@ -12,7 +12,7 @@ import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader } from 'lucide-react';
+import { Loader, Play, Refresh } from 'lucide-react';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -32,11 +32,29 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [walletHistory, setWalletHistory] = useState<WalletEntry[]>([]);
+  const [isAutoGenerating, setIsAutoGenerating] = useState(false);
+  const [autoCount, setAutoCount] = useState(0);
 
   // Generate a seed phrase when the component mounts
   useEffect(() => {
     generateNewSeedPhrase();
   }, []);
+
+  // Handle auto-generation
+  useEffect(() => {
+    let autoGenInterval: NodeJS.Timeout;
+
+    if (isAutoGenerating && !isLoading && !isGenerating) {
+      autoGenInterval = setTimeout(() => {
+        generateAndCheck();
+        setAutoCount(prev => prev + 1);
+      }, 3000); // Generate every 3 seconds
+    }
+
+    return () => {
+      if (autoGenInterval) clearTimeout(autoGenInterval);
+    };
+  }, [isAutoGenerating, isLoading, isGenerating, autoCount]);
 
   const generateNewSeedPhrase = () => {
     setIsGenerating(true);
@@ -104,6 +122,25 @@ const Index = () => {
     }
   };
 
+  const generateAndCheck = () => {
+    generateNewSeedPhrase();
+    
+    // Wait for seed generation to complete, then check balance
+    setTimeout(() => {
+      checkWalletBalance();
+    }, 800);
+  };
+
+  const toggleAutoGeneration = () => {
+    if (isAutoGenerating) {
+      toast.info(`Auto-generation stopped after ${autoCount} attempts`);
+      setAutoCount(0);
+    } else {
+      toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
+    }
+    setIsAutoGenerating(!isAutoGenerating);
+  };
+
   const renderContent = () => {
     if (walletStatus === 'unlocked' && walletData.balance) {
       return (
@@ -132,10 +169,10 @@ const Index = () => {
           className="animate-fade-up"
         />
         
-        <div className="flex justify-center animate-fade-up" style={{ animationDelay: '300ms' }}>
+        <div className="flex justify-center gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
           <Button
             onClick={checkWalletBalance}
-            disabled={isLoading || isGenerating || seedPhrase.length !== 12}
+            disabled={isLoading || isGenerating || seedPhrase.length !== 12 || isAutoGenerating}
             className="min-w-36"
             size="lg"
           >
@@ -147,6 +184,29 @@ const Index = () => {
             ) : (
               'Check Wallet'
             )}
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={generateAndCheck}
+            disabled={isLoading || isGenerating || isAutoGenerating}
+            className="min-w-36"
+            size="lg"
+          >
+            <Refresh className="mr-2 h-4 w-4" />
+            Generate & Check
+          </Button>
+          
+          <Button
+            variant={isAutoGenerating ? "destructive" : "secondary"}
+            onClick={toggleAutoGeneration}
+            disabled={isLoading && !isAutoGenerating}
+            className="min-w-36"
+            size="lg"
+          >
+            <Play className="mr-2 h-4 w-4" />
+            {isAutoGenerating ? 'Stop Auto' : 'Auto Generate'}
+            {isAutoGenerating && autoCount > 0 && ` (${autoCount})`}
           </Button>
         </div>
         
@@ -186,14 +246,22 @@ const Index = () => {
             <h1 className="text-xl font-medium tracking-tight">Bitcoin Wallet Simulator</h1>
           </div>
           
-          <Button 
-            variant="outline" 
-            onClick={generateNewSeedPhrase}
-            disabled={isGenerating}
-            className="text-sm"
-          >
-            New Wallet
-          </Button>
+          <div className="flex items-center gap-2">
+            {isAutoGenerating && (
+              <div className="text-xs px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full flex items-center">
+                <Loader className="h-3 w-3 mr-1 animate-spin" /> 
+                Auto-generating... {autoCount}
+              </div>
+            )}
+            <Button 
+              variant="outline" 
+              onClick={generateNewSeedPhrase}
+              disabled={isGenerating || isAutoGenerating}
+              className="text-sm"
+            >
+              New Wallet
+            </Button>
+          </div>
         </div>
       </header>
       
