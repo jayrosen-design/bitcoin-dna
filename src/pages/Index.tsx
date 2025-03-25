@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
@@ -142,28 +141,9 @@ const Index = () => {
     toast.info(privacyEnabled ? 'Seed phrase visible' : 'Seed phrase hidden');
   };
 
-  const renderContent = () => {
-    if (walletStatus === 'unlocked' && walletData.balance) {
-      return (
-        <div className="animate-fade-up space-y-8">
-          <WalletDashboard
-            address={address}
-            balance={walletData.balance}
-            transactions={walletData.transactions || []}
-          />
-          
-          {walletHistory.length > 0 && (
-            <div className="mt-8">
-              <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
-              <WalletTable wallets={walletHistory} />
-            </div>
-          )}
-        </div>
-      );
-    }
-    
+  const renderSeedPhraseColumn = () => {
     return (
-      <div className="space-y-8 w-full max-w-lg mx-auto">
+      <div className="flex flex-col space-y-6 h-full">
         <SeedPhrase
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
@@ -171,11 +151,11 @@ const Index = () => {
           privacyEnabled={privacyEnabled && !isAutoGenerating}
         />
         
-        <div className="flex justify-center gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
+        <div className="flex flex-col sm:flex-row gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
           <Button
             onClick={checkWalletBalance}
             disabled={isLoading || isGenerating || seedPhrase.length !== 12 || isAutoGenerating}
-            className="min-w-36"
+            className="w-full sm:flex-1"
             size="lg"
           >
             {isLoading ? (
@@ -192,7 +172,7 @@ const Index = () => {
             variant="outline"
             onClick={generateAndCheck}
             disabled={isLoading || isGenerating || isAutoGenerating}
-            className="min-w-36"
+            className="w-full sm:flex-1"
             size="lg"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
@@ -203,7 +183,7 @@ const Index = () => {
             variant={isAutoGenerating ? "destructive" : "secondary"}
             onClick={toggleAutoGeneration}
             disabled={isLoading && !isAutoGenerating}
-            className="min-w-36"
+            className="w-full sm:flex-1"
             size="lg"
           >
             <Play className="mr-2 h-4 w-4" />
@@ -213,25 +193,49 @@ const Index = () => {
         </div>
         
         {walletStatus !== 'idle' && (
-          <div className="mt-10 animate-fade-up" style={{ animationDelay: '400ms' }}>
+          <div className="mt-6 animate-fade-up" style={{ animationDelay: '400ms' }}>
             <WalletVisualizer status={walletStatus} address={address} />
-          </div>
-        )}
-        
-        {walletHistory.length > 0 && (
-          <div className="mt-10 animate-fade-up" style={{ animationDelay: '500ms' }}>
-            <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
-            <WalletTable wallets={walletHistory} />
           </div>
         )}
       </div>
     );
   };
 
+  const renderContent = () => {
+    if (walletStatus === 'unlocked' && walletData.balance) {
+      return (
+        <div className="animate-fade-up space-y-8 w-full">
+          <WalletDashboard
+            address={address}
+            balance={walletData.balance}
+            transactions={walletData.transactions || []}
+          />
+        </div>
+      );
+    }
+    
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+        <div>
+          {renderSeedPhraseColumn()}
+        </div>
+        
+        <div>
+          {walletHistory.length > 0 && (
+            <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
+              <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
+              <WalletTable wallets={walletHistory} />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="border-b py-6 px-6 md:px-8 w-full bg-background/95 backdrop-blur-sm fixed top-0 z-10">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+      <header className="border-b py-4 px-4 md:px-6 w-full bg-background/95 backdrop-blur-sm fixed top-0 z-10">
+        <div className="w-full mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <svg 
               width="28" 
@@ -276,16 +280,16 @@ const Index = () => {
         </div>
       </header>
       
-      <main className="flex-1 pt-24 pb-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-10 text-center">
-            <div className="inline-block px-3 py-1 bg-bitcoin/10 text-xs font-medium rounded-full mb-4">
+      <main className="flex-1 pt-20 pb-8 px-3 sm:px-4">
+        <div className="w-full">
+          <div className="mb-8 text-center">
+            <div className="inline-block px-3 py-1 bg-bitcoin/10 text-xs font-medium rounded-full mb-3">
               Bitcoin Seed Phrase Generator & Wallet Simulator
             </div>
-            <h2 className="text-3xl font-bold tracking-tight mb-3">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
               Generate a Bitcoin Seed Phrase
             </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-balance">
+            <p className="text-muted-foreground mx-auto text-balance max-w-2xl">
               Create a random 12-word seed phrase and check if the derived Bitcoin wallet contains funds.
             </p>
           </div>
@@ -294,12 +298,12 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="py-6 px-6 border-t w-full">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-          <p className="text-sm text-muted-foreground">
+      <footer className="py-4 px-4 border-t w-full">
+        <div className="w-full mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 text-xs">
+          <p className="text-muted-foreground">
             Bitcoin Wallet - For educational purposes only
           </p>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-muted-foreground">
             <span>Built with precision and care</span>
           </div>
         </div>
