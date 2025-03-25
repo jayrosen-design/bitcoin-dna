@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -15,6 +16,7 @@ import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
 import { Loader, Play, RefreshCw, Eye, EyeOff, Bitcoin, Coins } from 'lucide-react';
 import CryptoNavigation from '@/components/CryptoNavigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -158,6 +160,18 @@ const Index = () => {
   const renderSeedPhraseColumn = () => {
     return (
       <div className="flex flex-col space-y-6 h-full">
+        <div className="text-center mb-4">
+          <div className="inline-block px-3 py-1 bg-accent/20 text-xs font-medium rounded-full mb-3">
+            {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase Generator & Wallet Simulator
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
+            Generate a {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase
+          </h2>
+          <p className="text-muted-foreground text-balance">
+            Create a random 12-word seed phrase and check if the derived {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet contains funds.
+          </p>
+        </div>
+      
         <SeedPhrase
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
@@ -215,6 +229,132 @@ const Index = () => {
     );
   };
 
+  // Calculate metrics for the dashboard
+  const calculateMetrics = () => {
+    // Count wallets by type
+    const bitcoinWallets = walletHistory.filter(w => w.cryptoType === 'bitcoin');
+    const ethereumWallets = walletHistory.filter(w => w.cryptoType === 'ethereum');
+    
+    // Get total BTC/ETH found
+    const totalBTC = bitcoinWallets.reduce((total, wallet) => {
+      const amount = parseFloat(wallet.balance) || 0;
+      return total + amount;
+    }, 0);
+    
+    const totalETH = ethereumWallets.reduce((total, wallet) => {
+      const amount = parseFloat(wallet.balance) || 0;
+      return total + amount;
+    }, 0);
+    
+    // Mock price data (in a real app, this would come from an API)
+    const btcPrice = 61432.50;
+    const ethPrice = 3389.75;
+    
+    return {
+      btcPrice,
+      ethPrice,
+      totalBTC,
+      totalETH,
+      btcValue: totalBTC * btcPrice,
+      ethValue: totalETH * ethPrice,
+      totalWallets: walletHistory.length,
+      bitcoinWallets: bitcoinWallets.length,
+      ethereumWallets: ethereumWallets.length
+    };
+  };
+
+  const renderMetricsArea = () => {
+    const metrics = calculateMetrics();
+    
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 animate-fade-up">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center">
+              <Bitcoin className="h-5 w-5 text-bitcoin mr-2" />
+              Bitcoin Metrics
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Current Price:</span>
+                <span className="font-medium">${metrics.btcPrice.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">BTC Found:</span>
+                <span className="font-medium">{metrics.totalBTC.toFixed(8)} BTC</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">USD Value:</span>
+                <span className="font-medium">${metrics.btcValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Wallets Generated:</span>
+                <span className="font-medium">{metrics.bitcoinWallets}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center">
+              <Coins className="h-5 w-5 text-ethereum mr-2" />
+              Ethereum Metrics
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Current Price:</span>
+                <span className="font-medium">${metrics.ethPrice.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">ETH Found:</span>
+                <span className="font-medium">{metrics.totalETH.toFixed(8)} ETH</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">USD Value:</span>
+                <span className="font-medium">${metrics.ethValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Wallets Generated:</span>
+                <span className="font-medium">{metrics.ethereumWallets}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="md:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Generation Summary</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <div>
+                <span className="text-muted-foreground">Total Wallets Generated:</span>
+                <span className="font-semibold text-xl ml-2">{metrics.totalWallets}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Auto Generations:</span>
+                <span className="font-semibold text-xl ml-2">{autoCount}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Success Rate:</span>
+                <span className="font-semibold text-xl ml-2">
+                  {metrics.totalWallets > 0 
+                    ? ((metrics.bitcoinWallets + metrics.ethereumWallets) / metrics.totalWallets * 100).toFixed(2) 
+                    : 0}%
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     if (walletStatus === 'unlocked' && walletData.balance) {
       return (
@@ -235,7 +375,9 @@ const Index = () => {
           {renderSeedPhraseColumn()}
         </div>
         
-        <div>
+        <div className="space-y-8">
+          {renderMetricsArea()}
+          
           <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
             <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
             <WalletTable 
@@ -300,18 +442,6 @@ const Index = () => {
       
       <main className="flex-1 pt-20 pb-8 px-3 sm:px-4">
         <div className="w-full">
-          <div className="mb-8 text-center">
-            <div className="inline-block px-3 py-1 bg-accent/20 text-xs font-medium rounded-full mb-3">
-              {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase Generator & Wallet Simulator
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-              Generate a {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase
-            </h2>
-            <p className="text-muted-foreground mx-auto text-balance max-w-2xl">
-              Create a random 12-word seed phrase and check if the derived {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet contains funds.
-            </p>
-          </div>
-          
           {renderContent()}
         </div>
       </main>
