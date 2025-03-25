@@ -104,7 +104,7 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
             <TableHead className="text-right">Balance</TableHead>
             <TableHead>Actions</TableHead>
             <TableHead></TableHead>
-            <TableHead>Found</TableHead>
+            <TableHead className="text-right">Found</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -230,9 +230,34 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                         Transactions
                       </Button>
                     </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{dialogTitle}</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <div className="space-y-3">
+                          {selectedTransactions.map((tx, i) => (
+                            <div key={i} className="border p-3 rounded-md">
+                              <div className="flex justify-between items-center">
+                                <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
+                                  {tx.type === 'incoming' ? '+ ' : '- '}
+                                  {formatCrypto(tx.amount, wallet.cryptoType)}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {formatDate(tx.timestamp)}
+                                </div>
+                              </div>
+                              <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
+                                {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </DialogContent>
                   </Dialog>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   {formatDate(wallet.timestamp.toISOString())}
                 </TableCell>
               </TableRow>
