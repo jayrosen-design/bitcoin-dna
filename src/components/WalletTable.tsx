@@ -17,8 +17,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { formatDate, shortenAddress, formatCrypto, type CryptoType } from '@/utils/walletUtils';
-import { Bitcoin, Coins, Eye, ReceiptText } from 'lucide-react';
+import { formatDate, shortenAddress, formatCrypto, getExplorerUrl, type CryptoType } from '@/utils/walletUtils';
+import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 export interface WalletEntry {
   id: string;
@@ -82,6 +83,16 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
       <Bitcoin className="h-4 w-4 text-bitcoin" />;
   };
 
+  const copyToClipboard = (text: string, description: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${description} copied to clipboard`);
+  };
+
+  const openExplorer = (address: string, cryptoType: CryptoType = 'bitcoin') => {
+    const url = getExplorerUrl(address, 'address', cryptoType);
+    window.open(url, '_blank');
+  };
+
   return (
     <>
       <Table>
@@ -91,9 +102,9 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
             <TableHead>Type</TableHead>
             <TableHead>Address</TableHead>
             <TableHead className="text-right">Balance</TableHead>
-            <TableHead>Found</TableHead>
             <TableHead>Actions</TableHead>
             <TableHead></TableHead>
+            <TableHead>Found</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -114,14 +125,34 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="font-mono text-xs">
-                  {shortenAddress(wallet.address)}
+                <TableCell>
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="font-mono text-xs cursor-pointer hover:underline hover:text-primary"
+                      onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
+                    >
+                      {shortenAddress(wallet.address)}
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-5 w-5" 
+                      onClick={() => copyToClipboard(wallet.address, 'Address')}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="h-5 w-5"
+                      onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </TableCell>
                 <TableCell className="text-right">
                   {formatCrypto(wallet.balance, wallet.cryptoType)}
-                </TableCell>
-                <TableCell>
-                  {formatDate(wallet.timestamp.toISOString())}
                 </TableCell>
                 <TableCell>
                   <Dialog>
@@ -141,15 +172,27 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                       </DialogHeader>
                       <div className="mt-4">
                         {dialogMode === 'seedPhrase' ? (
-                          <div className="grid grid-cols-3 gap-2">
-                            {selectedSeedPhrase.map((word, i) => (
-                              <div key={i} className="flex items-center space-x-2">
-                                <span className="text-muted-foreground text-xs">
-                                  {(i + 1).toString().padStart(2, '0')}
-                                </span>
-                                <span className="font-medium">{word}</span>
-                              </div>
-                            ))}
+                          <div>
+                            <div className="flex justify-end mb-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => copyToClipboard(wallet.seedPhrase.join(' '), 'Seed phrase')}
+                              >
+                                <Copy className="h-3 w-3 mr-1" />
+                                Copy All
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                              {selectedSeedPhrase.map((word, i) => (
+                                <div key={i} className="flex items-center space-x-2">
+                                  <span className="text-muted-foreground text-xs">
+                                    {(i + 1).toString().padStart(2, '0')}
+                                  </span>
+                                  <span className="font-medium">{word}</span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         ) : (
                           <div className="space-y-3">
@@ -188,6 +231,9 @@ const WalletTable: React.FC<WalletTableProps> = ({ wallets, emptyMessage }) => {
                       </Button>
                     </DialogTrigger>
                   </Dialog>
+                </TableCell>
+                <TableCell>
+                  {formatDate(wallet.timestamp.toISOString())}
                 </TableCell>
               </TableRow>
             ))
