@@ -52,6 +52,9 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
     }
   };
 
+  // Determine if the overlay should be shown
+  const showOverlay = (privacyEnabled && !revealed) || isAccessLocked;
+
   return (
     <div className={cn("w-full space-y-4", className)}>
       <div className="flex justify-between items-center mb-2">
@@ -68,7 +71,7 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
       </div>
       
       <div className="relative">
-        {(!revealed && privacyEnabled) ? (
+        {showOverlay ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-background/80 backdrop-blur-sm rounded-lg">
             <p className="text-sm text-muted-foreground mb-3">
               {isAccessLocked ? 'Access locked - Unlock to view seed phrases' : 'Seed phrase is hidden for security'}
@@ -85,7 +88,7 @@ const SeedPhrase: React.FC<SeedPhraseProps> = ({
         
         <div className={cn(
           "grid grid-cols-3 gap-2 md:gap-3 p-4 bg-secondary/50 rounded-lg transition-all duration-500",
-          (!revealed && privacyEnabled) && "blur-sm select-none"
+          showOverlay && "blur-sm select-none"
         )}>
           {seedPhrase.map((word, index) => (
             <div 

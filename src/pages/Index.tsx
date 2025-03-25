@@ -206,7 +206,7 @@ const Index = () => {
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
           className="animate-fade-up"
-          privacyEnabled={privacyEnabled && !isAutoGenerating}
+          privacyEnabled={privacyEnabled}
           isAccessLocked={!isAccessUnlocked}
           onRequestUnlock={() => setIsUnlockModalOpen(true)}
         />
