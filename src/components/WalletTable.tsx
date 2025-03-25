@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -65,10 +66,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
   };
 
   const handleViewTransactions = (address: string, cryptoType: CryptoType = 'bitcoin') => {
-    if (isAccessLocked) {
-      onRequestUnlock?.();
-      return;
-    }
+    // Allow viewing transactions even in locked mode
     // Generate mock transactions for demonstration
     const mockTransactions: TransactionType[] = Array(Math.floor(Math.random() * 5) + 2)
       .fill(null)
@@ -257,54 +255,43 @@ const WalletTable: React.FC<WalletTableProps> = ({
                   )}
                 </TableCell>
                 <TableCell>
-                  {isAccessLocked ? (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={onRequestUnlock}
-                    >
-                      <Lock className="h-3 w-3 mr-1" />
-                      Locked
-                    </Button>
-                  ) : (
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleViewTransactions(wallet.address, wallet.cryptoType)}
-                        >
-                          <ReceiptText className="h-3 w-3 mr-1" />
-                          Transactions
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{dialogTitle}</DialogTitle>
-                        </DialogHeader>
-                        <div className="mt-4">
-                          <div className="space-y-3">
-                            {selectedTransactions.map((tx, i) => (
-                              <div key={i} className="border p-3 rounded-md">
-                                <div className="flex justify-between items-center">
-                                  <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
-                                    {tx.type === 'incoming' ? '+ ' : '- '}
-                                    {formatCrypto(tx.amount, wallet.cryptoType)}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground">
-                                    {formatDate(tx.timestamp)}
-                                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleViewTransactions(wallet.address, wallet.cryptoType)}
+                      >
+                        <ReceiptText className="h-3 w-3 mr-1" />
+                        Transactions
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{dialogTitle}</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <div className="space-y-3">
+                          {selectedTransactions.map((tx, i) => (
+                            <div key={i} className="border p-3 rounded-md">
+                              <div className="flex justify-between items-center">
+                                <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
+                                  {tx.type === 'incoming' ? '+ ' : '- '}
+                                  {formatCrypto(tx.amount, wallet.cryptoType)}
                                 </div>
-                                <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
-                                  {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
+                                <div className="text-xs text-muted-foreground">
+                                  {formatDate(tx.timestamp)}
                                 </div>
                               </div>
-                            ))}
-                          </div>
+                              <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
+                                {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </DialogContent>
-                    </Dialog>
-                  )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
                 <TableCell className="text-right">
                   {formatDate(wallet.timestamp.toISOString())}
