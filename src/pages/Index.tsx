@@ -14,10 +14,12 @@ import SeedPhrase from '@/components/SeedPhrase';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader, Play, RefreshCw, Eye, EyeOff, Bitcoin, Coins } from 'lucide-react';
+import { Loader, Play, RefreshCw, Lock, Unlock, Bitcoin, Coins } from 'lucide-react';
 import CryptoNavigation from '@/components/CryptoNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
+import UnlockModal from '@/components/UnlockModal';
+import { Switch } from '@/components/ui/switch';
 
 const Index = () => {
   const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
@@ -42,6 +44,8 @@ const Index = () => {
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
   const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
   const [totalGenerations, setTotalGenerations] = useState(0); // Track total generations for success rate
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
+  const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
   
   // Fetch live crypto prices using our custom hook
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
@@ -160,9 +164,30 @@ const Index = () => {
     setIsAutoGenerating(!isAutoGenerating);
   };
 
+  const toggleUnlockModal = () => {
+    if (!isAccessUnlocked) {
+      setIsUnlockModalOpen(true);
+    } else {
+      togglePrivacy();
+    }
+  };
+
   const togglePrivacy = () => {
     setPrivacyEnabled(!privacyEnabled);
     toast.info(privacyEnabled ? 'Seed phrase visible' : 'Seed phrase hidden');
+  };
+
+  const handleUnlock = () => {
+    setIsAccessUnlocked(true);
+    setPrivacyEnabled(false);
+  };
+
+  const toggleDeveloperAccess = () => {
+    setIsAccessUnlocked(!isAccessUnlocked);
+    toast.info(isAccessUnlocked ? 'Developer mode: Access locked' : 'Developer mode: Access unlocked');
+    if (!isAccessUnlocked) {
+      setPrivacyEnabled(false);
+    }
   };
 
   const renderSeedPhraseColumn = () => {
@@ -184,7 +209,7 @@ const Index = () => {
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
           className="animate-fade-up"
-          privacyEnabled={privacyEnabled && !isAutoGenerating}
+          privacyEnabled={privacyEnabled && !isAutoGenerating && !isAccessUnlocked}
         />
         
         <div className="flex flex-col sm:flex-row gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
@@ -445,18 +470,18 @@ const Index = () => {
             )}
             <Button 
               variant="outline" 
-              onClick={togglePrivacy}
+              onClick={toggleUnlockModal}
               className="text-sm"
             >
-              {privacyEnabled ? (
+              {isAccessUnlocked ? (
                 <>
-                  <Eye className="h-4 w-4 mr-1" />
-                  Show Seed
+                  <Unlock className="h-4 w-4 mr-1" />
+                  Seed Unlocked
                 </>
               ) : (
                 <>
-                  <EyeOff className="h-4 w-4 mr-1" />
-                  Hide Seed
+                  <Lock className="h-4 w-4 mr-1" />
+                  Unlock Seed
                 </>
               )}
             </Button>
@@ -475,11 +500,33 @@ const Index = () => {
           <p className="text-muted-foreground">
             {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Wallet - For educational purposes only
           </p>
-          <div className="text-muted-foreground">
-            <span>Built with precision and care</span>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-muted-foreground">Developer Mode:</span>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="developer-mode"
+                  checked={isAccessUnlocked}
+                  onCheckedChange={toggleDeveloperAccess}
+                />
+                <span className="text-xs font-medium">
+                  {isAccessUnlocked ? 'Unlocked' : 'Locked'}
+                </span>
+              </div>
+            </div>
+            <div className="text-muted-foreground">
+              <span>Built with precision and care</span>
+            </div>
           </div>
         </div>
       </footer>
+      
+      <UnlockModal 
+        isOpen={isUnlockModalOpen}
+        onClose={() => setIsUnlockModalOpen(false)}
+        onUnlock={handleUnlock}
+        activeCrypto={activeCrypto}
+      />
     </div>
   );
 };
