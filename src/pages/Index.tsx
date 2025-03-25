@@ -193,13 +193,13 @@ const Index = () => {
       <div className="flex flex-col space-y-6 h-full">
         <div className="text-center mb-4">
           <div className="inline-block px-3 py-1 bg-accent/20 text-xs font-medium rounded-full mb-3">
-            {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase Generator & Wallet Simulator
+            Quantum Crypto Keybreaker
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-            Generate a {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Seed Phrase
+            {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Quantum Breach Protocol
           </h2>
           <p className="text-muted-foreground text-balance">
-            Create a random 12-word seed phrase and check if the derived {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet contains funds.
+            Use advanced quantum simulation to find existing {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallets and access their stored funds.
           </p>
         </div>
       
@@ -450,7 +450,7 @@ const Index = () => {
           <div className="flex items-center space-x-2">
             {getCryptoIcon()}
             <h1 className="text-xl font-medium tracking-tight">
-              {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Wallet
+              Quantum Crypto Keybreaker: {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Module
             </h1>
           </div>
           
@@ -499,7 +499,7 @@ const Index = () => {
       <footer className="py-4 px-4 border-t w-full">
         <div className="w-full mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 text-xs">
           <p className="text-muted-foreground">
-            {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Wallet - For educational purposes only
+            Quantum Crypto Keybreaker - For educational purposes only
           </p>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
