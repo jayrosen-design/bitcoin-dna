@@ -68,17 +68,69 @@ export const useLiveCryptoPrices = () => {
   };
 
   // Fetch active Bitcoin addresses from mempool.space API
-  const fetchActiveBitcoinAddresses = async (): Promise<string[]> => {
+  const fetchActiveBitcoinAddresses = async (): Promise<RecentAddress[]> => {
     try {
       // These are known active Bitcoin addresses with transactions
-      // In a real production app, we would get these from a reliable source or API
-      return [
+      const addresses = [
         '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ', // Binance cold wallet
         '3Kzh9qAqVWQhEsfQz7zEQL1EuSx5tyNLNS', // Bitfinex cold wallet
         '3LQUu4v9z6KNch71j7kbj8GPeAGUo1FW6a', // Coinbase
         '385cR5DM96n1HvBDMzLHPYcw89fZAXULJP', // Kraken
         '1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s'  // Huobi
       ];
+      
+      const addressesWithData: RecentAddress[] = [];
+      
+      // Fetch actual data for each address
+      for (const address of addresses) {
+        try {
+          const response = await fetch(`https://mempool.space/api/address/${address}`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Get transaction count and calculate balance
+            const chainStats = data.chain_stats || {};
+            const mempoolStats = data.mempool_stats || {};
+            const txCount = (chainStats.tx_count || 0) + (mempoolStats.tx_count || 0);
+            
+            // Calculate balance in satoshis (funded - spent)
+            const totalFunded = (chainStats.funded_txo_sum || 0) + (mempoolStats.funded_txo_sum || 0);
+            const totalSpent = (chainStats.spent_txo_sum || 0) + (mempoolStats.spent_txo_sum || 0);
+            const balanceSats = totalFunded - totalSpent;
+            
+            // Convert satoshis to BTC (1 BTC = 100,000,000 satoshis)
+            const balanceBTC = (balanceSats / 100000000).toFixed(8);
+            
+            // Get last active time
+            // Try to fetch the most recent transaction to get timestamp
+            const txsResponse = await fetch(`https://mempool.space/api/address/${address}/txs`);
+            let lastActive = new Date().toISOString();
+            
+            if (txsResponse.ok) {
+              const txs = await txsResponse.json();
+              if (txs && txs.length > 0 && txs[0].status && txs[0].status.block_time) {
+                lastActive = new Date(txs[0].status.block_time * 1000).toISOString();
+              }
+            }
+            
+            addressesWithData.push({
+              address,
+              balance: balanceBTC,
+              txCount,
+              lastActive
+            });
+          }
+        } catch (error) {
+          console.error(`Error fetching data for address ${address}:`, error);
+        }
+      }
+      
+      return addressesWithData.length > 0 ? addressesWithData : addresses.map(address => ({
+        address,
+        balance: '0.00000000',
+        txCount: 0,
+        lastActive: new Date().toISOString()
+      }));
     } catch (error) {
       console.error('Error fetching active Bitcoin addresses:', error);
       toast.error('Failed to fetch active Bitcoin addresses');
@@ -86,18 +138,11 @@ export const useLiveCryptoPrices = () => {
     }
   };
 
-  // Simulate fetching recent active addresses
+  // Fetch recent active addresses
   const fetchRecentAddresses = async () => {
     try {
-      // For Bitcoin, fetch real active addresses
-      const bitcoinAddresses = await fetchActiveBitcoinAddresses();
-      
-      const btcAddressData: RecentAddress[] = bitcoinAddresses.map(address => ({
-        address,
-        balance: '0.00000000', // Will be updated in real-time when selected
-        txCount: Math.floor(Math.random() * 10) + 1,
-        lastActive: new Date().toISOString()
-      }));
+      // For Bitcoin, fetch real active addresses with data
+      const btcAddressData = await fetchActiveBitcoinAddresses();
       
       // For Ethereum, use hardcoded addresses
       const ethAddresses: RecentAddress[] = [
