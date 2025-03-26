@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
 import WalletDashboard from '@/components/WalletDashboard';
-import WalletTable from '@/components/WalletTable';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 import { CryptoType } from '@/utils/walletUtils';
 import { useWalletGenerator, WalletEntry } from '@/hooks/useWalletGenerator';
@@ -12,6 +12,8 @@ import GenerationSummary from '@/components/GenerationSummary';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import QuantumIntro from '@/components/QuantumIntro';
+import TabbedWalletTable from '@/components/TabbedWalletTable';
+import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
 
 const Index = () => {
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
@@ -31,6 +33,7 @@ const Index = () => {
   });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
+  const { randomWallets, isLoading: isRandomWalletsLoading } = useGetRandomWallets();
   
   const {
     seedPhrase,
@@ -48,6 +51,14 @@ const Index = () => {
     toggleAutoGeneration,
     calculateMetrics
   } = useWalletGenerator(activeCrypto);
+
+  // Start auto-generation on page load
+  useEffect(() => {
+    if (!isAutoGenerating) {
+      toggleAutoGeneration();
+      toast.info('Auto-generation started for demonstration');
+    }
+  }, []);
 
   useEffect(() => {
     const seedPhrasesInterval = setInterval(() => {
@@ -193,8 +204,10 @@ const Index = () => {
         
         <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
           <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
-          <WalletTable 
-            wallets={walletHistory} 
+          <TabbedWalletTable 
+            myWallets={walletHistory}
+            globalWallets={randomWallets}
+            isRandomWalletsLoading={isRandomWalletsLoading}
             emptyMessage="This table will store generated wallets. Click Generate or Auto Generate to begin."
             isAccessLocked={!isAccessUnlocked}
             onRequestUnlock={() => setIsUnlockModalOpen(true)}
