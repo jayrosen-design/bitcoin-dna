@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useMemo } from 'react';
 import { 
   Table, 
   TableBody, 
@@ -16,8 +17,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { formatDate, shortenAddress, formatCrypto, getExplorerUrl, type CryptoType } from '@/utils/walletUtils';
-import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy, Lock, Globe, User } from 'lucide-react';
+import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy, Lock, Globe, User, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface WalletEntry {
@@ -44,6 +61,8 @@ type TransactionType = {
   type: 'incoming' | 'outgoing';
 };
 
+const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+
 const WalletTable: React.FC<WalletTableProps> = ({ 
   wallets, 
   emptyMessage, 
@@ -54,6 +73,9 @@ const WalletTable: React.FC<WalletTableProps> = ({
   const [selectedTransactions, setSelectedTransactions] = useState<TransactionType[]>([]);
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogMode, setDialogMode] = useState<'seedPhrase' | 'transactions'>('seedPhrase');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const getWalletSource = (wallet: WalletEntry): 'global' | 'user' => {
     if (wallet.source) return wallet.source;
@@ -123,8 +145,129 @@ const WalletTable: React.FC<WalletTableProps> = ({
     window.open(url, '_blank');
   };
 
+  const toggleSortDirection = () => {
+    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortedAndPagedWallets = useMemo(() => {
+    // Sort wallets by balance
+    const sorted = [...wallets].sort((a, b) => {
+      const balanceA = parseFloat(a.balance);
+      const balanceB = parseFloat(b.balance);
+      
+      if (sortDirection === 'asc') {
+        return balanceA - balanceB;
+      } else {
+        return balanceB - balanceA;
+      }
+    });
+
+    // Calculate pagination
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    
+    return sorted.slice(startIndex, endIndex);
+  }, [wallets, currentPage, rowsPerPage, sortDirection]);
+
+  const totalPages = Math.max(1, Math.ceil(wallets.length / rowsPerPage));
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const renderPagination = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <PaginationItem key={i}>
+          <PaginationLink 
+            onClick={() => handlePageChange(i)}
+            isActive={currentPage === i}
+          >
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    
+    return (
+      <Pagination>
+        <PaginationContent>
+          {currentPage > 1 && (
+            <PaginationItem>
+              <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
+            </PaginationItem>
+          )}
+          
+          {startPage > 1 && (
+            <>
+              <PaginationItem>
+                <PaginationLink onClick={() => handlePageChange(1)}>1</PaginationLink>
+              </PaginationItem>
+              {startPage > 2 && <PaginationEllipsis />}
+            </>
+          )}
+          
+          {pages}
+          
+          {endPage < totalPages && (
+            <>
+              {endPage < totalPages - 1 && <PaginationEllipsis />}
+              <PaginationItem>
+                <PaginationLink onClick={() => handlePageChange(totalPages)}>{totalPages}</PaginationLink>
+              </PaginationItem>
+            </>
+          )}
+          
+          {currentPage < totalPages && (
+            <PaginationItem>
+              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
+            </PaginationItem>
+          )}
+        </PaginationContent>
+      </Pagination>
+    );
+  };
+
   return (
     <>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-muted-foreground">Rows per page:</span>
+          <Select
+            value={rowsPerPage.toString()}
+            onValueChange={(value) => {
+              setRowsPerPage(Number(value));
+              setCurrentPage(1); // Reset to first page when changing rows per page
+            }}
+          >
+            <SelectTrigger className="h-8 w-[70px]">
+              <SelectValue placeholder={rowsPerPage.toString()} />
+            </SelectTrigger>
+            <SelectContent>
+              {ROWS_PER_PAGE_OPTIONS.map(option => (
+                <SelectItem key={option} value={option.toString()}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          Showing {wallets.length > 0 ? (currentPage - 1) * rowsPerPage + 1 : 0}-
+          {Math.min(currentPage * rowsPerPage, wallets.length)} of {wallets.length}
+        </div>
+      </div>
+
       <Table>
         <TableCaption>{emptyMessage}</TableCaption>
         <TableHeader>
@@ -132,7 +275,15 @@ const WalletTable: React.FC<WalletTableProps> = ({
             <TableHead>Source</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Address</TableHead>
-            <TableHead className="text-right">Balance</TableHead>
+            <TableHead className="text-right cursor-pointer" onClick={toggleSortDirection}>
+              <div className="flex items-center justify-end">
+                Balance
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+                <span className="sr-only">
+                  Sort by balance ({sortDirection === 'asc' ? 'ascending' : 'descending'})
+                </span>
+              </div>
+            </TableHead>
             <TableHead>Actions</TableHead>
             <TableHead></TableHead>
             <TableHead className="text-right">Found</TableHead>
@@ -146,7 +297,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
               </TableCell>
             </TableRow>
           ) : (
-            wallets.map((wallet) => (
+            sortedAndPagedWallets.map((wallet) => (
               <TableRow key={wallet.id}>
                 <TableCell>
                   <div className="flex justify-center">
@@ -317,6 +468,12 @@ const WalletTable: React.FC<WalletTableProps> = ({
           )}
         </TableBody>
       </Table>
+
+      {wallets.length > 0 && (
+        <div className="mt-4">
+          {renderPagination()}
+        </div>
+      )}
     </>
   );
 };
