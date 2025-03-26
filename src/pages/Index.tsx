@@ -120,7 +120,7 @@ const Index = () => {
     setTotalGenerations(prev => prev + 1);
     
     try {
-      const result = await checkAddressBalance(address, activeCrypto);
+      const result = await checkAddressBalance(activeCrypto, address);
       
       if (result.hasBalance) {
         setWalletStatus('has-balance');
@@ -530,3 +530,4 @@ const Index = () => {
 };
 
 export default Index;
+

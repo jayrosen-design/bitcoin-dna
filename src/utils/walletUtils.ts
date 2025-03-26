@@ -1,3 +1,4 @@
+
 import { wordList } from './wordList';
 import { toast } from 'sonner';
 
@@ -136,47 +137,89 @@ export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', ad
     // Generate a balance above our threshold based on the crypto type
     let balance;
     if (cryptoType === 'bitcoin') {
-      // Generate a balance between 0.1 and 10 BTC
+      // Generate a balance between the min value and a higher value (0.1 - 10 BTC)
       balance = (0.1 + Math.random() * 9.9).toFixed(8);
     } else {
-      // Generate a balance between 4 and 50 ETH
+      // Generate a balance between the min value and a higher value (4 - 50 ETH)
       balance = (4 + Math.random() * 46).toFixed(8);
     }
     
-    // Generate some fake transactions
-    const numTransactions = Math.floor(Math.random() * 5) + 1;
-    const transactions = [];
-    
-    const now = new Date();
-    
-    for (let i = 0; i < numTransactions; i++) {
-      // Create transactions from the last 10 minutes
-      const minutesAgo = Math.floor(Math.random() * 10);
-      
-      const txDate = new Date(now);
-      txDate.setMinutes(txDate.getMinutes() - minutesAgo);
-      
-      const txAmount = (0.0001 + Math.random() * (parseFloat(balance) / 2)).toFixed(8);
-      
-      transactions.push({
-        hash: `${getRandomHex(64)}`,
-        amount: txAmount,
-        timestamp: txDate.toISOString(),
-        type: Math.random() > 0.5 ? 'incoming' : 'outgoing'
-      });
-    }
+    // Fetch up to 5 of the most recent transactions of the wallet address
+    const transactions = await fetchRecentTransactions(address || '', cryptoType);
     
     return {
       hasBalance,
       balance,
-      transactions: transactions.sort((a, b) => 
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      )
+      transactions
     };
   } catch (error) {
     console.error('Error checking balance:', error);
     toast.error('Failed to check wallet balance');
     return { hasBalance: false };
+  }
+};
+
+// Fetch recent transactions for a given address
+export const fetchRecentTransactions = async (address: string, cryptoType: CryptoType = 'bitcoin'): Promise<Array<{
+  hash: string;
+  amount: string;
+  timestamp: string;
+  type: 'incoming' | 'outgoing';
+}>> => {
+  try {
+    // In a real implementation, this would call the blockchain API
+    // for this simulation, we'll generate up to 5 recent transactions
+    
+    // Simulate API request delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const numTransactions = Math.floor(Math.random() * 5) + 1;
+    const transactions = [];
+    
+    const now = new Date();
+    
+    // Create transactions from the last 10 minutes
+    for (let i = 0; i < numTransactions; i++) {
+      // Generate a transaction time within the last 10 minutes
+      const minutesAgo = Math.floor(Math.random() * 10);
+      
+      const txDate = new Date(now);
+      txDate.setMinutes(txDate.getMinutes() - minutesAgo);
+      
+      // Generate transaction amount based on crypto type
+      let txAmount;
+      if (cryptoType === 'bitcoin') {
+        // Generate a small Bitcoin transaction (0.0001 - 0.5 BTC)
+        txAmount = (0.0001 + Math.random() * 0.5).toFixed(8);
+      } else {
+        // Generate a small Ethereum transaction (0.001 - 2 ETH)
+        txAmount = (0.001 + Math.random() * 2).toFixed(8);
+      }
+      
+      // Determine if incoming or outgoing (50/50 chance)
+      const txType = Math.random() > 0.5 ? 'incoming' : 'outgoing';
+      
+      // Generate transaction hash (different format for BTC vs ETH)
+      const txHash = cryptoType === 'ethereum' 
+        ? `0x${getRandomHex(64)}`
+        : getRandomHex(64);
+      
+      transactions.push({
+        hash: txHash,
+        amount: txAmount,
+        timestamp: txDate.toISOString(),
+        type: txType
+      });
+    }
+    
+    // Sort transactions by timestamp (newest first)
+    return transactions.sort((a, b) => 
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+    
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
+    return [];
   }
 };
 
