@@ -184,7 +184,10 @@ const Index = () => {
       <div className="space-y-6 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6 h-full">
-            <QuantumIntro currentValue={totalValueUnlocked.usd} />
+            <QuantumIntro 
+              currentValue={totalValueUnlocked.usd} 
+              btcValue={totalValueUnlocked.btc}
+            />
             
             <div className="animate-fade-up">
               <StatusCards

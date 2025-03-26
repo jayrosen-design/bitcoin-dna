@@ -4,9 +4,10 @@ import { Card, CardContent } from '@/components/ui/card';
 
 interface QuantumIntroProps {
   currentValue: number;
+  btcValue?: number; // Added BTC value as an optional prop
 }
 
-const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
+const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 }) => {
   const formatCurrency = (value: number) => {
     // Format billions
     if (value >= 1_000_000_000) {
@@ -26,6 +27,10 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
     }
   };
 
+  const formatBtc = (value: number) => {
+    return `${value.toFixed(2)} BTC`;
+  };
+
   return (
     <Card className="animate-fade-up h-full">
       <CardContent className="pt-6 h-full">
@@ -40,9 +45,16 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
           </div>
           
           <div className="flex-1 flex flex-col items-center justify-center mt-4">
-            <div className="text-center">
-              <div className="text-sm font-medium mb-1 text-muted-foreground">Total USD Value Unlocked</div>
-              <div className="text-5xl font-bold text-primary">{formatCurrency(currentValue)}</div>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
+              <div className="text-center">
+                <div className="text-sm font-medium mb-1 text-muted-foreground">Total USD Value Unlocked</div>
+                <div className="text-5xl font-bold text-primary">{formatCurrency(currentValue)}</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-sm font-medium mb-1 text-muted-foreground">Total BTC Unlocked</div>
+                <div className="text-5xl font-bold text-primary">{formatBtc(btcValue)}</div>
+              </div>
             </div>
           </div>
         </div>
