@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
-import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
-import { ChartContainer } from '@/components/ui/chart';
+import ValueUnlockedChart from '@/components/ValueUnlockedChart';
 
 interface QuantumIntroProps {
   currentValue: number;
@@ -19,13 +18,12 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
       const endDate = new Date();
       const startDate = new Date(endDate.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7 days ago
       
-      // Create data points from 24 million to the current value with some fluctuations
+      // Create data points from 24 million to the current value
       const intervals = 14; // Two data points per day
       for (let i = 0; i <= intervals; i++) {
         const pointDate = new Date(startDate.getTime() + ((endDate.getTime() - startDate.getTime()) * (i / intervals)));
         
-        // Gradually increase with some random fluctuations for realism
-        // Start at 24 million and end at current value with non-linear curve
+        // Create a more gradual, non-linear growth curve with easing
         const progress = Math.pow(i / intervals, 1.3); // Non-linear growth curve
         const baseValue = 24000000 + ((currentValue - 24000000) * progress);
         
@@ -35,7 +33,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
         
         initialData.push({
           time: pointDate.toLocaleDateString('en-US', { weekday: 'short' }),
-          value: Math.round(value)
+          value: value
         });
       }
       
@@ -89,47 +87,11 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
             </div>
           </div>
           
-          <div className="flex-grow h-48 relative mt-4">
-            <h3 className="text-sm font-medium mb-2">Total USD Value Unlocked (Weekly)</h3>
-            <ChartContainer 
-              config={{
-                value: {
-                  theme: {
-                    light: "#8B5CF6",
-                    dark: "#8B5CF6"
-                  }
-                }
-              }}
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="valueGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <Tooltip 
-                    content={({ active, payload }) => 
-                      active && payload && payload.length ? (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="font-medium">{payload[0].payload.time}</div>
-                          <div className="text-muted-foreground">{formatCurrency(payload[0].value as number)}</div>
-                        </div>
-                      ) : null
-                    }
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="#8B5CF6" 
-                    fillOpacity={1} 
-                    fill="url(#valueGradient)"
-                    strokeWidth={2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </ChartContainer>
+          <div className="flex-grow mt-4">
+            <ValueUnlockedChart 
+              chartData={chartData} 
+              formatCurrency={formatCurrency} 
+            />
           </div>
         </div>
       </CardContent>
@@ -138,4 +100,3 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
 };
 
 export default QuantumIntro;
-
