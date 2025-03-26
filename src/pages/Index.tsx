@@ -273,6 +273,68 @@ const Index = () => {
           </p>
         </div>
       
+        <div className="space-y-4 animate-fade-up">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center">
+                  <Bitcoin className="h-5 w-5 text-bitcoin" />
+                  My BTC Findings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">BTC Found:</span>
+                    <span className="font-medium">{calculateMetrics().totalBTC.toFixed(8)} BTC</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">USD Value:</span>
+                    <span className="font-medium">${calculateMetrics().btcValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Wallets Unlocked:</span>
+                    <span className="font-medium">{calculateMetrics().bitcoinWallets}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Seed Phrases Unlocked:</span>
+                    <span className="font-medium">{calculateMetrics().totalGenerations}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center">
+                  <Coins className="h-5 w-5 text-bitcoin" />
+                  Total Value Unlocked
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">BTC Unlocked:</span>
+                    <span className="font-medium">{totalValueUnlocked.btc.toFixed(8)} BTC</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">USD Value:</span>
+                    <span className="font-medium">${totalValueUnlocked.usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Total Wallets:</span>
+                    <span className="font-medium">{totalValueUnlocked.wallets}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Total Seed Phrases Unlocked:</span>
+                    <span className="font-medium">{totalValueUnlocked.totalSeedPhrases.toLocaleString()}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        
         <SeedPhrase
           seedPhrase={seedPhrase}
           onRegenerateSeed={generateNewSeedPhrase}
@@ -360,70 +422,8 @@ const Index = () => {
   };
 
   const renderMetricsArea = () => {
-    const metrics = calculateMetrics();
-    
     return (
       <div className="space-y-4 animate-fade-up">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center">
-                <Bitcoin className="h-5 w-5 text-bitcoin" />
-                My BTC Findings
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">BTC Found:</span>
-                  <span className="font-medium">{metrics.totalBTC.toFixed(8)} BTC</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">USD Value:</span>
-                  <span className="font-medium">${metrics.btcValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Wallets Generated:</span>
-                  <span className="font-medium">{metrics.bitcoinWallets}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Seed Phrases Generated:</span>
-                  <span className="font-medium">{metrics.totalGenerations}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center">
-                <Coins className="h-5 w-5 text-bitcoin" />
-                Total Value Unlocked
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">BTC Unlocked:</span>
-                  <span className="font-medium">{totalValueUnlocked.btc.toFixed(8)} BTC</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">USD Value:</span>
-                  <span className="font-medium">${totalValueUnlocked.usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Total Wallets:</span>
-                  <span className="font-medium">{totalValueUnlocked.wallets}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Total Seed Phrases Generated:</span>
-                  <span className="font-medium">{totalValueUnlocked.totalSeedPhrases.toLocaleString()}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">Generation Summary</CardTitle>
@@ -432,7 +432,7 @@ const Index = () => {
             <div className="flex justify-between items-center">
               <div>
                 <span className="text-muted-foreground">Total Wallets:</span>
-                <span className="font-semibold ml-2">{metrics.totalWallets}</span>
+                <span className="font-semibold ml-2">{calculateMetrics().totalWallets}</span>
               </div>
               <div>
                 <span className="text-muted-foreground">Auto Generations:</span>
@@ -441,10 +441,10 @@ const Index = () => {
               <div>
                 <span className="text-muted-foreground">Success Rate:</span>
                 <span className="font-semibold ml-2">
-                  {metrics.successRate.toFixed(2)}%
+                  {calculateMetrics().successRate.toFixed(2)}%
                 </span>
                 <span className="text-xs text-muted-foreground ml-1">
-                  ({metrics.totalWallets}/{metrics.totalGenerations})
+                  ({calculateMetrics().totalWallets}/{calculateMetrics().totalGenerations})
                 </span>
               </div>
             </div>
