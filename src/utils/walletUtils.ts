@@ -114,6 +114,35 @@ const getRandomHex = (length: number): string => {
   return result;
 };
 
+// Generate a deterministic but unique balance based on the address
+const generateUniqueBalance = (address: string, cryptoType: CryptoType): string => {
+  // Use the last 6 characters of the address to create a deterministic but seemingly random balance
+  const lastChars = address.slice(-6);
+  let seed = 0;
+  
+  // Convert characters to a number for seed
+  for (let i = 0; i < lastChars.length; i++) {
+    seed += lastChars.charCodeAt(i);
+  }
+  
+  // Generate a balance with a realistic range
+  // For BTC: typically between 0.01 and 2 BTC for "found" wallets
+  // For ETH: typically between 0.5 and 20 ETH
+  const random = Math.abs(Math.sin(seed)); // Deterministic "random" between 0-1
+  
+  let balance: number;
+  if (cryptoType === 'bitcoin') {
+    // 0.01 - 2 BTC range
+    balance = 0.01 + (random * 1.99);
+  } else {
+    // 0.5 - 20 ETH range
+    balance = 0.5 + (random * 19.5);
+  }
+  
+  // Format to 8 decimal places
+  return balance.toFixed(8);
+};
+
 // Simulate checking if an address has a balance but using real addresses
 export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', address?: string): Promise<{
   hasBalance: boolean;
@@ -128,13 +157,8 @@ export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', ad
   try {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Use predefined balances based on cryptoType to ensure consistency
-    let balance;
-    if (cryptoType === 'bitcoin') {
-      balance = '0.15234521'; // Simulated balance > 0.1 BTC
-    } else {
-      balance = '5.43218765'; // Simulated balance > 4 ETH
-    }
+    // Generate a unique balance based on the address instead of using a hardcoded value
+    const balance = generateUniqueBalance(address || '', cryptoType);
     
     // Generate transactions that reflect portions of the total balance
     const totalBalance = parseFloat(balance);
