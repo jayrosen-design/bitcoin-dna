@@ -154,21 +154,19 @@ const Index = () => {
     
     return (
       <div className="space-y-6 w-full">
-        <QuantumIntro />
-        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <div className="flex flex-col space-y-6 h-full">
-              <div className="space-y-4 animate-fade-up">
-                <StatusCards
-                  totalValueUnlocked={totalValueUnlocked}
-                  metrics={walletMetrics}
-                />
-              </div>
+          <div className="flex flex-col space-y-6 h-full">
+            <QuantumIntro />
+            
+            <div className="animate-fade-up">
+              <StatusCards
+                totalValueUnlocked={totalValueUnlocked}
+                metrics={walletMetrics}
+              />
             </div>
           </div>
           
-          <div className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-6 h-full">
             <SeedPhraseGenerator
               seedPhrase={seedPhrase}
               onRegenerateSeed={generateNewSeedPhrase}

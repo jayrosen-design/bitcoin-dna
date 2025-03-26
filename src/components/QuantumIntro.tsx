@@ -5,8 +5,8 @@ import { Zap } from 'lucide-react';
 
 const QuantumIntro: React.FC = () => {
   return (
-    <Card className="mb-4 animate-fade-up">
-      <CardContent className="pt-6">
+    <Card className="animate-fade-up h-full">
+      <CardContent className="pt-6 h-full">
         <div className="flex items-start space-x-4">
           <div className="bg-primary/10 p-2 rounded-full">
             <Zap className="h-6 w-6 text-primary" />
