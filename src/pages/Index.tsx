@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -57,16 +56,27 @@ const Index = () => {
   const [totalGenerations, setTotalGenerations] = useState(0);
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
-  const [totalValueUnlocked, setTotalValueUnlocked] = useState<{btc: number, usd: number, wallets: number}>({
+  const [totalValueUnlocked, setTotalValueUnlocked] = useState<{btc: number, usd: number, wallets: number, totalSeedPhrases: number}>({
     btc: 431, 
     usd: 0, 
-    wallets: 679
+    wallets: 679,
+    totalSeedPhrases: 48931056202590
   });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
 
   useEffect(() => {
     generateNewSeedPhrase();
+
+    const seedPhrasesInterval = setInterval(() => {
+      const randomIncrement = Math.floor(Math.random() * 5) + 1;
+      setTotalValueUnlocked(prev => ({
+        ...prev,
+        totalSeedPhrases: prev.totalSeedPhrases + randomIncrement
+      }));
+    }, 1000);
+
+    return () => clearInterval(seedPhrasesInterval);
   }, []);
 
   useEffect(() => {
@@ -77,6 +87,11 @@ const Index = () => {
         generateAndCheck();
         setAutoCount(prev => prev + 1);
         setTotalGenerations(prev => prev + 1);
+        
+        setTotalValueUnlocked(prev => ({
+          ...prev,
+          totalSeedPhrases: prev.totalSeedPhrases + 1
+        }));
       }, 3000);
     }
 
@@ -85,13 +100,10 @@ const Index = () => {
     };
   }, [isAutoGenerating, isLoading, isGenerating, autoCount, activeCrypto]);
 
-  // Initialize the total value unlocked
   useEffect(() => {
     if (btcPrice) {
-      // Start with 431 BTC (around $40 million at ~$90k/BTC)
-      // Add a small fraction based on timestamp (divide by a much larger number)
-      const timestampInSatoshis = Date.now() % 10000000; // Use modulo to keep it small
-      const timestampInBTC = timestampInSatoshis / 100000000000; // Make the divisor much larger
+      const timestampInSatoshis = Date.now() % 10000000;
+      const timestampInBTC = timestampInSatoshis / 100000000000;
       const totalBTC = 431 + timestampInBTC;
       
       setTotalValueUnlocked(prev => ({
@@ -142,6 +154,11 @@ const Index = () => {
     setWalletStatus('checking');
     setTotalGenerations(prev => prev + 1);
     
+    setTotalValueUnlocked(prev => ({
+      ...prev,
+      totalSeedPhrases: prev.totalSeedPhrases + 1
+    }));
+    
     try {
       const result = await checkAddressBalance(activeCrypto, address);
       
@@ -163,7 +180,6 @@ const Index = () => {
           };
           setWalletHistory(prev => [...prev, newWallet]);
           
-          // Add the found balance to the total value unlocked
           if (activeCrypto === 'bitcoin') {
             const foundBalance = parseFloat(result.balance) || 0;
             setTotalValueUnlocked(prev => {
@@ -171,7 +187,8 @@ const Index = () => {
               return {
                 btc: newBtcTotal,
                 usd: newBtcTotal * (btcPrice || 0),
-                wallets: prev.wallets + 1
+                wallets: prev.wallets + 1,
+                totalSeedPhrases: prev.totalSeedPhrases
               };
             });
           }
@@ -352,21 +369,11 @@ const Index = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-lg flex items-center">
                 <Bitcoin className="h-5 w-5 text-bitcoin" />
-                Bitcoin Metrics
+                My BTC Findings
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Current Price:</span>
-                  <span className="font-medium">
-                    {isPriceLoading ? (
-                      <Loader className="h-3 w-3 animate-spin inline mr-1" />
-                    ) : (
-                      `$${metrics.btcPrice.toLocaleString()}`
-                    )}
-                  </span>
-                </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">BTC Found:</span>
                   <span className="font-medium">{metrics.totalBTC.toFixed(8)} BTC</span>
@@ -378,6 +385,10 @@ const Index = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Wallets Generated:</span>
                   <span className="font-medium">{metrics.bitcoinWallets}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Seed Phrases Generated:</span>
+                  <span className="font-medium">{metrics.totalGenerations}</span>
                 </div>
               </div>
             </CardContent>
@@ -405,8 +416,8 @@ const Index = () => {
                   <span className="font-medium">{totalValueUnlocked.wallets}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Global Success Rate:</span>
-                  <span className="font-medium">0.00012%</span>
+                  <span className="text-muted-foreground">Total Seed Phrases Generated:</span>
+                  <span className="font-medium">{totalValueUnlocked.totalSeedPhrases.toLocaleString()}</span>
                 </div>
               </div>
             </CardContent>
