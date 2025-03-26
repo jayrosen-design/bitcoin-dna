@@ -5,31 +5,6 @@
  
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-    --bitcoin: 22 91% 54%;
-    --ethereum: 248 100% 63%;
-  }
- 
-  .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
@@ -49,8 +24,33 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+    --radius: 0.5rem;
     --bitcoin: 22 91% 54%;
     --ethereum: 248 100% 63%;
+  }
+ 
+  .light {
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --bitcoin: 22 91% 54%;
+    --ethereum: 248 80% 60%;
   }
 }
  
@@ -60,6 +60,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* DeFi-specific glass morphism */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg shadow-lg;
+  }
+  
+  .token-value {
+    @apply font-bold text-lg md:text-xl;
+  }
+  
+  /* Animated gradient backgrounds */
+  .bg-defi-gradient {
+    @apply bg-gradient-to-br from-bitcoin/20 to-ethereum/20 animate-gradient;
   }
 }
 
@@ -100,4 +114,60 @@
 
 .animate-fade-up {
   animation: fade-up 0.5s ease-out forwards;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+/* DeFi-like button styles */
+.defi-button {
+  @apply rounded-xl bg-gradient-to-r from-bitcoin to-bitcoin/70 text-white font-bold py-3 px-5 hover:opacity-90 transition-all;
+}
+
+.defi-button-secondary {
+  @apply rounded-xl bg-gradient-to-r from-secondary to-secondary/70 text-secondary-foreground font-bold py-3 px-5 hover:opacity-90 transition-all;
+}
+
+/* DeFi card with glowing border */
+.glow-card {
+  @apply relative rounded-xl bg-card border border-primary/20 overflow-hidden;
+}
+
+.glow-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, hsl(var(--bitcoin)), transparent, hsl(var(--ethereum)));
+  z-index: -1;
+  border-radius: inherit;
+  animation: glowing 3s linear infinite;
+}
+
+@keyframes glowing {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 400% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }

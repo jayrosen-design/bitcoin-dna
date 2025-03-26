@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -189,7 +190,7 @@ const Index = () => {
               btcValue={totalValueUnlocked.btc}
             />
             
-            <div className="animate-fade-up">
+            <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
               <StatusCards
                 totalValueUnlocked={totalValueUnlocked}
                 metrics={walletMetrics}
@@ -198,32 +199,36 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col space-y-6 h-full">
-            <SeedPhraseGenerator
-              seedPhrase={seedPhrase}
-              onRegenerateSeed={generateNewSeedPhrase}
-              onCheckWallet={checkWalletBalance}
-              onGenerateAndCheck={generateAndCheck}
-              onToggleAutoGeneration={toggleAutoGeneration}
-              isLoading={isLoading}
-              isGenerating={isGenerating}
-              isAutoGenerating={isAutoGenerating}
-              autoCount={autoCount}
-              privacyEnabled={privacyEnabled}
-              isAccessLocked={!isAccessUnlocked}
-              onRequestUnlock={() => setIsUnlockModalOpen(true)}
-            />
+            <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
+              <SeedPhraseGenerator
+                seedPhrase={seedPhrase}
+                onRegenerateSeed={generateNewSeedPhrase}
+                onCheckWallet={checkWalletBalance}
+                onGenerateAndCheck={generateAndCheck}
+                onToggleAutoGeneration={toggleAutoGeneration}
+                isLoading={isLoading}
+                isGenerating={isGenerating}
+                isAutoGenerating={isAutoGenerating}
+                autoCount={autoCount}
+                privacyEnabled={privacyEnabled}
+                isAccessLocked={!isAccessUnlocked}
+                onRequestUnlock={() => setIsUnlockModalOpen(true)}
+              />
+            </div>
             
-            <GenerationSummary
-              metrics={summaryMetrics}
-              walletStatus={walletStatus}
-              address={address}
-              cryptoType={activeCrypto}
-            />
+            <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
+              <GenerationSummary
+                metrics={summaryMetrics}
+                walletStatus={walletStatus}
+                address={address}
+                cryptoType={activeCrypto}
+              />
+            </div>
           </div>
         </div>
         
-        <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
-          <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
+        <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4" style={{ animationDelay: '500ms' }}>
+          <h2 className="text-xl font-bold mb-4">Generated Wallets History</h2>
           <TabbedWalletTable 
             myWallets={walletHistory}
             globalWallets={randomWallets}
@@ -238,7 +243,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-background to-background/80">
       <AppHeader 
         activeCrypto={activeCrypto}
         onCryptoChange={handleCryptoChange}
@@ -248,7 +253,7 @@ const Index = () => {
         isPriceLoading={isPriceLoading}
       />
       
-      <main className="flex-1 pt-10 pb-8 px-3 sm:px-4">
+      <main className="flex-1 pt-10 pb-8 px-3 sm:px-4 container mx-auto">
         <div className="w-full">
           {renderContent()}
         </div>
