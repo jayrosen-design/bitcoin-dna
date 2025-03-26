@@ -19,13 +19,19 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
       const endDate = new Date();
       const startDate = new Date(endDate.getTime() - (24 * 60 * 60 * 1000)); // 24 hours ago
       
-      // Create data points from 1 million to the current value
+      // Create data points from 1 million to the current value with some fluctuations
       const intervals = 24; // One data point per hour
       for (let i = 0; i <= intervals; i++) {
         const pointDate = new Date(startDate.getTime() + ((endDate.getTime() - startDate.getTime()) * (i / intervals)));
         
-        // Linear interpolation from 1 million to current value
-        const value = 1000000 + ((currentValue - 1000000) * (i / intervals));
+        // Gradually increase with some random fluctuations for realism
+        // Start at 1 million and end at current value with non-linear curve
+        const progress = Math.pow(i / intervals, 1.5); // Non-linear growth curve
+        const baseValue = 1000000 + ((currentValue - 1000000) * progress);
+        
+        // Add some random fluctuations (+/- 3%) for a more realistic chart
+        const fluctuation = baseValue * (Math.random() * 0.06 - 0.03);
+        const value = baseValue + fluctuation;
         
         initialData.push({
           time: pointDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -83,9 +89,9 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
             </div>
           </div>
           
-          <div className="flex-1 mt-2">
+          <div className="flex-1 mt-4">
             <h3 className="text-sm font-medium mb-2">Total USD Value Unlocked (24h)</h3>
-            <div className="h-[140px]">
+            <div className="h-[200px]">
               <ChartContainer 
                 config={{
                   value: {
