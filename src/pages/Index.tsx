@@ -1,62 +1,29 @@
+
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import ThemeToggle from '@/components/ThemeToggle';
 import UnlockModal from '@/components/UnlockModal';
-import SeedPhrase from '@/components/SeedPhrase';
-import { Bitcoin, Coins, Loader, RefreshCw, Play, Info } from 'lucide-react';
 import WalletDashboard from '@/components/WalletDashboard';
 import WalletTable from '@/components/WalletTable';
-import CryptoNavigation from '@/components/CryptoNavigation';
-import { Link } from 'react-router-dom';
-import { 
-  generateSeedPhrase, 
-  deriveAddress, 
-  checkAddressBalance,
-  formatCrypto,
-  getExplorerUrl,
-  CryptoType
-} from '@/utils/walletUtils';
-import WalletVisualizer from '@/components/WalletVisualizer';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
-import { Switch } from '@/components/ui/switch';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface WalletEntry {
-  id: string;
-  seedPhrase: string[];
-  address: string;
-  balance: string;
-  timestamp: Date;
-  cryptoType: CryptoType;
-}
+import { CryptoType } from '@/utils/walletUtils';
+import { useWalletGenerator, WalletEntry } from '@/hooks/useWalletGenerator';
+import StatusCards from '@/components/StatusCards';
+import SeedPhraseGenerator from '@/components/SeedPhraseGenerator';
+import GenerationSummary from '@/components/GenerationSummary';
+import AppHeader from '@/components/AppHeader';
+import AppFooter from '@/components/AppFooter';
 
 const Index = () => {
-  const [seedPhrase, setSeedPhrase] = useState<string[]>([]);
-  const [address, setAddress] = useState<string>('');
-  const [walletStatus, setWalletStatus] = useState<
-    'idle' | 'checking' | 'no-balance' | 'has-balance' | 'unlocking' | 'unlocked'
-  >('idle');
-  const [walletData, setWalletData] = useState<{
-    balance?: string;
-    transactions?: Array<{
-      hash: string;
-      amount: string;
-      timestamp: string;
-      type: 'incoming' | 'outgoing';
-    }>;
-  }>({});
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [walletHistory, setWalletHistory] = useState<WalletEntry[]>([]);
-  const [isAutoGenerating, setIsAutoGenerating] = useState(false);
-  const [autoCount, setAutoCount] = useState(0);
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
   const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
-  const [totalGenerations, setTotalGenerations] = useState(0);
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
-  const [totalValueUnlocked, setTotalValueUnlocked] = useState<{btc: number, usd: number, wallets: number, totalSeedPhrases: number}>({
+  const [totalValueUnlocked, setTotalValueUnlocked] = useState<{
+    btc: number, 
+    usd: number, 
+    wallets: number, 
+    totalSeedPhrases: number
+  }>({
     btc: 431, 
     usd: 0, 
     wallets: 679,
@@ -64,10 +31,25 @@ const Index = () => {
   });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
+  
+  const {
+    seedPhrase,
+    address,
+    walletStatus,
+    walletData,
+    isGenerating,
+    isLoading,
+    walletHistory,
+    isAutoGenerating,
+    autoCount,
+    generateNewSeedPhrase,
+    checkWalletBalance,
+    generateAndCheck,
+    toggleAutoGeneration,
+    calculateMetrics
+  } = useWalletGenerator(activeCrypto);
 
   useEffect(() => {
-    generateNewSeedPhrase();
-
     const seedPhrasesInterval = setInterval(() => {
       const randomIncrement = Math.floor(Math.random() * 5) + 1;
       setTotalValueUnlocked(prev => ({
@@ -78,27 +60,6 @@ const Index = () => {
 
     return () => clearInterval(seedPhrasesInterval);
   }, []);
-
-  useEffect(() => {
-    let autoGenInterval: NodeJS.Timeout;
-
-    if (isAutoGenerating && !isLoading && !isGenerating) {
-      autoGenInterval = setTimeout(() => {
-        generateAndCheck();
-        setAutoCount(prev => prev + 1);
-        setTotalGenerations(prev => prev + 1);
-        
-        setTotalValueUnlocked(prev => ({
-          ...prev,
-          totalSeedPhrases: prev.totalSeedPhrases + 1
-        }));
-      }, 3000);
-    }
-
-    return () => {
-      if (autoGenInterval) clearTimeout(autoGenInterval);
-    };
-  }, [isAutoGenerating, isLoading, isGenerating, autoCount, activeCrypto]);
 
   useEffect(() => {
     if (btcPrice) {
@@ -113,123 +74,27 @@ const Index = () => {
       }));
     }
   }, [btcPrice]);
+  
+  useEffect(() => {
+    if (walletData.balance && activeCrypto === 'bitcoin') {
+      const foundBalance = parseFloat(walletData.balance) || 0;
+      setTotalValueUnlocked(prev => {
+        const newBtcTotal = prev.btc + foundBalance;
+        return {
+          btc: newBtcTotal,
+          usd: newBtcTotal * (btcPrice || 0),
+          wallets: prev.wallets + 1,
+          totalSeedPhrases: prev.totalSeedPhrases
+        };
+      });
+    }
+  }, [walletData.balance, activeCrypto, btcPrice]);
 
   const handleCryptoChange = (crypto: CryptoType) => {
     if (crypto !== activeCrypto) {
       setActiveCrypto(crypto);
-      setWalletStatus('idle');
-      setWalletData({});
-      generateNewSeedPhrase();
       toast.success(`Switched to ${crypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallet`);
     }
-  };
-
-  const generateNewSeedPhrase = () => {
-    setIsGenerating(true);
-    setWalletStatus('idle');
-    setWalletData({});
-    
-    setTimeout(() => {
-      const newSeedPhrase = generateSeedPhrase();
-      setSeedPhrase(newSeedPhrase);
-      
-      deriveAddress(newSeedPhrase, activeCrypto)
-        .then(newAddress => {
-          setAddress(newAddress);
-          setIsGenerating(false);
-          toast.success('New seed phrase generated');
-        })
-        .catch(error => {
-          console.error('Error deriving address:', error);
-          setIsGenerating(false);
-          toast.error('Error generating address');
-        });
-    }, 500);
-  };
-
-  const checkWalletBalance = async () => {
-    if (isLoading) return;
-    
-    setIsLoading(true);
-    setWalletStatus('checking');
-    setTotalGenerations(prev => prev + 1);
-    
-    setTotalValueUnlocked(prev => ({
-      ...prev,
-      totalSeedPhrases: prev.totalSeedPhrases + 1
-    }));
-    
-    try {
-      const result = await checkAddressBalance(activeCrypto, address);
-      
-      if (result.hasBalance) {
-        setWalletStatus('has-balance');
-        setWalletData({
-          balance: result.balance,
-          transactions: result.transactions
-        });
-
-        if (result.balance) {
-          const newWallet: WalletEntry = {
-            id: Math.random().toString(36).substring(2, 9),
-            seedPhrase: [...seedPhrase],
-            address,
-            balance: result.balance,
-            timestamp: new Date(),
-            cryptoType: activeCrypto
-          };
-          setWalletHistory(prev => [...prev, newWallet]);
-          
-          if (activeCrypto === 'bitcoin') {
-            const foundBalance = parseFloat(result.balance) || 0;
-            setTotalValueUnlocked(prev => {
-              const newBtcTotal = prev.btc + foundBalance;
-              return {
-                btc: newBtcTotal,
-                usd: newBtcTotal * (btcPrice || 0),
-                wallets: prev.wallets + 1,
-                totalSeedPhrases: prev.totalSeedPhrases
-              };
-            });
-          }
-        }
-        
-        setTimeout(() => {
-          setWalletStatus('unlocking');
-          
-          setTimeout(() => {
-            setWalletStatus('unlocked');
-          }, 2000);
-        }, 1500);
-      } else {
-        setWalletStatus('no-balance');
-        setWalletData({});
-      }
-    } catch (error) {
-      console.error('Error checking wallet:', error);
-      toast.error('Failed to check wallet balance');
-      setWalletStatus('idle');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const generateAndCheck = () => {
-    generateNewSeedPhrase();
-    
-    setTimeout(() => {
-      checkWalletBalance();
-    }, 800);
-  };
-
-  const toggleAutoGeneration = () => {
-    if (isAutoGenerating) {
-      toast.info(`Auto-generation stopped after ${autoCount} attempts`);
-      setAutoCount(0);
-    } else {
-      toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
-    }
-    setIsAutoGenerating(!isAutoGenerating);
   };
 
   const toggleUnlockModal = () => {
@@ -258,192 +123,19 @@ const Index = () => {
     }
   };
 
-  const renderSeedPhraseColumn = () => {
-    return (
-      <div className="flex flex-col space-y-6 h-full">
-        <div className="space-y-4 animate-fade-up">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <Coins className="h-5 w-5 text-bitcoin" />
-                  Total Value Unlocked
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">BTC Unlocked:</span>
-                    <span className="font-medium">{totalValueUnlocked.btc.toFixed(8)} BTC</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">USD Value:</span>
-                    <span className="font-medium">${totalValueUnlocked.usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Total Wallets:</span>
-                    <span className="font-medium">{totalValueUnlocked.wallets}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Total Seed Phrases Unlocked:</span>
-                    <span className="font-medium">{totalValueUnlocked.totalSeedPhrases.toLocaleString()}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <Bitcoin className="h-5 w-5 text-bitcoin" />
-                  My BTC Unlocked
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">BTC Found:</span>
-                    <span className="font-medium">{calculateMetrics().totalBTC.toFixed(8)} BTC</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">USD Value:</span>
-                    <span className="font-medium">${calculateMetrics().btcValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Wallets Unlocked:</span>
-                    <span className="font-medium">{calculateMetrics().bitcoinWallets}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Seed Phrases Unlocked:</span>
-                    <span className="font-medium">{calculateMetrics().totalGenerations}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        
-        <SeedPhrase
-          seedPhrase={seedPhrase}
-          onRegenerateSeed={generateNewSeedPhrase}
-          className="animate-fade-up"
-          privacyEnabled={privacyEnabled}
-          isAccessLocked={!isAccessUnlocked}
-          onRequestUnlock={() => setIsUnlockModalOpen(true)}
-        />
-        
-        <div className="flex flex-col sm:flex-row gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
-          <Button
-            onClick={checkWalletBalance}
-            disabled={isLoading || isGenerating || seedPhrase.length !== 12 || isAutoGenerating}
-            className="w-full sm:flex-1"
-            size="lg"
-          >
-            {isLoading ? (
-              <>
-                <Loader className="mr-2 h-4 w-4 animate-spin" />
-                Checking...
-              </>
-            ) : (
-              'Check Wallet'
-            )}
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={generateAndCheck}
-            disabled={isLoading || isGenerating || isAutoGenerating}
-            className="w-full sm:flex-1"
-            size="lg"
-          >
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Generate & Check
-          </Button>
-          
-          <Button
-            variant={isAutoGenerating ? "destructive" : "secondary"}
-            onClick={toggleAutoGeneration}
-            disabled={isLoading && !isAutoGenerating}
-            className="w-full sm:flex-1"
-            size="lg"
-          >
-            <Play className="mr-2 h-4 w-4" />
-            {isAutoGenerating ? 'Stop Auto' : 'Auto Generate'}
-            {isAutoGenerating && autoCount > 0 && ` (${autoCount})`}
-          </Button>
-        </div>
-      </div>
-    );
+  const metrics = calculateMetrics();
+  const walletMetrics = {
+    totalBTC: metrics.totalBTC,
+    btcValue: metrics.totalBTC * (btcPrice || 0),
+    bitcoinWallets: metrics.bitcoinWallets,
+    totalGenerations: metrics.totalGenerations
   };
-
-  const calculateMetrics = () => {
-    const bitcoinWallets = walletHistory.filter(w => w.cryptoType === 'bitcoin');
-    const ethereumWallets = walletHistory.filter(w => w.cryptoType === 'ethereum');
-    
-    const totalBTC = bitcoinWallets.reduce((total, wallet) => {
-      const amount = parseFloat(wallet.balance) || 0;
-      return total + amount;
-    }, 0);
-    
-    const totalETH = ethereumWallets.reduce((total, wallet) => {
-      const amount = parseFloat(wallet.balance) || 0;
-      return total + amount;
-    }, 0);
-    
-    const successRate = totalGenerations > 0 
-      ? ((bitcoinWallets.length + ethereumWallets.length) / totalGenerations * 100)
-      : 0;
-    
-    return {
-      btcPrice: btcPrice || 0,
-      ethPrice: ethPrice || 0,
-      totalBTC,
-      totalETH,
-      btcValue: totalBTC * (btcPrice || 0),
-      ethValue: totalETH * (ethPrice || 0),
-      totalWallets: walletHistory.length,
-      bitcoinWallets: bitcoinWallets.length,
-      ethereumWallets: ethereumWallets.length,
-      successRate,
-      totalGenerations
-    };
-  };
-
-  const renderMetricsArea = () => {
-    return (
-      <div className="space-y-4 animate-fade-up">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Generation Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div>
-                <span className="text-muted-foreground">Total Wallets:</span>
-                <span className="font-semibold ml-2">{calculateMetrics().totalWallets}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Auto Generations:</span>
-                <span className="font-semibold ml-2">{autoCount}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Success Rate:</span>
-                <span className="font-semibold ml-2">
-                  {calculateMetrics().successRate.toFixed(2)}%
-                </span>
-                <span className="text-xs text-muted-foreground ml-1">
-                  ({calculateMetrics().totalWallets}/{calculateMetrics().totalGenerations})
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <div className="mt-4">
-          <WalletVisualizer status={walletStatus} address={address} cryptoType={activeCrypto} />
-        </div>
-      </div>
-    );
+  
+  const summaryMetrics = {
+    totalWallets: metrics.totalWallets,
+    autoCount,
+    successRate: metrics.successRate,
+    totalGenerations: metrics.totalGenerations
   };
 
   const renderContent = () => {
@@ -464,11 +156,38 @@ const Index = () => {
       <div className="space-y-6 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
-            {renderSeedPhraseColumn()}
+            <div className="flex flex-col space-y-6 h-full">
+              <div className="space-y-4 animate-fade-up">
+                <StatusCards
+                  totalValueUnlocked={totalValueUnlocked}
+                  metrics={walletMetrics}
+                />
+              </div>
+              
+              <SeedPhraseGenerator
+                seedPhrase={seedPhrase}
+                onRegenerateSeed={generateNewSeedPhrase}
+                onCheckWallet={checkWalletBalance}
+                onGenerateAndCheck={generateAndCheck}
+                onToggleAutoGeneration={toggleAutoGeneration}
+                isLoading={isLoading}
+                isGenerating={isGenerating}
+                isAutoGenerating={isAutoGenerating}
+                autoCount={autoCount}
+                privacyEnabled={privacyEnabled}
+                isAccessLocked={!isAccessUnlocked}
+                onRequestUnlock={() => setIsUnlockModalOpen(true)}
+              />
+            </div>
           </div>
           
           <div>
-            {renderMetricsArea()}
+            <GenerationSummary
+              metrics={summaryMetrics}
+              walletStatus={walletStatus}
+              address={address}
+              cryptoType={activeCrypto}
+            />
           </div>
         </div>
         
@@ -485,49 +204,16 @@ const Index = () => {
     );
   };
 
-  const getCryptoIcon = () => {
-    return activeCrypto === 'bitcoin' ? 
-      <Bitcoin className="h-5 w-5 text-bitcoin" /> : 
-      <Coins className="h-5 w-5 text-ethereum" />;
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between">
-          <div className="flex items-center space-x-4">
-            {getCryptoIcon()}
-            <h1 className="text-xl font-medium tracking-tight">
-              Quantum Crypto Keybreaker
-            </h1>
-            <Link to="/about" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-              <Info className="h-4 w-4 mr-1" />
-              About
-            </Link>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Bitcoin className="h-5 w-5 text-bitcoin" />
-            <span className="font-medium">
-              BTC {isPriceLoading ? (
-                <Loader className="h-3 w-3 animate-spin inline" />
-              ) : (
-                `$${btcPrice ? btcPrice.toLocaleString() : '0'}`
-              )}
-            </span>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <CryptoNavigation 
-              activeCrypto={activeCrypto} 
-              onCryptoChange={handleCryptoChange}
-              isAccessUnlocked={isAccessUnlocked}
-              onToggleUnlock={toggleUnlockModal}
-            />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <AppHeader 
+        activeCrypto={activeCrypto}
+        onCryptoChange={handleCryptoChange}
+        isAccessUnlocked={isAccessUnlocked}
+        onToggleUnlock={toggleUnlockModal}
+        btcPrice={btcPrice}
+        isPriceLoading={isPriceLoading}
+      />
       
       <main className="flex-1 pt-10 pb-8 px-3 sm:px-4">
         <div className="w-full">
@@ -535,31 +221,10 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="py-4 px-4 border-t w-full">
-        <div className="w-full mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 text-xs">
-          <p className="text-muted-foreground">
-            Quantum Crypto Keybreaker - For educational purposes only
-          </p>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-muted-foreground">Developer Mode:</span>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="developer-mode"
-                  checked={isAccessUnlocked}
-                  onCheckedChange={toggleDeveloperAccess}
-                />
-                <span className="text-xs font-medium">
-                  {isAccessUnlocked ? 'Unlocked' : 'Locked'}
-                </span>
-              </div>
-            </div>
-            <div className="text-muted-foreground">
-              <span>Built with precision and care</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <AppFooter 
+        isAccessUnlocked={isAccessUnlocked}
+        onToggleDeveloperAccess={toggleDeveloperAccess}
+      />
       
       <UnlockModal 
         isOpen={isUnlockModalOpen}
