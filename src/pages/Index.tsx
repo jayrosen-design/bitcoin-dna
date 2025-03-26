@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -26,10 +25,10 @@ const Index = () => {
     wallets: number, 
     totalSeedPhrases: number
   }>({
-    btc: 431, 
+    btc: 43.1, 
     usd: 0, 
     wallets: 679,
-    totalSeedPhrases: 48931056202590
+    totalSeedPhrases: 48931056
   });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
@@ -38,8 +37,8 @@ const Index = () => {
     isLoading: isRandomWalletsLoading, 
     addWallet, 
     addMockWallet 
-  } = useGetRandomWallets(5); // Start with 5 mock entries
-  
+  } = useGetRandomWallets(100);
+
   const {
     seedPhrase,
     address,
@@ -57,7 +56,6 @@ const Index = () => {
     calculateMetrics
   } = useWalletGenerator(activeCrypto);
 
-  // Start auto-generation on page load
   useEffect(() => {
     if (!isAutoGenerating) {
       toggleAutoGeneration();
@@ -65,7 +63,6 @@ const Index = () => {
     }
   }, []);
 
-  // Add new mock wallet to global wallets whenever totalValueUnlocked metrics update
   const prevTotalWallets = React.useRef(totalValueUnlocked.wallets);
   useEffect(() => {
     if (totalValueUnlocked.wallets > prevTotalWallets.current) {
@@ -76,38 +73,33 @@ const Index = () => {
 
   useEffect(() => {
     const seedPhrasesInterval = setInterval(() => {
-      const randomIncrement = Math.floor(Math.random() * 5) + 1;
+      const randomIncrement = Math.floor(Math.random() * 2) + 1;
       setTotalValueUnlocked(prev => ({
         ...prev,
         totalSeedPhrases: prev.totalSeedPhrases + randomIncrement
       }));
-    }, 1000);
+    }, 3000);
 
     return () => clearInterval(seedPhrasesInterval);
   }, []);
 
   useEffect(() => {
     if (btcPrice) {
-      const timestampInSatoshis = Date.now() % 10000000;
-      const timestampInBTC = timestampInSatoshis / 100000000000;
-      const totalBTC = 431 + timestampInBTC;
+      const usdValue = totalValueUnlocked.btc * btcPrice;
       
       setTotalValueUnlocked(prev => ({
         ...prev,
-        btc: totalBTC,
-        usd: totalBTC * btcPrice
+        usd: usdValue
       }));
     }
-  }, [btcPrice]);
+  }, [btcPrice, totalValueUnlocked.btc]);
   
-  // Add user-found wallets to global wallets list
   useEffect(() => {
     if (walletData.balance && activeCrypto === 'bitcoin') {
       const foundBalance = parseFloat(walletData.balance) || 0;
       
-      // Update total value metrics
       setTotalValueUnlocked(prev => {
-        const newBtcTotal = prev.btc + foundBalance;
+        const newBtcTotal = prev.btc + (foundBalance * 0.1);
         return {
           btc: newBtcTotal,
           usd: newBtcTotal * (btcPrice || 0),
@@ -116,9 +108,11 @@ const Index = () => {
         };
       });
       
-      // Find the latest wallet in history to add to global wallets
       if (walletHistory.length > 0) {
-        const latestWallet = walletHistory[walletHistory.length - 1];
+        const latestWallet = {
+          ...walletHistory[walletHistory.length - 1],
+          source: 'user'
+        };
         addWallet(latestWallet);
       }
     }

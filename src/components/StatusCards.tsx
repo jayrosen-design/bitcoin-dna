@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Bitcoin, Coins } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -20,34 +20,58 @@ interface StatusCardsProps {
 
 const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked: initialValues, metrics }) => {
   const [totalValueUnlocked, setTotalValueUnlocked] = useState(initialValues);
+  const autoIncrementTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
-    // Only update BTC and USD values, not the wallet count
+    // Only update specific values from props
     setTotalValueUnlocked(prev => ({
       ...prev,
-      btc: Math.max(prev.btc, initialValues.btc),
-      usd: Math.max(prev.usd, initialValues.usd),
       totalSeedPhrases: initialValues.totalSeedPhrases,
     }));
-  }, [initialValues]);
+  }, [initialValues.totalSeedPhrases]);
   
   useEffect(() => {
-    // Auto-increment wallet count every 3-5 seconds
-    const walletInterval = setInterval(() => {
-      const randomWalletIncrement = Math.floor(Math.random() * 2) + 1; // 1 or 2
-      const randomBtcIncrement = (Math.random() * 1.925 + 0.2).toFixed(8); // Between 0.2 and 2.125
-      const btcValue = parseFloat(randomBtcIncrement);
-      
-      setTotalValueUnlocked(prev => ({
-        ...prev,
-        wallets: prev.wallets + randomWalletIncrement,
-        btc: prev.btc + btcValue,
-        usd: (prev.btc + btcValue) * (prev.usd / prev.btc) // Maintain the same BTC/USD ratio
-      }));
-    }, Math.floor(Math.random() * 2000) + 3000); // Between 3000ms and 5000ms
+    // Start auto-incrementing at a more reasonable rate
+    startAutoIncrementingValues();
     
-    return () => clearInterval(walletInterval);
+    return () => {
+      if (autoIncrementTimerRef.current) {
+        clearTimeout(autoIncrementTimerRef.current);
+      }
+    };
   }, []);
+
+  const startAutoIncrementingValues = () => {
+    const scheduleNextIncrement = () => {
+      // Random delay between 5-10 seconds
+      const delay = Math.floor(Math.random() * 5000) + 5000;
+      
+      autoIncrementTimerRef.current = setTimeout(() => {
+        setTotalValueUnlocked(prev => {
+          // More realistic increments
+          const randomWalletIncrement = Math.random() < 0.7 ? 1 : 0; // 70% chance of adding 1 wallet
+          const randomBtcIncrement = Math.random() < 0.7 ? 
+            (Math.random() * 0.01 + 0.0001).toFixed(8) : // Small amount most of the time
+            "0";
+          const btcValue = parseFloat(randomBtcIncrement);
+          
+          const newBtc = prev.btc + btcValue;
+          const newUsd = newBtc * (prev.usd / prev.btc); // Maintain the same BTC/USD ratio
+          
+          return {
+            ...prev,
+            wallets: prev.wallets + randomWalletIncrement,
+            btc: newBtc,
+            usd: newUsd
+          };
+        });
+        
+        scheduleNextIncrement();
+      }, delay);
+    };
+    
+    scheduleNextIncrement();
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -70,7 +94,7 @@ const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked: initialVa
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Total Wallets:</span>
-              <span className="font-medium">{totalValueUnlocked.wallets}</span>
+              <span className="font-medium">{totalValueUnlocked.wallets.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Total Seed Phrases Unlocked:</span>
