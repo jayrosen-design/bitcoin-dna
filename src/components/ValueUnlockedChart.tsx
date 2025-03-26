@@ -12,7 +12,7 @@ const ValueUnlockedChart: React.FC<ValueUnlockedChartProps> = ({ chartData, form
   return (
     <div className="flex flex-col h-full">
       <h3 className="text-sm font-medium mb-2">Total USD Value Unlocked (Weekly)</h3>
-      <div className="flex-grow" style={{ height: "180px" }}>
+      <div className="h-[120px]"> {/* Reduced height */}
         <ChartContainer 
           config={{
             value: {

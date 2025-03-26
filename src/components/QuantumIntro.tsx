@@ -20,6 +20,8 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
       
       // Create data points from 24 million to the current value
       const intervals = 14; // Two data points per day
+      let previousValue = 24000000; // Start value
+      
       for (let i = 0; i <= intervals; i++) {
         const pointDate = new Date(startDate.getTime() + ((endDate.getTime() - startDate.getTime()) * (i / intervals)));
         
@@ -27,9 +29,10 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
         const progress = Math.pow(i / intervals, 1.3); // Non-linear growth curve
         const baseValue = 24000000 + ((currentValue - 24000000) * progress);
         
-        // Add some random fluctuations (+/- 2%) for a more realistic chart
-        const fluctuation = baseValue * (Math.random() * 0.04 - 0.02);
-        const value = Math.round(baseValue + fluctuation);
+        // Add small random increase (0-2%) for a more realistic chart, but never decrease
+        const randomIncrease = baseValue * (Math.random() * 0.02);
+        const value = Math.max(previousValue, Math.round(baseValue + randomIncrease));
+        previousValue = value; // Store for next iteration to ensure values only increase
         
         initialData.push({
           time: pointDate.toLocaleDateString('en-US', { weekday: 'short' }),
@@ -38,17 +41,20 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
       }
       
       setChartData(initialData);
-    } else {
-      // Add new data point with current value
+    } else if (currentValue > chartData[chartData.length - 1].value) {
+      // Only update if the current value is higher than the last data point
       const now = new Date();
       const newTimeStr = now.toLocaleDateString('en-US', { weekday: 'short' });
       
       // Check if we should update the last point or add a new one
       const lastPoint = chartData[chartData.length - 1];
       if (lastPoint.time === newTimeStr) {
-        // Update the last point
+        // Update the last point, but ensure it's higher than before
         const updatedData = [...chartData];
-        updatedData[updatedData.length - 1] = { ...lastPoint, value: currentValue };
+        updatedData[updatedData.length - 1] = { 
+          ...lastPoint, 
+          value: Math.max(lastPoint.value, currentValue)
+        };
         setChartData(updatedData);
       } else {
         // Add a new point and remove oldest if more than 15 points
@@ -59,7 +65,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
         setChartData(newData);
       }
     }
-  }, [currentValue]);
+  }, [currentValue, chartData]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -87,7 +93,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
             </div>
           </div>
           
-          <div className="flex-grow mt-4">
+          <div className="mt-4">
             <ValueUnlockedChart 
               chartData={chartData} 
               formatCurrency={formatCurrency} 
