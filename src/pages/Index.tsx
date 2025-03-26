@@ -461,8 +461,8 @@ const Index = () => {
     }
     
     return (
-      <div className="space-y-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="space-y-6 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             {renderSeedPhraseColumn()}
           </div>
@@ -529,7 +529,7 @@ const Index = () => {
         </div>
       </header>
       
-      <main className="flex-1 pt-20 pb-8 px-3 sm:px-4">
+      <main className="flex-1 pt-10 pb-8 px-3 sm:px-4">
         <div className="w-full">
           {renderContent()}
         </div>
@@ -572,3 +572,4 @@ const Index = () => {
 };
 
 export default Index;
+
