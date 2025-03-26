@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -56,6 +57,11 @@ const Index = () => {
   const [totalGenerations, setTotalGenerations] = useState(0);
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
+  const [totalValueUnlocked, setTotalValueUnlocked] = useState<{btc: number, usd: number, wallets: number}>({
+    btc: 0, 
+    usd: 0, 
+    wallets: 0
+  });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
 
@@ -78,6 +84,22 @@ const Index = () => {
       if (autoGenInterval) clearTimeout(autoGenInterval);
     };
   }, [isAutoGenerating, isLoading, isGenerating, autoCount, activeCrypto]);
+
+  // Initialize the total value unlocked
+  useEffect(() => {
+    if (btcPrice) {
+      // 431 BTC + current timestamp in milliseconds converted to BTC
+      const timestampInSatoshis = Date.now();
+      const timestampInBTC = timestampInSatoshis / 100000000; // Convert satoshis to BTC
+      const totalBTC = 431 + timestampInBTC;
+      
+      setTotalValueUnlocked({
+        btc: totalBTC,
+        usd: totalBTC * btcPrice,
+        wallets: 679
+      });
+    }
+  }, [btcPrice]);
 
   const handleCryptoChange = (crypto: CryptoType) => {
     if (crypto !== activeCrypto) {
@@ -311,40 +333,71 @@ const Index = () => {
     
     return (
       <div className="space-y-4 animate-fade-up">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <Bitcoin className="h-5 w-5 text-bitcoin" />
-              Bitcoin Metrics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Current Price:</span>
-                <span className="font-medium">
-                  {isPriceLoading ? (
-                    <Loader className="h-3 w-3 animate-spin inline mr-1" />
-                  ) : (
-                    `$${metrics.btcPrice.toLocaleString()}`
-                  )}
-                </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <Bitcoin className="h-5 w-5 text-bitcoin" />
+                Bitcoin Metrics
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Current Price:</span>
+                  <span className="font-medium">
+                    {isPriceLoading ? (
+                      <Loader className="h-3 w-3 animate-spin inline mr-1" />
+                    ) : (
+                      `$${metrics.btcPrice.toLocaleString()}`
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">BTC Found:</span>
+                  <span className="font-medium">{metrics.totalBTC.toFixed(8)} BTC</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">USD Value:</span>
+                  <span className="font-medium">${metrics.btcValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Wallets Generated:</span>
+                  <span className="font-medium">{metrics.bitcoinWallets}</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">BTC Found:</span>
-                <span className="font-medium">{metrics.totalBTC.toFixed(8)} BTC</span>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <Coins className="h-5 w-5 text-bitcoin" />
+                Total Value Unlocked
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">BTC Unlocked:</span>
+                  <span className="font-medium">{totalValueUnlocked.btc.toFixed(8)} BTC</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">USD Value:</span>
+                  <span className="font-medium">${totalValueUnlocked.usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Total Wallets:</span>
+                  <span className="font-medium">{totalValueUnlocked.wallets}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Global Success Rate:</span>
+                  <span className="font-medium">0.00012%</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">USD Value:</span>
-                <span className="font-medium">${metrics.btcValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Wallets Generated:</span>
-                <span className="font-medium">{metrics.bitcoinWallets}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
         
         <Card>
           <CardHeader className="pb-2">
@@ -438,6 +491,17 @@ const Index = () => {
               <Info className="h-4 w-4 mr-1" />
               About
             </Link>
+          </div>
+          
+          <div className="hidden md:flex items-center space-x-2">
+            <Bitcoin className="h-5 w-5 text-bitcoin" />
+            <span className="font-medium">
+              BTC {isPriceLoading ? (
+                <Loader className="h-3 w-3 animate-spin inline" />
+              ) : (
+                `$${btcPrice ? btcPrice.toLocaleString() : '0'}`
+              )}
+            </span>
           </div>
           
           <div className="flex items-center gap-3">
