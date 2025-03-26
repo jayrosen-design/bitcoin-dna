@@ -22,8 +22,13 @@ const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked: initialVa
   const [totalValueUnlocked, setTotalValueUnlocked] = useState(initialValues);
   
   useEffect(() => {
-    // Update initial values when they change from props
-    setTotalValueUnlocked(initialValues);
+    // Only update BTC and USD values, not the wallet count
+    setTotalValueUnlocked(prev => ({
+      ...prev,
+      btc: Math.max(prev.btc, initialValues.btc),
+      usd: Math.max(prev.usd, initialValues.usd),
+      totalSeedPhrases: initialValues.totalSeedPhrases,
+    }));
   }, [initialValues]);
   
   useEffect(() => {
