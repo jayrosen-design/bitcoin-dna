@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import WalletVisualizer from '@/components/WalletVisualizer';
 import { CryptoType } from '@/utils/walletUtils';

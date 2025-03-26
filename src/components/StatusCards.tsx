@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bitcoin, Coins } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -18,7 +18,32 @@ interface StatusCardsProps {
   };
 }
 
-const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked, metrics }) => {
+const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked: initialValues, metrics }) => {
+  const [totalValueUnlocked, setTotalValueUnlocked] = useState(initialValues);
+  
+  useEffect(() => {
+    // Update initial values when they change from props
+    setTotalValueUnlocked(initialValues);
+  }, [initialValues]);
+  
+  useEffect(() => {
+    // Auto-increment wallet count every 3-5 seconds
+    const walletInterval = setInterval(() => {
+      const randomWalletIncrement = Math.floor(Math.random() * 2) + 1; // 1 or 2
+      const randomBtcIncrement = (Math.random() * 1.925 + 0.2).toFixed(8); // Between 0.2 and 2.125
+      const btcValue = parseFloat(randomBtcIncrement);
+      
+      setTotalValueUnlocked(prev => ({
+        ...prev,
+        wallets: prev.wallets + randomWalletIncrement,
+        btc: prev.btc + btcValue,
+        usd: (prev.btc + btcValue) * (prev.usd / prev.btc) // Maintain the same BTC/USD ratio
+      }));
+    }, Math.floor(Math.random() * 2000) + 3000); // Between 3000ms and 5000ms
+    
+    return () => clearInterval(walletInterval);
+  }, []);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card>
