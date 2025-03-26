@@ -269,12 +269,6 @@ const Index = () => {
             {isAutoGenerating && autoCount > 0 && ` (${autoCount})`}
           </Button>
         </div>
-        
-        {walletStatus !== 'idle' && (
-          <div className="mt-6 animate-fade-up" style={{ animationDelay: '400ms' }}>
-            <WalletVisualizer status={walletStatus} address={address} cryptoType={activeCrypto} />
-          </div>
-        )}
       </div>
     );
   };
@@ -316,7 +310,7 @@ const Index = () => {
     const metrics = calculateMetrics();
     
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 animate-fade-up">
+      <div className="space-y-4 animate-fade-up">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
@@ -354,56 +348,21 @@ const Index = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <Coins className="h-5 w-5 text-ethereum" />
-              Ethereum Metrics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Current Price:</span>
-                <span className="font-medium">
-                  {isPriceLoading ? (
-                    <Loader className="h-3 w-3 animate-spin inline mr-1" />
-                  ) : (
-                    `$${metrics.ethPrice.toLocaleString()}`
-                  )}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">ETH Found:</span>
-                <span className="font-medium">{metrics.totalETH.toFixed(8)} ETH</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">USD Value:</span>
-                <span className="font-medium">${metrics.ethValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Wallets Generated:</span>
-                <span className="font-medium">{metrics.ethereumWallets}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="md:col-span-2">
-          <CardHeader className="pb-2">
             <CardTitle className="text-lg">Generation Summary</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center">
               <div>
-                <span className="text-muted-foreground">Total Wallets Generated:</span>
-                <span className="font-semibold text-xl ml-2">{metrics.totalWallets}</span>
+                <span className="text-muted-foreground">Total Wallets:</span>
+                <span className="font-semibold ml-2">{metrics.totalWallets}</span>
               </div>
               <div>
                 <span className="text-muted-foreground">Auto Generations:</span>
-                <span className="font-semibold text-xl ml-2">{autoCount}</span>
+                <span className="font-semibold ml-2">{autoCount}</span>
               </div>
               <div>
                 <span className="text-muted-foreground">Success Rate:</span>
-                <span className="font-semibold text-xl ml-2">
+                <span className="font-semibold ml-2">
                   {metrics.successRate.toFixed(2)}%
                 </span>
                 <span className="text-xs text-muted-foreground ml-1">
@@ -413,6 +372,10 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
+        
+        <div className="mt-4">
+          <WalletVisualizer status={walletStatus} address={address} cryptoType={activeCrypto} />
+        </div>
       </div>
     );
   };
