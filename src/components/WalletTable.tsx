@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { 
   Table, 
@@ -128,19 +127,11 @@ const WalletTable: React.FC<WalletTableProps> = ({
   };
 
   const copyToClipboard = (text: string, description: string) => {
-    if (isAccessLocked) {
-      onRequestUnlock?.();
-      return;
-    }
     navigator.clipboard.writeText(text);
     toast.success(`${description} copied to clipboard`);
   };
 
   const openExplorer = (address: string, cryptoType: CryptoType = 'bitcoin') => {
-    if (isAccessLocked) {
-      onRequestUnlock?.();
-      return;
-    }
     const url = getExplorerUrl(address, 'address', cryptoType);
     window.open(url, '_blank');
   };
@@ -150,7 +141,6 @@ const WalletTable: React.FC<WalletTableProps> = ({
   };
 
   const sortedAndPagedWallets = useMemo(() => {
-    // Sort wallets by balance
     const sorted = [...wallets].sort((a, b) => {
       const balanceA = parseFloat(a.balance);
       const balanceB = parseFloat(b.balance);
@@ -162,7 +152,6 @@ const WalletTable: React.FC<WalletTableProps> = ({
       }
     });
 
-    // Calculate pagination
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     
@@ -315,11 +304,8 @@ const WalletTable: React.FC<WalletTableProps> = ({
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <div 
-                      className={cn(
-                        "font-mono text-xs",
-                        !isAccessLocked && "cursor-pointer hover:underline hover:text-primary"
-                      )}
-                      onClick={() => !isAccessLocked && openExplorer(wallet.address, wallet.cryptoType)}
+                      className="font-mono text-xs cursor-pointer hover:underline hover:text-primary"
+                      onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
                     >
                       {shortenAddress(wallet.address)}
                     </div>
@@ -328,18 +314,16 @@ const WalletTable: React.FC<WalletTableProps> = ({
                       size="icon" 
                       className="h-5 w-5" 
                       onClick={() => copyToClipboard(wallet.address, 'Address')}
-                      disabled={isAccessLocked}
                     >
-                      {isAccessLocked ? <Lock className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                      <Copy className="h-3 w-3" />
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="icon"
                       className="h-5 w-5"
                       onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
-                      disabled={isAccessLocked}
                     >
-                      {isAccessLocked ? <Lock className="h-3 w-3" /> : <ExternalLink className="h-3 w-3" />}
+                      <ExternalLink className="h-3 w-3" />
                     </Button>
                   </div>
                 </TableCell>
