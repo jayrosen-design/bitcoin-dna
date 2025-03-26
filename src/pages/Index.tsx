@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -156,7 +157,7 @@ const Index = () => {
       <div className="space-y-6 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6 h-full">
-            <QuantumIntro />
+            <QuantumIntro currentValue={totalValueUnlocked.usd} />
             
             <div className="animate-fade-up">
               <StatusCards
