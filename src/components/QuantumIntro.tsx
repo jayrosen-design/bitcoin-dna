@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
+import { ChartContainer } from '@/components/ui/chart';
 
 interface QuantumIntroProps {
   currentValue: number;
@@ -13,28 +13,28 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
   const [chartData, setChartData] = useState<{ time: string; value: number }[]>([]);
 
   useEffect(() => {
-    // Initialize chart data with historical values (starting at 1 million)
+    // Initialize chart data with historical values (starting at 24 million)
     if (chartData.length === 0) {
       const initialData = [];
       const endDate = new Date();
-      const startDate = new Date(endDate.getTime() - (24 * 60 * 60 * 1000)); // 24 hours ago
+      const startDate = new Date(endDate.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7 days ago
       
-      // Create data points from 1 million to the current value with some fluctuations
-      const intervals = 24; // One data point per hour
+      // Create data points from 24 million to the current value with some fluctuations
+      const intervals = 14; // Two data points per day
       for (let i = 0; i <= intervals; i++) {
         const pointDate = new Date(startDate.getTime() + ((endDate.getTime() - startDate.getTime()) * (i / intervals)));
         
         // Gradually increase with some random fluctuations for realism
-        // Start at 1 million and end at current value with non-linear curve
-        const progress = Math.pow(i / intervals, 1.5); // Non-linear growth curve
-        const baseValue = 1000000 + ((currentValue - 1000000) * progress);
+        // Start at 24 million and end at current value with non-linear curve
+        const progress = Math.pow(i / intervals, 1.3); // Non-linear growth curve
+        const baseValue = 24000000 + ((currentValue - 24000000) * progress);
         
-        // Add some random fluctuations (+/- 3%) for a more realistic chart
-        const fluctuation = baseValue * (Math.random() * 0.06 - 0.03);
+        // Add some random fluctuations (+/- 2%) for a more realistic chart
+        const fluctuation = baseValue * (Math.random() * 0.04 - 0.02);
         const value = baseValue + fluctuation;
         
         initialData.push({
-          time: pointDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          time: pointDate.toLocaleDateString('en-US', { weekday: 'short' }),
           value: Math.round(value)
         });
       }
@@ -43,7 +43,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
     } else {
       // Add new data point with current value
       const now = new Date();
-      const newTimeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const newTimeStr = now.toLocaleDateString('en-US', { weekday: 'short' });
       
       // Check if we should update the last point or add a new one
       const lastPoint = chartData[chartData.length - 1];
@@ -53,9 +53,9 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
         updatedData[updatedData.length - 1] = { ...lastPoint, value: currentValue };
         setChartData(updatedData);
       } else {
-        // Add a new point and remove oldest if more than 25 points
+        // Add a new point and remove oldest if more than 15 points
         const newData = [...chartData, { time: newTimeStr, value: currentValue }];
-        if (newData.length > 25) {
+        if (newData.length > 15) {
           newData.shift();
         }
         setChartData(newData);
@@ -89,9 +89,9 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
             </div>
           </div>
           
-          <div className="flex-1 mt-4">
-            <h3 className="text-sm font-medium mb-2">Total USD Value Unlocked (24h)</h3>
-            <div className="h-[200px]">
+          <div className="mt-4 flex-grow relative">
+            <h3 className="text-sm font-medium mb-2">Total USD Value Unlocked (Weekly)</h3>
+            <div className="absolute inset-0 pt-6 pb-2">
               <ChartContainer 
                 config={{
                   value: {
@@ -103,23 +103,13 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
                 }}
               >
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                  <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="valueGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
                         <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1} />
                       </linearGradient>
                     </defs>
-                    <XAxis 
-                      dataKey="time" 
-                      tick={{ fontSize: 10 }}
-                      interval="preserveStartEnd"
-                      tickCount={5}
-                    />
-                    <YAxis 
-                      tick={{ fontSize: 10 }}
-                      tickFormatter={value => `$${value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : value.toLocaleString()}`}
-                    />
                     <Tooltip 
                       content={({ active, payload }) => 
                         active && payload && payload.length ? (
