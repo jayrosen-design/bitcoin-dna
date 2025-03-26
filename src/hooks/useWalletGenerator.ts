@@ -15,6 +15,7 @@ export interface WalletEntry {
   balance: string;
   timestamp: Date;
   cryptoType: CryptoType;
+  source?: 'global' | 'user'; // Added source property
 }
 
 export const useWalletGenerator = (activeCrypto: CryptoType) => {
