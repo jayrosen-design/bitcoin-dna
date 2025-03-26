@@ -32,7 +32,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 
   };
 
   return (
-    <Card className="animate-fade-up h-full">
+    <Card className="h-full">
       <CardContent className="pt-6 h-full">
         <div className="flex flex-col h-full">
           <div className="flex flex-col mb-4">
