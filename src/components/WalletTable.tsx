@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { formatDate, shortenAddress, formatCrypto, getExplorerUrl, type CryptoType } from '@/utils/walletUtils';
-import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy, Lock } from 'lucide-react';
+import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy, Lock, Globe, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface WalletEntry {
@@ -28,6 +27,7 @@ export interface WalletEntry {
   balance: string;
   timestamp: Date;
   cryptoType?: CryptoType;
+  source?: 'global' | 'user';
 }
 
 interface WalletTableProps {
@@ -55,6 +55,18 @@ const WalletTable: React.FC<WalletTableProps> = ({
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogMode, setDialogMode] = useState<'seedPhrase' | 'transactions'>('seedPhrase');
 
+  const getWalletSource = (wallet: WalletEntry): 'global' | 'user' => {
+    if (wallet.source) return wallet.source;
+    return wallet.id.startsWith('mock-') ? 'global' : 'user';
+  };
+
+  const getSourceIcon = (wallet: WalletEntry) => {
+    const source = getWalletSource(wallet);
+    return source === 'global' 
+      ? <Globe className="h-4 w-4 text-muted-foreground" /> 
+      : <User className="h-4 w-4 text-primary" />;
+  };
+
   const handleViewSeedPhrase = (seedPhrase: string[]) => {
     if (isAccessLocked) {
       onRequestUnlock?.();
@@ -66,8 +78,6 @@ const WalletTable: React.FC<WalletTableProps> = ({
   };
 
   const handleViewTransactions = (address: string, cryptoType: CryptoType = 'bitcoin') => {
-    // Allow viewing transactions even in locked mode
-    // Generate mock transactions for demonstration
     const mockTransactions: TransactionType[] = Array(Math.floor(Math.random() * 5) + 2)
       .fill(null)
       .map((_, index) => {
@@ -119,6 +129,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
         <TableCaption>{emptyMessage}</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>Source</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Address</TableHead>
             <TableHead className="text-right">Balance</TableHead>
@@ -130,13 +141,18 @@ const WalletTable: React.FC<WalletTableProps> = ({
         <TableBody>
           {wallets.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground">
+              <TableCell colSpan={7} className="text-center text-muted-foreground">
                 No wallets found yet
               </TableCell>
             </TableRow>
           ) : (
             wallets.map((wallet) => (
               <TableRow key={wallet.id}>
+                <TableCell>
+                  <div className="flex justify-center">
+                    {getSourceIcon(wallet)}
+                  </div>
+                </TableCell>
                 <TableCell className="font-medium">
                   <div className="flex items-center">
                     {getCryptoIcon(wallet.cryptoType)}
@@ -305,7 +321,6 @@ const WalletTable: React.FC<WalletTableProps> = ({
   );
 };
 
-// Helper function for class names
 const cn = (...classes: (string | boolean | undefined)[]) => {
   return classes.filter(Boolean).join(' ');
 };

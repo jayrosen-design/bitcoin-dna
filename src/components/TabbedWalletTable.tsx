@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import WalletTable, { WalletEntry } from '@/components/WalletTable';
-import { Loader } from 'lucide-react';
+import { Loader, Globe, User } from 'lucide-react';
 
 interface TabbedWalletTableProps {
   myWallets: WalletEntry[];
@@ -31,8 +31,14 @@ const TabbedWalletTable: React.FC<TabbedWalletTableProps> = ({
     >
       <div className="flex justify-between items-center mb-4">
         <TabsList>
-          <TabsTrigger value="global">Global Wallets Found</TabsTrigger>
-          <TabsTrigger value="my">My Wallets Found</TabsTrigger>
+          <TabsTrigger value="global">
+            <Globe className="h-4 w-4 mr-2" />
+            Global Wallets Found
+          </TabsTrigger>
+          <TabsTrigger value="my">
+            <User className="h-4 w-4 mr-2" />
+            My Wallets Found
+          </TabsTrigger>
         </TabsList>
       </div>
       
