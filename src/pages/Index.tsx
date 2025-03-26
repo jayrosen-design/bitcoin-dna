@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
 import WalletDashboard from '@/components/WalletDashboard';
@@ -33,7 +33,12 @@ const Index = () => {
   });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
-  const { randomWallets, isLoading: isRandomWalletsLoading } = useGetRandomWallets();
+  const { 
+    randomWallets, 
+    isLoading: isRandomWalletsLoading, 
+    addWallet, 
+    addMockWallet 
+  } = useGetRandomWallets(5); // Start with 5 mock entries
   
   const {
     seedPhrase,
@@ -59,6 +64,15 @@ const Index = () => {
       toast.info('Auto-generation started for demonstration');
     }
   }, []);
+
+  // Add new mock wallet to global wallets whenever totalValueUnlocked metrics update
+  const prevTotalWallets = React.useRef(totalValueUnlocked.wallets);
+  useEffect(() => {
+    if (totalValueUnlocked.wallets > prevTotalWallets.current) {
+      addMockWallet();
+      prevTotalWallets.current = totalValueUnlocked.wallets;
+    }
+  }, [totalValueUnlocked.wallets, addMockWallet]);
 
   useEffect(() => {
     const seedPhrasesInterval = setInterval(() => {
@@ -86,9 +100,12 @@ const Index = () => {
     }
   }, [btcPrice]);
   
+  // Add user-found wallets to global wallets list
   useEffect(() => {
     if (walletData.balance && activeCrypto === 'bitcoin') {
       const foundBalance = parseFloat(walletData.balance) || 0;
+      
+      // Update total value metrics
       setTotalValueUnlocked(prev => {
         const newBtcTotal = prev.btc + foundBalance;
         return {
@@ -98,8 +115,14 @@ const Index = () => {
           totalSeedPhrases: prev.totalSeedPhrases
         };
       });
+      
+      // Find the latest wallet in history to add to global wallets
+      if (walletHistory.length > 0) {
+        const latestWallet = walletHistory[walletHistory.length - 1];
+        addWallet(latestWallet);
+      }
     }
-  }, [walletData.balance, activeCrypto, btcPrice]);
+  }, [walletData.balance, walletHistory, activeCrypto, btcPrice, addWallet]);
 
   const handleCryptoChange = (crypto: CryptoType) => {
     if (crypto !== activeCrypto) {

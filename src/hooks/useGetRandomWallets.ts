@@ -12,15 +12,47 @@ const FAMOUS_ADDRESSES = [
   '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ', // Bitfinex address
 ];
 
-export const useGetRandomWallets = () => {
-  const [randomWallets, setRandomWallets] = useState<WalletEntry[]>([]);
+// Function to generate mock wallet entries
+const generateMockWallets = (count: number): WalletEntry[] => {
+  const mockWallets: WalletEntry[] = [];
+  
+  for (let i = 0; i < count; i++) {
+    // Generate a mock Bitcoin address
+    const address = '1' + Array(33).fill(0).map(() => 
+      '0123456789abcdef'[Math.floor(Math.random() * 16)]
+    ).join('');
+    
+    // Generate a random BTC balance between 0.1 and 5 BTC
+    const balance = (Math.random() * 4.9 + 0.1).toFixed(8);
+    
+    // Generate a timestamp within the last 24 hours
+    const timestamp = new Date();
+    timestamp.setHours(timestamp.getHours() - Math.floor(Math.random() * 24));
+    
+    mockWallets.push({
+      id: `mock-${i}-${Math.random().toString(36).substring(2, 9)}`,
+      seedPhrase: Array(12).fill('').map(() => 
+        Math.random().toString(36).substring(2, 7) + Math.random().toString(36).substring(2, 7)
+      ),
+      address: address,
+      balance: balance,
+      timestamp: timestamp,
+      cryptoType: 'bitcoin',
+    });
+  }
+  
+  return mockWallets;
+};
+
+export const useGetRandomWallets = (initialMockCount: number = 5) => {
+  const [randomWallets, setRandomWallets] = useState<WalletEntry[]>(generateMockWallets(initialMockCount));
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRandomWallets = async () => {
       setIsLoading(true);
       try {
-        const wallets: WalletEntry[] = [];
+        const wallets: WalletEntry[] = [...randomWallets]; // Keep initial mock wallets
 
         // Fetch data from each famous address
         for (const address of FAMOUS_ADDRESSES) {
@@ -82,5 +114,28 @@ export const useGetRandomWallets = () => {
     fetchRandomWallets();
   }, []);
 
-  return { randomWallets, isLoading };
+  // Function to add a new wallet to the random wallets list
+  const addWallet = (wallet: WalletEntry) => {
+    setRandomWallets(prev => {
+      // Check if wallet with the same ID already exists to avoid duplicates
+      if (prev.some(w => w.id === wallet.id)) {
+        return prev;
+      }
+      return [...prev, wallet];
+    });
+  };
+
+  // Function to add a mock wallet (for metric updates)
+  const addMockWallet = () => {
+    const mockWallet = generateMockWallets(1)[0];
+    addWallet(mockWallet);
+    return mockWallet;
+  };
+
+  return { 
+    randomWallets, 
+    isLoading, 
+    addWallet, 
+    addMockWallet
+  };
 };
