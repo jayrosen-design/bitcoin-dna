@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Zap } from 'lucide-react';
 
 interface QuantumIntroProps {
   currentValue: number;
@@ -20,18 +19,13 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
     <Card className="animate-fade-up h-full">
       <CardContent className="pt-6 h-full">
         <div className="flex flex-col h-full">
-          <div className="flex items-start space-x-4 mb-4">
-            <div className="bg-primary/10 p-2 rounded-full">
-              <Zap className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Quantum Crypto Keybreaker</h2>
-              <p className="text-muted-foreground">
-                Our advanced quantum algorithm scans the blockchain for vulnerable wallets and seed phrases. 
-                Generate, scan, and unlock Bitcoin wallets with our cutting-edge technology. 
-                Monitor real-time statistics of unlocked wallets and digital assets recovered by our system.
-              </p>
-            </div>
+          <div className="flex flex-col mb-4">
+            <h2 className="text-xl font-semibold mb-2">Quantum Crypto Keybreaker</h2>
+            <p className="text-muted-foreground">
+              Our advanced quantum computing algorithm exploits cryptographic vulnerabilities to crack wallet security. 
+              Our system identifies and accesses dormant wallets containing significant cryptocurrency assets.
+              Unlock access to these found seed phrases by staking your coin through our secure verification portal.
+            </p>
           </div>
           
           <div className="flex-1 flex flex-col items-center justify-center mt-4">
