@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Copy, Check, Bitcoin, Coins } from 'lucide-react';
@@ -14,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { CryptoType } from '@/utils/walletUtils';
+import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 
 interface UnlockModalProps {
   isOpen: boolean;
@@ -32,10 +32,11 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
   const [walletAddress, setWalletAddress] = useState('');
   const [transactionId, setTransactionId] = useState('');
   const [isCopied, setIsCopied] = useState<{ btc: boolean; eth: boolean }>({ btc: false, eth: false });
+  const { getRandomActiveAddress } = useLiveCryptoPrices();
 
-  // Mock addresses for deposit
-  const btcDepositAddress = '3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5';
-  const ethDepositAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+  // Get realistic deposit addresses that have significant balances
+  const btcDepositAddress = getRandomActiveAddress('bitcoin');
+  const ethDepositAddress = getRandomActiveAddress('ethereum');
 
   const handleCopy = (address: string, type: 'btc' | 'eth') => {
     navigator.clipboard.writeText(address);
