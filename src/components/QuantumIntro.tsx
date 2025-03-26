@@ -2,71 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
-import ValueUnlockedChart from '@/components/ValueUnlockedChart';
 
 interface QuantumIntroProps {
   currentValue: number;
 }
 
 const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
-  const [chartData, setChartData] = useState<{ time: string; value: number }[]>([]);
-
-  useEffect(() => {
-    // Initialize chart data with historical values (starting at 24 million)
-    if (chartData.length === 0) {
-      const initialData = [];
-      const endDate = new Date();
-      const startDate = new Date(endDate.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7 days ago
-      
-      // Create data points from 24 million to the current value
-      const intervals = 14; // Two data points per day
-      let previousValue = 24000000; // Start value
-      
-      for (let i = 0; i <= intervals; i++) {
-        const pointDate = new Date(startDate.getTime() + ((endDate.getTime() - startDate.getTime()) * (i / intervals)));
-        
-        // Create a more gradual, non-linear growth curve with easing
-        const progress = Math.pow(i / intervals, 1.3); // Non-linear growth curve
-        const baseValue = 24000000 + ((currentValue - 24000000) * progress);
-        
-        // Add small random increase (0-2%) for a more realistic chart, but never decrease
-        const randomIncrease = baseValue * (Math.random() * 0.02);
-        const value = Math.max(previousValue, Math.round(baseValue + randomIncrease));
-        previousValue = value; // Store for next iteration to ensure values only increase
-        
-        initialData.push({
-          time: pointDate.toLocaleDateString('en-US', { weekday: 'short' }),
-          value: value
-        });
-      }
-      
-      setChartData(initialData);
-    } else if (currentValue > chartData[chartData.length - 1].value) {
-      // Only update if the current value is higher than the last data point
-      const now = new Date();
-      const newTimeStr = now.toLocaleDateString('en-US', { weekday: 'short' });
-      
-      // Check if we should update the last point or add a new one
-      const lastPoint = chartData[chartData.length - 1];
-      if (lastPoint.time === newTimeStr) {
-        // Update the last point, but ensure it's higher than before
-        const updatedData = [...chartData];
-        updatedData[updatedData.length - 1] = { 
-          ...lastPoint, 
-          value: Math.max(lastPoint.value, currentValue)
-        };
-        setChartData(updatedData);
-      } else {
-        // Add a new point and remove oldest if more than 15 points
-        const newData = [...chartData, { time: newTimeStr, value: currentValue }];
-        if (newData.length > 15) {
-          newData.shift();
-        }
-        setChartData(newData);
-      }
-    }
-  }, [currentValue, chartData]);
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -93,11 +34,11 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
             </div>
           </div>
           
-          <div className="mt-4">
-            <ValueUnlockedChart 
-              chartData={chartData} 
-              formatCurrency={formatCurrency} 
-            />
+          <div className="flex-1 flex flex-col items-center justify-center mt-4">
+            <div className="text-center">
+              <div className="text-sm font-medium mb-1 text-muted-foreground">Total USD Value Unlocked</div>
+              <div className="text-5xl font-bold text-primary">{formatCurrency(currentValue)}</div>
+            </div>
           </div>
         </div>
       </CardContent>
