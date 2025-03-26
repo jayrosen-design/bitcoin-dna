@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,7 +35,6 @@ const WalletDashboard: React.FC<WalletDashboardProps> = ({
     window.open(url, '_blank');
   };
 
-  // Format the timestamp as relative time (e.g., "2 minutes ago")
   const getRelativeTime = (dateString: string): string => {
     const date = new Date(dateString);
     const now = new Date();
@@ -128,7 +126,7 @@ const WalletDashboard: React.FC<WalletDashboardProps> = ({
                         </div>
                       </div>
                       <div className="flex items-center space-x-1">
-                        <Badge variant={tx.type === 'incoming' ? "success" : "destructive"} className="capitalize">
+                        <Badge variant={tx.type === 'incoming' ? "secondary" : "destructive"} className="capitalize">
                           {tx.type}
                         </Badge>
                         <Button 

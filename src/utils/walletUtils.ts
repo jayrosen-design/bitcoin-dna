@@ -1,4 +1,3 @@
-
 import { wordList } from './wordList';
 import { toast } from 'sonner';
 
@@ -127,28 +126,22 @@ export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', ad
   }>;
 }> => {
   try {
-    // Simulate network request with a delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // For simulation: we always return true for the hardcoded addresses
-    // In a real app, you would check the actual balance on the blockchain
-    const hasBalance = true;
-    
-    // Generate a balance above our threshold based on the crypto type
+    // Use predefined balances based on cryptoType to ensure consistency
     let balance;
     if (cryptoType === 'bitcoin') {
-      // Generate a balance between the min value and a higher value (0.1 - 10 BTC)
-      balance = (0.1 + Math.random() * 9.9).toFixed(8);
+      balance = '0.15234521'; // Simulated balance > 0.1 BTC
     } else {
-      // Generate a balance between the min value and a higher value (4 - 50 ETH)
-      balance = (4 + Math.random() * 46).toFixed(8);
+      balance = '5.43218765'; // Simulated balance > 4 ETH
     }
     
-    // Fetch up to 5 of the most recent transactions of the wallet address
-    const transactions = await fetchRecentTransactions(address || '', cryptoType);
+    // Generate transactions that reflect portions of the total balance
+    const totalBalance = parseFloat(balance);
+    const transactions = await fetchRecentTransactions(address || '', cryptoType, totalBalance);
     
     return {
-      hasBalance,
+      hasBalance: true,
       balance,
       transactions
     };
@@ -160,53 +153,55 @@ export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', ad
 };
 
 // Fetch recent transactions for a given address
-export const fetchRecentTransactions = async (address: string, cryptoType: CryptoType = 'bitcoin'): Promise<Array<{
+export const fetchRecentTransactions = async (
+  address: string, 
+  cryptoType: CryptoType = 'bitcoin',
+  totalBalance: number
+): Promise<Array<{
   hash: string;
   amount: string;
   timestamp: string;
   type: 'incoming' | 'outgoing';
 }>> => {
   try {
-    // In a real implementation, this would call the blockchain API
-    // for this simulation, we'll generate up to 5 recent transactions
-    
-    // Simulate API request delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const numTransactions = Math.floor(Math.random() * 5) + 1;
+    const numTransactions = Math.floor(Math.random() * 3) + 3; // 3-5 transactions
     const transactions = [];
-    
     const now = new Date();
     
-    // Create transactions from the last 10 minutes
+    // Calculate transaction amounts that sum up close to the total balance
+    let remainingBalance = totalBalance;
+    
     for (let i = 0; i < numTransactions; i++) {
-      // Generate a transaction time within the last 10 minutes
       const minutesAgo = Math.floor(Math.random() * 10);
-      
       const txDate = new Date(now);
       txDate.setMinutes(txDate.getMinutes() - minutesAgo);
       
-      // Generate transaction amount based on crypto type
+      // Last transaction uses remaining balance, others use portions
       let txAmount;
-      if (cryptoType === 'bitcoin') {
-        // Generate a small Bitcoin transaction (0.0001 - 0.5 BTC)
-        txAmount = (0.0001 + Math.random() * 0.5).toFixed(8);
+      if (i === numTransactions - 1) {
+        txAmount = remainingBalance;
       } else {
-        // Generate a small Ethereum transaction (0.001 - 2 ETH)
-        txAmount = (0.001 + Math.random() * 2).toFixed(8);
+        // Generate a portion of the remaining balance (10-30%)
+        const portion = 0.1 + Math.random() * 0.2;
+        txAmount = remainingBalance * portion;
+        remainingBalance -= txAmount;
       }
       
-      // Determine if incoming or outgoing (50/50 chance)
-      const txType = Math.random() > 0.5 ? 'incoming' : 'outgoing';
+      // Ensure the amount has the right number of decimal places
+      txAmount = Number(txAmount.toFixed(8));
       
-      // Generate transaction hash (different format for BTC vs ETH)
+      const txType = i === 0 ? 'incoming' : (Math.random() > 0.5 ? 'incoming' : 'outgoing');
+      
+      // Generate transaction hash
       const txHash = cryptoType === 'ethereum' 
         ? `0x${getRandomHex(64)}`
         : getRandomHex(64);
       
       transactions.push({
         hash: txHash,
-        amount: txAmount,
+        amount: txAmount.toString(),
         timestamp: txDate.toISOString(),
         type: txType
       });
