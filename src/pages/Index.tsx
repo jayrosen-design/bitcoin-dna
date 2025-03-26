@@ -111,7 +111,7 @@ const Index = () => {
       if (walletHistory.length > 0) {
         const latestWallet = {
           ...walletHistory[walletHistory.length - 1],
-          source: 'user'
+          source: 'user' as 'global' | 'user'
         };
         addWallet(latestWallet);
       }

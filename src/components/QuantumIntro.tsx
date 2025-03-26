@@ -8,11 +8,22 @@ interface QuantumIntroProps {
 
 const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(value);
+    // Format billions
+    if (value >= 1_000_000_000) {
+      return `$${(value / 1_000_000_000).toFixed(1)}B`;
+    }
+    // Format millions
+    else if (value >= 1_000_000) {
+      return `$${(value / 1_000_000).toFixed(1)}M`;
+    }
+    // Format thousands and smaller numbers
+    else {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(value);
+    }
   };
 
   return (
