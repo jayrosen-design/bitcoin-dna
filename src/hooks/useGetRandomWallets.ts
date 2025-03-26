@@ -1,6 +1,8 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { WalletEntry } from './useWalletGenerator';
 import { CryptoType } from '@/utils/walletUtils';
+import { wordList } from '@/utils/wordList';
 
 // Famous Bitcoin addresses to fetch real data from
 const FAMOUS_ADDRESSES = [
@@ -28,11 +30,14 @@ const generateMockWallets = (count: number): WalletEntry[] => {
     const timestamp = new Date();
     timestamp.setDate(timestamp.getDate() - Math.floor(Math.random() * 30));
     
+    // Generate a seed phrase using 12 random words from wordList
+    const seedPhrase = Array(12).fill('').map(() => 
+      wordList[Math.floor(Math.random() * wordList.length)]
+    );
+    
     mockWallets.push({
       id: `mock-${i}-${Math.random().toString(36).substring(2, 9)}`,
-      seedPhrase: Array(12).fill('').map(() => 
-        Math.random().toString(36).substring(2, 7) + Math.random().toString(36).substring(2, 7)
-      ),
+      seedPhrase: seedPhrase,
       address: address,
       balance: balance,
       timestamp: timestamp,
