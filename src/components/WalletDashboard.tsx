@@ -96,7 +96,8 @@ const WalletDashboard: React.FC<WalletDashboardProps> = ({
           <CardHeader>
             <CardTitle>Recent Transactions</CardTitle>
             <CardDescription>
-              Last {transactions.length} {cryptoType === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} transactions (last 10 minutes)
+              Last {transactions.length} {cryptoType === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} transactions
+              {cryptoType === 'bitcoin' ? ' from Mempool.space' : ''}
             </CardDescription>
           </CardHeader>
           <CardContent>
