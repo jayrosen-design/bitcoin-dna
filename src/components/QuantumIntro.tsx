@@ -31,7 +31,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
         
         // Add some random fluctuations (+/- 2%) for a more realistic chart
         const fluctuation = baseValue * (Math.random() * 0.04 - 0.02);
-        const value = baseValue + fluctuation;
+        const value = Math.round(baseValue + fluctuation);
         
         initialData.push({
           time: pointDate.toLocaleDateString('en-US', { weekday: 'short' }),
@@ -89,49 +89,47 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
             </div>
           </div>
           
-          <div className="mt-4 flex-grow relative">
+          <div className="flex-grow h-48 relative mt-4">
             <h3 className="text-sm font-medium mb-2">Total USD Value Unlocked (Weekly)</h3>
-            <div className="absolute inset-0 pt-6 pb-2">
-              <ChartContainer 
-                config={{
-                  value: {
-                    theme: {
-                      light: "#8B5CF6",
-                      dark: "#8B5CF6"
-                    }
+            <ChartContainer 
+              config={{
+                value: {
+                  theme: {
+                    light: "#8B5CF6",
+                    dark: "#8B5CF6"
                   }
-                }}
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="valueGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1} />
-                      </linearGradient>
-                    </defs>
-                    <Tooltip 
-                      content={({ active, payload }) => 
-                        active && payload && payload.length ? (
-                          <div className="rounded-lg border bg-background p-2 shadow-sm">
-                            <div className="font-medium">{payload[0].payload.time}</div>
-                            <div className="text-muted-foreground">{formatCurrency(payload[0].value as number)}</div>
-                          </div>
-                        ) : null
-                      }
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="#8B5CF6" 
-                      fillOpacity={1} 
-                      fill="url(#valueGradient)"
-                      strokeWidth={2}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </div>
+                }
+              }}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="valueGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <Tooltip 
+                    content={({ active, payload }) => 
+                      active && payload && payload.length ? (
+                        <div className="rounded-lg border bg-background p-2 shadow-sm">
+                          <div className="font-medium">{payload[0].payload.time}</div>
+                          <div className="text-muted-foreground">{formatCurrency(payload[0].value as number)}</div>
+                        </div>
+                      ) : null
+                    }
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#8B5CF6" 
+                    fillOpacity={1} 
+                    fill="url(#valueGradient)"
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </div>
         </div>
       </CardContent>
@@ -140,3 +138,4 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue }) => {
 };
 
 export default QuantumIntro;
+
