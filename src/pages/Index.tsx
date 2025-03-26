@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -12,6 +11,7 @@ import SeedPhraseGenerator from '@/components/SeedPhraseGenerator';
 import GenerationSummary from '@/components/GenerationSummary';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
+import QuantumIntro from '@/components/QuantumIntro';
 
 const Index = () => {
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
@@ -154,6 +154,8 @@ const Index = () => {
     
     return (
       <div className="space-y-6 w-full">
+        <QuantumIntro />
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <div className="flex flex-col space-y-6 h-full">
@@ -163,25 +165,25 @@ const Index = () => {
                   metrics={walletMetrics}
                 />
               </div>
-              
-              <SeedPhraseGenerator
-                seedPhrase={seedPhrase}
-                onRegenerateSeed={generateNewSeedPhrase}
-                onCheckWallet={checkWalletBalance}
-                onGenerateAndCheck={generateAndCheck}
-                onToggleAutoGeneration={toggleAutoGeneration}
-                isLoading={isLoading}
-                isGenerating={isGenerating}
-                isAutoGenerating={isAutoGenerating}
-                autoCount={autoCount}
-                privacyEnabled={privacyEnabled}
-                isAccessLocked={!isAccessUnlocked}
-                onRequestUnlock={() => setIsUnlockModalOpen(true)}
-              />
             </div>
           </div>
           
-          <div>
+          <div className="flex flex-col space-y-6">
+            <SeedPhraseGenerator
+              seedPhrase={seedPhrase}
+              onRegenerateSeed={generateNewSeedPhrase}
+              onCheckWallet={checkWalletBalance}
+              onGenerateAndCheck={generateAndCheck}
+              onToggleAutoGeneration={toggleAutoGeneration}
+              isLoading={isLoading}
+              isGenerating={isGenerating}
+              isAutoGenerating={isAutoGenerating}
+              autoCount={autoCount}
+              privacyEnabled={privacyEnabled}
+              isAccessLocked={!isAccessUnlocked}
+              onRequestUnlock={() => setIsUnlockModalOpen(true)}
+            />
+            
             <GenerationSummary
               metrics={summaryMetrics}
               walletStatus={walletStatus}
