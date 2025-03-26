@@ -28,7 +28,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 
   };
 
   const formatBtc = (value: number) => {
-    return `${value.toFixed(2)} BTC`;
+    return `${value.toFixed(1)} BTC`;
   };
 
   return (
