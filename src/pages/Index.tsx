@@ -261,18 +261,6 @@ const Index = () => {
   const renderSeedPhraseColumn = () => {
     return (
       <div className="flex flex-col space-y-6 h-full">
-        <div className="text-center mb-4">
-          <div className="inline-block px-3 py-1 bg-accent/20 text-xs font-medium rounded-full mb-3">
-            Quantum Crypto Keybreaker
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-            {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} Quantum Breach Protocol
-          </h2>
-          <p className="text-muted-foreground text-balance">
-            Use advanced quantum simulation to find existing {activeCrypto === 'bitcoin' ? 'Bitcoin' : 'Ethereum'} wallets and access their stored funds.
-          </p>
-        </div>
-      
         <div className="space-y-4 animate-fade-up">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
