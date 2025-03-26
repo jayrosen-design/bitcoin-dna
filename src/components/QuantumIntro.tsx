@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Info } from 'lucide-react';
 
 interface QuantumIntroProps {
   currentValue: number;
@@ -42,6 +43,11 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 
               Our system identifies and accesses dormant wallets containing significant cryptocurrency assets.
               Unlock access to these found seed phrases by staking your coin through our secure verification portal.
             </p>
+            
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3 bg-secondary/20 p-2 rounded-sm">
+              <Info size={14} />
+              <span>System automatically filters out wallets with balances exceeding 10 BTC for stability.</span>
+            </div>
           </div>
           
           <div className="flex-1 flex flex-col items-center justify-center mt-4">

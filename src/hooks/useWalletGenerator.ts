@@ -93,24 +93,35 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     try {
       const result = await checkAddressBalance(activeCrypto, address);
       
-      if (result.hasBalance) {
+      // Check if balance exists and is not too large (over 10 BTC)
+      if (result.hasBalance && result.balance) {
+        const balanceValue = parseFloat(result.balance);
+        
+        // Skip wallets with balance over 10 BTC
+        if (balanceValue > 10) {
+          console.log(`Skipping wallet with large balance: ${balanceValue} ${activeCrypto}`);
+          setWalletStatus('no-balance');
+          setWalletData({});
+          setIsLoading(false);
+          toast.info('Wallet with very large balance found and skipped');
+          return;
+        }
+        
         setWalletStatus('has-balance');
         setWalletData({
           balance: result.balance,
           transactions: result.transactions
         });
 
-        if (result.balance) {
-          const newWallet: WalletEntry = {
-            id: Math.random().toString(36).substring(2, 9),
-            seedPhrase: [...seedPhrase],
-            address,
-            balance: result.balance,
-            timestamp: new Date(),
-            cryptoType: activeCrypto
-          };
-          setWalletHistory(prev => [...prev, newWallet]);
-        }
+        const newWallet: WalletEntry = {
+          id: Math.random().toString(36).substring(2, 9),
+          seedPhrase: [...seedPhrase],
+          address,
+          balance: result.balance,
+          timestamp: new Date(),
+          cryptoType: activeCrypto
+        };
+        setWalletHistory(prev => [...prev, newWallet]);
         
         setTimeout(() => {
           setWalletStatus('unlocking');

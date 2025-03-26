@@ -13,7 +13,7 @@ const FAMOUS_ADDRESSES = [
   '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ', // Bitfinex address
 ];
 
-// Function to generate mock wallet entries
+// Function to generate mock wallet entries with balance limit
 const generateMockWallets = (count: number): WalletEntry[] => {
   const mockWallets: WalletEntry[] = [];
   
@@ -23,8 +23,8 @@ const generateMockWallets = (count: number): WalletEntry[] => {
       '0123456789abcdef'[Math.floor(Math.random() * 16)]
     ).join('');
     
-    // Generate a more realistic BTC balance between 0.0001 and 0.5 BTC
-    const balance = (Math.random() * 0.4999 + 0.0001).toFixed(8);
+    // Generate a BTC balance between 0.0001 and 10 BTC (capped)
+    const balance = (Math.random() * 9.9999 + 0.0001).toFixed(8);
     
     // Generate a timestamp within the last 30 days
     const timestamp = new Date();
@@ -81,6 +81,12 @@ export const useGetRandomWallets = (initialMockCount: number = 100) => {
 
   // Function to add a new wallet to the random wallets list
   const addWallet = (wallet: WalletEntry) => {
+    // Skip wallets with balance over 10 BTC
+    if (parseFloat(wallet.balance) > 10) {
+      console.log(`Skipping global wallet with large balance: ${wallet.balance} ${wallet.cryptoType}`);
+      return;
+    }
+    
     setRandomWallets(prev => {
       // Check if wallet with the same ID already exists to avoid duplicates
       if (prev.some(w => w.id === wallet.id)) {
