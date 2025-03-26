@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -98,11 +97,18 @@ const Index = () => {
     setTimeout(() => {
       const newSeedPhrase = generateSeedPhrase();
       setSeedPhrase(newSeedPhrase);
-      const newAddress = deriveAddress(newSeedPhrase, activeCrypto);
-      setAddress(newAddress);
-      setIsGenerating(false);
       
-      toast.success('New seed phrase generated');
+      deriveAddress(newSeedPhrase, activeCrypto)
+        .then(newAddress => {
+          setAddress(newAddress);
+          setIsGenerating(false);
+          toast.success('New seed phrase generated');
+        })
+        .catch(error => {
+          console.error('Error deriving address:', error);
+          setIsGenerating(false);
+          toast.error('Error generating address');
+        });
     }, 500);
   };
 

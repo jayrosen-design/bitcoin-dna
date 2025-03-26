@@ -1,4 +1,3 @@
-
 import { wordList } from './wordList';
 import { toast } from 'sonner';
 
@@ -116,7 +115,7 @@ const getRandomHex = (length: number): string => {
 };
 
 // Simulate checking if an address has a balance but using real addresses
-export const checkAddressBalance = async (address: string, cryptoType: CryptoType = 'bitcoin'): Promise<{
+export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', address?: string): Promise<{
   hasBalance: boolean;
   balance?: string;
   transactions?: Array<{
