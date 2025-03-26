@@ -58,9 +58,9 @@ const Index = () => {
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
   const [totalValueUnlocked, setTotalValueUnlocked] = useState<{btc: number, usd: number, wallets: number}>({
-    btc: 0, 
+    btc: 431, 
     usd: 0, 
-    wallets: 0
+    wallets: 679
   });
   
   const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
@@ -88,16 +88,17 @@ const Index = () => {
   // Initialize the total value unlocked
   useEffect(() => {
     if (btcPrice) {
-      // 431 BTC + current timestamp in milliseconds converted to BTC
-      const timestampInSatoshis = Date.now();
-      const timestampInBTC = timestampInSatoshis / 100000000; // Convert satoshis to BTC
+      // Start with 431 BTC (around $40 million at ~$90k/BTC)
+      // Add a small fraction based on timestamp (divide by a much larger number)
+      const timestampInSatoshis = Date.now() % 10000000; // Use modulo to keep it small
+      const timestampInBTC = timestampInSatoshis / 100000000000; // Make the divisor much larger
       const totalBTC = 431 + timestampInBTC;
       
-      setTotalValueUnlocked({
+      setTotalValueUnlocked(prev => ({
+        ...prev,
         btc: totalBTC,
-        usd: totalBTC * btcPrice,
-        wallets: 679
-      });
+        usd: totalBTC * btcPrice
+      }));
     }
   }, [btcPrice]);
 
@@ -161,6 +162,19 @@ const Index = () => {
             cryptoType: activeCrypto
           };
           setWalletHistory(prev => [...prev, newWallet]);
+          
+          // Add the found balance to the total value unlocked
+          if (activeCrypto === 'bitcoin') {
+            const foundBalance = parseFloat(result.balance) || 0;
+            setTotalValueUnlocked(prev => {
+              const newBtcTotal = prev.btc + foundBalance;
+              return {
+                btc: newBtcTotal,
+                usd: newBtcTotal * (btcPrice || 0),
+                wallets: prev.wallets + 1
+              };
+            });
+          }
         }
         
         setTimeout(() => {
@@ -493,7 +507,7 @@ const Index = () => {
             </Link>
           </div>
           
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <Bitcoin className="h-5 w-5 text-bitcoin" />
             <span className="font-medium">
               BTC {isPriceLoading ? (
