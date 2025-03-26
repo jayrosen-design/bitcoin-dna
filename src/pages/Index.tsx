@@ -432,23 +432,25 @@ const Index = () => {
     }
     
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-        <div>
-          {renderSeedPhraseColumn()}
+      <div className="space-y-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            {renderSeedPhraseColumn()}
+          </div>
+          
+          <div>
+            {renderMetricsArea()}
+          </div>
         </div>
         
-        <div className="space-y-8">
-          {renderMetricsArea()}
-          
-          <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
-            <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
-            <WalletTable 
-              wallets={walletHistory} 
-              emptyMessage="This table will store generated wallets. Click Generate or Auto Generate to begin."
-              isAccessLocked={!isAccessUnlocked}
-              onRequestUnlock={() => setIsUnlockModalOpen(true)}
-            />
-          </div>
+        <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
+          <h2 className="text-xl font-semibold mb-4">Generated Wallets History</h2>
+          <WalletTable 
+            wallets={walletHistory} 
+            emptyMessage="This table will store generated wallets. Click Generate or Auto Generate to begin."
+            isAccessLocked={!isAccessUnlocked}
+            onRequestUnlock={() => setIsUnlockModalOpen(true)}
+          />
         </div>
       </div>
     );
@@ -530,4 +532,3 @@ const Index = () => {
 };
 
 export default Index;
-

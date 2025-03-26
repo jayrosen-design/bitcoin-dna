@@ -19,7 +19,7 @@ const WalletVisualizer: React.FC<WalletVisualizerProps> = ({
     switch (status) {
       case 'checking':
         return (
-          <div className="flex flex-col items-center justify-center p-6">
+          <div className="flex flex-col items-center justify-center">
             <Loader className="h-8 w-8 animate-spin text-primary mb-3" />
             <p className="text-center font-medium">
               Checking wallet balance...
@@ -31,7 +31,7 @@ const WalletVisualizer: React.FC<WalletVisualizerProps> = ({
         );
       case 'no-balance':
         return (
-          <div className="flex flex-col items-center justify-center p-6">
+          <div className="flex flex-col items-center justify-center">
             <XCircle className="h-8 w-8 text-destructive mb-3" />
             <p className="text-center font-medium">
               No balance found
@@ -46,7 +46,7 @@ const WalletVisualizer: React.FC<WalletVisualizerProps> = ({
         );
       case 'has-balance':
         return (
-          <div className="flex flex-col items-center justify-center p-6">
+          <div className="flex flex-col items-center justify-center">
             <CheckCircle2 className="h-8 w-8 text-green-500 mb-3" />
             <p className="text-center font-medium">
               Balance found!
@@ -61,7 +61,7 @@ const WalletVisualizer: React.FC<WalletVisualizerProps> = ({
         );
       case 'unlocking':
         return (
-          <div className="flex flex-col items-center justify-center p-6">
+          <div className="flex flex-col items-center justify-center">
             <Unlock className="h-8 w-8 text-primary mb-3 animate-pulse" />
             <p className="text-center font-medium">
               Unlocking wallet...
@@ -72,13 +72,19 @@ const WalletVisualizer: React.FC<WalletVisualizerProps> = ({
           </div>
         );
       default:
-        return null;
+        return (
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-center text-muted-foreground">
+              Generate or check a wallet to see status
+            </p>
+          </div>
+        );
     }
   };
 
   return (
     <div className={cn(
-      "border rounded-lg overflow-hidden transition-all",
+      "border rounded-lg h-[180px] flex items-center justify-center p-6 transition-all",
       status === 'has-balance' && "border-green-500",
       status === 'no-balance' && "border-red-200",
     )}>
