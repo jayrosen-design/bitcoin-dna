@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import QuantumMatrixSimulation from '@/components/QuantumMatrixSimulation';
@@ -8,7 +8,7 @@ import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 
 const Matrix = () => {
   const { btcPrice, isLoading } = useLiveCryptoPrices();
-  const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
+  const [isAccessUnlocked, setIsAccessUnlocked] = React.useState(false);
   
   const handleToggleUnlock = () => {
     setIsAccessUnlocked(prev => !prev);
