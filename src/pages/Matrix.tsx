@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import QuantumMatrixSimulation from '@/components/QuantumMatrixSimulation';
@@ -7,16 +7,21 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 
 const Matrix = () => {
-  const { bitcoin, isLoading } = useLiveCryptoPrices();
+  const { btcPrice, isLoading } = useLiveCryptoPrices();
+  const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
+  
+  const handleToggleUnlock = () => {
+    setIsAccessUnlocked(prev => !prev);
+  };
   
   return (
     <div className="min-h-screen flex flex-col">
       <AppHeader 
         activeCrypto="bitcoin"
         onCryptoChange={() => {}}
-        isAccessUnlocked={false}
-        onToggleUnlock={() => {}}
-        btcPrice={bitcoin}
+        isAccessUnlocked={isAccessUnlocked}
+        onToggleUnlock={handleToggleUnlock}
+        btcPrice={btcPrice}
         isPriceLoading={isLoading}
       />
       
@@ -39,7 +44,10 @@ const Matrix = () => {
         </div>
       </main>
       
-      <AppFooter />
+      <AppFooter 
+        isAccessUnlocked={isAccessUnlocked}
+        onToggleDeveloperAccess={handleToggleUnlock}
+      />
     </div>
   );
 };

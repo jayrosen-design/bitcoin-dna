@@ -1,7 +1,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three-stdlib/controls/OrbitControls';
+import { FontLoader } from 'three-stdlib/loaders/FontLoader';
+import { TextGeometry } from 'three-stdlib/geometries/TextGeometry';
 import { wordList } from '@/utils/wordList';
 
 // Target seed phrase (predefined solution)
@@ -89,7 +91,7 @@ const QuantumMatrixSimulation: React.FC = () => {
       const scene = sceneRef.current;
       const wordMeshes: THREE.Mesh[][] = [];
 
-      const fontLoader = new THREE.FontLoader();
+      const fontLoader = new FontLoader();
       // You'll need to host and provide the actual font URL
       const fontUrl = 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json';
 
@@ -121,7 +123,7 @@ const QuantumMatrixSimulation: React.FC = () => {
             const word = wordList[layer * wordsPerLayer + i];
             
             // Create text geometry
-            const textGeometry = new THREE.TextGeometry(word, {
+            const textGeometry = new TextGeometry(word, {
               font: font,
               size: 2,
               height: 0.1,
@@ -134,11 +136,12 @@ const QuantumMatrixSimulation: React.FC = () => {
               textGeometry.translate(-width / 2, 0, 0);
             }
             
-            // Create dim text material
-            const textMaterial = new THREE.MeshBasicMaterial({
+            // Create dim text material - Use MeshStandardMaterial instead of MeshBasicMaterial
+            const textMaterial = new THREE.MeshStandardMaterial({
               color: 0x555566,
               transparent: true,
-              opacity: 0.6
+              opacity: 0.6,
+              emissive: new THREE.Color(0x000000)
             });
             
             // Create mesh and position within grid
@@ -271,10 +274,10 @@ const QuantumMatrixSimulation: React.FC = () => {
       wordMeshesRef.current.forEach(layer => {
         layer.forEach(mesh => {
           if (mesh instanceof THREE.Mesh) {
-            const material = mesh.material as THREE.MeshBasicMaterial;
+            const material = mesh.material as THREE.MeshStandardMaterial;
             material.color.set(0x555566);
             material.opacity = 0.6;
-            material.emissive = new THREE.Color(0x000000);
+            material.emissive.set(0x000000);
           }
         });
       });
@@ -291,13 +294,10 @@ const QuantumMatrixSimulation: React.FC = () => {
           const mesh = wordMeshesRef.current[layerIndex][layerOffset];
           
           if (mesh) {
-            const material = mesh.material as THREE.MeshBasicMaterial;
+            const material = mesh.material as THREE.MeshStandardMaterial;
             material.color.set(0x00ffff);
             material.opacity = 1.0;
-            // If using MeshStandardMaterial instead of MeshBasicMaterial
-            if ('emissive' in material) {
-              material.emissive = new THREE.Color(0x003333);
-            }
+            material.emissive.set(0x003333);
           }
         }
       });
