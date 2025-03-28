@@ -1,9 +1,8 @@
-
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three-stdlib/controls/OrbitControls';
-import { FontLoader } from 'three-stdlib/loaders/FontLoader';
-import { TextGeometry } from 'three-stdlib/geometries/TextGeometry';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { wordList } from '@/utils/wordList';
 
 // Target seed phrase (predefined solution)
