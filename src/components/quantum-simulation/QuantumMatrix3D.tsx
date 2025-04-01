@@ -33,9 +33,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     const normalizedCol = col / gridSize;
     
     // Create RGB components with smoother transitions
-    const r = 0.5 + normalizedCol * 0.4 * layerFactor; // 0.5 to 0.9
-    const g = 0.5 + normalizedRow * 0.4 * layerFactor; // 0.5 to 0.9
-    const b = 0.7 + ((normalizedRow + normalizedCol) / 2) * 0.3 * layerFactor; // 0.7 to 1.0
+    const r = 0.4 + normalizedCol * 0.5 * layerFactor; // 0.4 to 0.9
+    const g = 0.4 + normalizedRow * 0.5 * layerFactor; // 0.4 to 0.9
+    const b = 0.6 + ((normalizedRow + normalizedCol) / 2) * 0.4 * layerFactor; // 0.6 to 1.0
     
     return new THREE.Color(r, g, b);
   };
@@ -52,6 +52,13 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     // Calculate container dimensions
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
+    
+    // Ensure we have valid dimensions
+    if (width === 0 || height === 0) {
+      console.error('Container has zero width or height');
+      return;
+    }
+    
     const aspect = width / height;
     
     // Create orthographic camera for isometric view
@@ -97,7 +104,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     scene.add(dirLight2);
     
     // Add point light
-    const pointLight = new THREE.PointLight(0x0088ff, 1, 100);
+    const pointLight = new THREE.PointLight(0x00ccff, 1, 100);
     pointLight.position.set(0, 0, 50);
     scene.add(pointLight);
     
@@ -126,6 +133,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
+      
+      if (width === 0 || height === 0) return;
+      
       const aspect = width / height;
       
       // Update camera
@@ -153,7 +163,11 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       }
       
       if (rendererRef.current && containerRef.current) {
-        containerRef.current.removeChild(rendererRef.current.domElement);
+        try {
+          containerRef.current.removeChild(rendererRef.current.domElement);
+        } catch (e) {
+          console.error('Error removing renderer:', e);
+        }
       }
       
       // Dispose geometries and materials
@@ -217,10 +231,10 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       // Create points material
       const material = new THREE.PointsMaterial({
-        size: 0.4,
+        size: 0.6, // Increased size for better visibility
         vertexColors: true,
         transparent: true,
-        opacity: 0.8,
+        opacity: 0.9, // Increased opacity
         sizeAttenuation: true
       });
       
@@ -234,7 +248,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       const planeMaterial = new THREE.MeshBasicMaterial({
         color: 0x111122,
         transparent: true,
-        opacity: 0.05,
+        opacity: 0.08,
         side: THREE.DoubleSide
       });
       
@@ -290,8 +304,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const lineMaterial = new THREE.LineBasicMaterial({
           color: 0x00ffff,
           transparent: true,
-          opacity: 0.3,
-          linewidth: 1
+          opacity: 0.6, // Increased opacity
+          linewidth: 2  // Thicker line
         });
         
         const line = new THREE.Line(lineGeometry, lineMaterial);
@@ -341,6 +355,6 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   }, [currentIndices, showConnections]);
   
   return (
-    <div ref={containerRef} className="w-full h-full" />
+    <div ref={containerRef} className="w-full h-full bg-[#0a0a0a]" />
   );
 };

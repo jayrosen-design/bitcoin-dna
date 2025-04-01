@@ -1,43 +1,8 @@
 
 import React from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
-import { SeedPhrase } from './QuantumSeedSimulation';
-
-interface PhrasePixelProps {
-  colors: number[];
-}
-
-const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors }) => {
-  // Function to calculate color based on index
-  const calculateColor = (index: number) => {
-    const row = Math.floor(index / 45);
-    const col = index % 45;
-    
-    // Calculate normalized positions (0 to 1)
-    const normalizedRow = row / 45;
-    const normalizedCol = col / 45;
-    
-    // Create RGB components based on position - smoother gradient
-    const r = Math.floor(130 + normalizedCol * 110);
-    const g = Math.floor(130 + normalizedRow * 110);
-    const b = Math.floor(180 + ((normalizedRow + normalizedCol) / 2) * 70);
-    
-    return `rgb(${r}, ${g}, ${b})`;
-  };
-
-  return (
-    <div className="grid grid-cols-3 grid-rows-4 gap-[1px]">
-      {colors.map((index, i) => (
-        <div 
-          key={i} 
-          className="w-2 h-2 rounded-[1px]" 
-          style={{ backgroundColor: calculateColor(index) }}
-        />
-      ))}
-    </div>
-  );
-};
+import { SeedPhrase } from '@/hooks/useQuantumSimulation';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface PhrasesTableProps {
   phrases: SeedPhrase[];
@@ -50,52 +15,91 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
   showConnections, 
   setShowConnections 
 }) => {
-  return (
-    <div className="flex flex-col h-full">
-      <div className="p-3 border-b border-gray-700">
-        <h2 className="text-cyan-500 text-lg font-medium">Generated Seed Phrases</h2>
-        <p className="text-xs text-gray-500">History of attempted 12-word combinations</p>
-      </div>
+  // Create a pixel graphic based on 12 selected words
+  const createPixelGraphic = (indices: number[]) => {
+    const gridSize = Math.ceil(Math.sqrt(2048)); // For 2048 words
+    
+    // Function to calculate color based on position in grid
+    const calculateColor = (index: number) => {
+      // Determine position in a virtual square grid
+      const row = Math.floor(index / gridSize);
+      const col = index % gridSize;
       
-      <div className="flex-1 overflow-y-auto p-1">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">#</TableHead>
-              <TableHead className="w-16">Visual</TableHead>
-              <TableHead>Address & Seed Phrase</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {phrases.map((phrase) => (
-              <TableRow key={phrase.id}>
-                <TableCell className="text-xs">{phrases.indexOf(phrase) + 1}</TableCell>
-                <TableCell>
-                  <PhrasePixel colors={phrase.visualData} />
-                </TableCell>
-                <TableCell>
-                  <div className="text-xs">
-                    <p className="text-cyan-400 font-mono mb-1">{phrase.address}</p>
-                    <p>{phrase.words.join(' ')}</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      // Calculate normalized positions (0 to 1)
+      const normalizedRow = row / gridSize;
+      const normalizedCol = col / gridSize;
       
-      <div className="p-3 border-t border-gray-700 bg-[#111]">
-        <div className="flex items-center gap-2">
-          <Checkbox 
-            id="showConnections" 
-            checked={showConnections}
-            onCheckedChange={(checked) => setShowConnections(!!checked)} 
+      // Create RGB components based on position
+      const r = Math.floor(100 + normalizedCol * 155); // range from 100-255
+      const g = Math.floor(100 + normalizedRow * 155); // range from 100-255
+      const b = Math.floor(150 + ((normalizedRow + normalizedCol) / 2) * 100); // range from 150-250
+      
+      return `rgb(${r}, ${g}, ${b})`;
+    };
+    
+    return (
+      <div className="grid grid-cols-3 grid-rows-4 gap-px">
+        {indices.map((index, i) => (
+          <div 
+            key={i} 
+            className="w-2 h-2 rounded-sm" 
+            style={{ backgroundColor: calculateColor(index) }}
           />
-          <label htmlFor="showConnections" className="text-sm">
-            Show Word Connections
-          </label>
-        </div>
+        ))}
+      </div>
+    );
+  };
+  
+  return (
+    <div className="h-full flex flex-col bg-[#0a0a0a] text-gray-300">
+      <div className="p-2 border-b border-gray-800">
+        <h2 className="text-lg font-semibold text-cyan-400 mb-1">Generated Seed Phrases</h2>
+        <p className="text-xs text-gray-400">History of attempted 12-word combinations</p>
+      </div>
+      
+      {/* Toggle switch for connections */}
+      <div className="p-2 border-b border-gray-800 flex items-center">
+        <Switch 
+          id="show-connections" 
+          checked={showConnections}
+          onCheckedChange={setShowConnections}
+          className="mr-2"
+        />
+        <Label htmlFor="show-connections" className="text-sm">Show Word Connections</Label>
+      </div>
+      
+      {/* Phrases table */}
+      <div className="flex-1 overflow-auto">
+        <table className="w-full border-collapse">
+          <thead className="bg-gray-900">
+            <tr>
+              <th className="p-2 text-left text-xs">#</th>
+              <th className="p-2 text-left text-xs">Visual</th>
+              <th className="p-2 text-left text-xs">Seed Phrase / Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {phrases.map((phrase, index) => (
+              <React.Fragment key={phrase.id}>
+                <tr className="border-b border-gray-800">
+                  <td className="p-2 text-xs align-top">{index + 1}</td>
+                  <td className="p-2 align-top">
+                    {createPixelGraphic(phrase.visualData)}
+                  </td>
+                  <td className="p-2">
+                    {/* Show BTC address above the words */}
+                    <div className="text-xs text-cyan-500 font-mono mb-1 break-all">
+                      {phrase.address}
+                    </div>
+                    <div className="text-xs break-words">
+                      {phrase.words.join(' ')}
+                    </div>
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

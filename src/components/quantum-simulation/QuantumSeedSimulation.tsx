@@ -60,6 +60,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
               size="sm" 
               variant={view === '2D' ? 'default' : 'outline'} 
               onClick={() => setView('2D')}
+              className="text-cyan-400 border-cyan-700"
             >
               2D View
             </Button>
@@ -67,6 +68,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
               size="sm" 
               variant={view === '3D' ? 'default' : 'outline'} 
               onClick={() => setView('3D')}
+              className="text-cyan-400 border-cyan-700"
             >
               3D View
             </Button>
@@ -76,6 +78,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
             size="sm" 
             variant="ghost" 
             onClick={() => setShowSidebar(!showSidebar)}
+            className="text-cyan-400"
           >
             <PanelLeft className={`h-5 w-5 transition-transform ${!showSidebar ? 'rotate-180' : ''}`} />
             {showSidebar ? 'Hide' : 'Show'} History
@@ -85,7 +88,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
         {/* Visualization container */}
         <div className="flex-1 overflow-hidden relative">
           {/* 2D View */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
             <QuantumMatrix2D 
               showConnections={showConnections}
               currentPhrase={currentPhrase}
@@ -94,7 +97,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
           </div>
           
           {/* 3D View */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
             <QuantumMatrix3D 
               showConnections={showConnections}
               currentPhrase={currentPhrase}
