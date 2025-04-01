@@ -18,10 +18,10 @@ const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors }) => {
     const normalizedRow = row / 45;
     const normalizedCol = col / 45;
     
-    // Create RGB components based on position
-    const r = Math.floor(normalizedCol * 180) + 30;
-    const g = Math.floor(normalizedRow * 180) + 30;
-    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
+    // Create RGB components based on position - smoother gradient
+    const r = Math.floor(130 + normalizedCol * 110);
+    const g = Math.floor(130 + normalizedRow * 110);
+    const b = Math.floor(180 + ((normalizedRow + normalizedCol) / 2) * 70);
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -63,7 +63,7 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
             <TableRow>
               <TableHead className="w-12">#</TableHead>
               <TableHead className="w-16">Visual</TableHead>
-              <TableHead>12-Word Seed Phrase</TableHead>
+              <TableHead>Address & Seed Phrase</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -73,8 +73,11 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
                 <TableCell>
                   <PhrasePixel colors={phrase.visualData} />
                 </TableCell>
-                <TableCell className="text-xs">
-                  {phrase.words.join(' ')}
+                <TableCell>
+                  <div className="text-xs">
+                    <p className="text-cyan-400 font-mono mb-1">{phrase.address}</p>
+                    <p>{phrase.words.join(' ')}</p>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

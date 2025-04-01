@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,7 +25,7 @@ const Matrix = () => {
         isPriceLoading={isLoading}
       />
       
-      <main className="flex-1 container py-4">
+      <main className="flex-1 container py-4 flex flex-col">
         <Card className="glass-card mb-4">
           <CardContent className="p-4">
             <h1 className="text-2xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text">
@@ -38,7 +38,7 @@ const Matrix = () => {
           </CardContent>
         </Card>
         
-        <div className="w-full h-[calc(100vh-280px)]">
+        <div className="flex-1 h-[calc(100vh-280px)] min-h-[500px] overflow-hidden">
           <QuantumSeedSimulation />
         </div>
       </main>

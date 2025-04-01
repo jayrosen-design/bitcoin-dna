@@ -1,11 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { wordList } from '@/utils/wordList';
+import { generateRandomBTCAddress } from '@/utils/cryptoAddressGenerator';
 
 export interface SeedPhrase {
   id: number;
   words: string[];
   visualData: number[];
+  address: string; // Add Bitcoin address
 }
 
 export const useQuantumSimulation = () => {
@@ -31,11 +33,15 @@ export const useQuantumSimulation = () => {
     setIterations(prev => prev + 1);
     setCombinations(prev => prev + 1);
     
+    // Generate a random BTC address for this phrase
+    const address = generateRandomBTCAddress();
+    
     // Add to phrases history (limited to 100)
     const newPhrase: SeedPhrase = {
       id: Date.now(),
       words: selectedWords,
-      visualData: selectedIndices
+      visualData: selectedIndices,
+      address // Add the address to the phrase
     };
     
     setPhrases(prev => {
@@ -46,7 +52,7 @@ export const useQuantumSimulation = () => {
       return updated;
     });
     
-    return { selectedWords, selectedIndices };
+    return { selectedWords, selectedIndices, address };
   };
   
   return {
