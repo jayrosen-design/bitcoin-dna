@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -35,18 +36,25 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const TEXT_SIZE = 0.5;
   const LAYER_SPACING = 10;
 
-  const calculateColor = (row: number, col: number, layerFactor = 1) => {
+  // Enhanced contrast color calculation function
+  const calculateColor = (row: number, col: number, layerFactor = 1, isActive = false) => {
+    if (isActive) {
+      // Bright white for active words
+      return new THREE.Color(1, 1, 1);
+    }
+    
     const normalizedRow = row / GRID_SIZE;
     const normalizedCol = col / GRID_SIZE;
     
-    const r = Math.floor(normalizedCol * 200) + 55;
-    const g = Math.floor(normalizedRow * 200) + 55;
-    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 75;
+    // Increase base brightness for better contrast
+    const r = Math.floor(normalizedCol * 220) + 35;
+    const g = Math.floor(normalizedRow * 220) + 35;
+    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 200) + 55;
     
     return new THREE.Color(
-      Math.min(1, r / 255 * layerFactor * 1.2),
-      Math.min(1, g / 255 * layerFactor * 1.2),
-      Math.min(1, b / 255 * layerFactor * 1.2)
+      Math.min(1, r / 255 * layerFactor),
+      Math.min(1, g / 255 * layerFactor),
+      Math.min(1, b / 255 * layerFactor)
     );
   };
 
@@ -90,14 +98,15 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     controls.dampingFactor = 0.05;
     controlsRef.current = controls;
     
-    const ambientLight = new THREE.AmbientLight(0x777777);
+    // Increase ambient light for better visibility
+    const ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
     
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.0);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
     dirLight1.position.set(1, 1, 1);
     scene.add(dirLight1);
     
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1.0);
     dirLight2.position.set(-1, -1, -1);
     scene.add(dirLight2);
     
@@ -194,10 +203,11 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       const zPosition = layer * -LAYER_SPACING;
       
       const planeGeometry = new THREE.PlaneGeometry(GRID_EXTENT, GRID_EXTENT);
+      // Darker background plane for better contrast
       const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x223344,
+        color: 0x111122,
         transparent: true,
-        opacity: 0.08,
+        opacity: 0.15,
         side: THREE.DoubleSide
       });
       
@@ -227,6 +237,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const depthFactor = 0.7 + (layer / LAYERS_COUNT) * 0.6;
         const color = calculateColor(row, col, depthFactor);
         
+        // Higher base opacity for better visibility
         const textMaterial = new THREE.MeshBasicMaterial({
           color: color,
           transparent: true,
@@ -270,10 +281,12 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
           const row = Math.floor(wordIndex / gridDimension);
           
           const depthFactor = 0.7 + (layerIndex / LAYERS_COUNT) * 0.6;
+          // Create dimmer colors for non-active words
           const color = calculateColor(row, col, depthFactor);
           
           child.material.color = color;
-          child.material.opacity = 0.8;
+          // Reduce base opacity for non-active words
+          child.material.opacity = 0.6;
           child.userData.isActive = false;
         }
       });
@@ -291,7 +304,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
               child.userData.wordIndex === wordIndex) {
             
             if (child.material instanceof THREE.MeshBasicMaterial) {
-              child.material.color.set(0x00ffff);
+              // Set pure white for active words
+              child.material.color.set(0xffffff);
+              // Full opacity for active words
               child.material.opacity = 1.0;
               child.userData.isActive = true;
               
@@ -306,10 +321,11 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     
     if (showConnections && activePositions.length > 1) {
       const lineGeometry = new THREE.BufferGeometry().setFromPoints(activePositions);
+      // Brighter connection lines
       const lineMaterial = new THREE.LineBasicMaterial({
         color: 0x00ffff,
         transparent: true,
-        opacity: 0.8,
+        opacity: 1.0,
         linewidth: 2
       });
       
