@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, Bitcoin, Coins } from 'lucide-react';
+import { Copy, Check, Bitcoin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
@@ -13,7 +14,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { CryptoType } from '@/utils/walletUtils';
-import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 
 interface UnlockModalProps {
   isOpen: boolean;
@@ -31,20 +31,18 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
   const [step, setStep] = useState<'deposit' | 'verify' | 'unlocked'>('deposit');
   const [walletAddress, setWalletAddress] = useState('');
   const [transactionId, setTransactionId] = useState('');
-  const [isCopied, setIsCopied] = useState<{ btc: boolean; eth: boolean }>({ btc: false, eth: false });
-  const { getRandomActiveAddress } = useLiveCryptoPrices();
+  const [isCopied, setIsCopied] = useState(false);
 
-  // Get realistic deposit addresses that have significant balances
-  const btcDepositAddress = getRandomActiveAddress('bitcoin');
-  const ethDepositAddress = getRandomActiveAddress('ethereum');
+  // Fixed Bitcoin address
+  const btcDepositAddress = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa";
 
-  const handleCopy = (address: string, type: 'btc' | 'eth') => {
-    navigator.clipboard.writeText(address);
-    setIsCopied({ ...isCopied, [type]: true });
-    toast.success(`${type.toUpperCase()} Address copied to clipboard`);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(btcDepositAddress);
+    setIsCopied(true);
+    toast.success("Bitcoin address copied to clipboard");
     
     setTimeout(() => {
-      setIsCopied({ ...isCopied, [type]: false });
+      setIsCopied(false);
     }, 2000);
   };
 
@@ -71,7 +69,7 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
     }, 2000);
   };
 
-  const requiredAmount = activeCrypto === 'bitcoin' ? '0.10 BTC' : '4 ETH';
+  const requiredAmount = "0.10 BTC";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -105,10 +103,10 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => handleCopy(btcDepositAddress, 'btc')}
+                    onClick={handleCopy}
                   >
-                    {isCopied.btc ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    {isCopied.btc ? 'Copied' : 'Copy'}
+                    {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    {isCopied ? 'Copied' : 'Copy'}
                   </Button>
                 </div>
                 <div className="text-sm font-mono bg-background/80 p-2 rounded break-all">
@@ -116,29 +114,6 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
                 </div>
                 <div className="text-xs text-muted-foreground mt-2">
                   Send exactly 0.10 BTC to this address
-                </div>
-              </div>
-              
-              <div className="bg-secondary/50 p-4 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <Coins className="h-5 w-5 text-ethereum mr-2" />
-                    <span className="font-medium">Ethereum Address</span>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleCopy(ethDepositAddress, 'eth')}
-                  >
-                    {isCopied.eth ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    {isCopied.eth ? 'Copied' : 'Copy'}
-                  </Button>
-                </div>
-                <div className="text-sm font-mono bg-background/80 p-2 rounded break-all">
-                  {ethDepositAddress}
-                </div>
-                <div className="text-xs text-muted-foreground mt-2">
-                  Send exactly 4 ETH to this address
                 </div>
               </div>
             </div>
