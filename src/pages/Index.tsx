@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -228,8 +227,7 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Matrix Visualization Section - Added full-width */}
-        <div className="animate-fade-up w-full h-[500px]" style={{ animationDelay: '400ms' }}>
+        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', minHeight: '900px', height: 'calc(100vh - 200px)' }}>
           <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
             <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
             <div className="h-[calc(100%-2rem)]">
