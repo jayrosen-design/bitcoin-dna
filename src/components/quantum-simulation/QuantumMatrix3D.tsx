@@ -24,7 +24,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const linesRef = useRef<THREE.Line | null>(null);
   const frameIdRef = useRef<number | null>(null);
 
-  // Calculate color based on position - smoother gradient
+  // Calculate color based on position
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
     const gridSize = 45;
     
@@ -32,10 +32,10 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     const normalizedRow = row / gridSize;
     const normalizedCol = col / gridSize;
     
-    // Create RGB components with smoother transitions
-    const r = 0.5 + normalizedCol * 0.4 * layerFactor; // 0.5 to 0.9
-    const g = 0.5 + normalizedRow * 0.4 * layerFactor; // 0.5 to 0.9
-    const b = 0.7 + ((normalizedRow + normalizedCol) / 2) * 0.3 * layerFactor; // 0.7 to 1.0
+    // Create RGB components
+    const r = normalizedCol * layerFactor;
+    const g = normalizedRow * layerFactor;
+    const b = ((normalizedRow + normalizedCol) / 2) * layerFactor;
     
     return new THREE.Color(r, g, b);
   };
@@ -205,7 +205,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         
         vertices.push(x, y, z);
         
-        // Create color with improved gradient
+        // Create color
         const color = calculateColor(row, col, 0.6 + layer * 0.03);
         colors.push(color.r, color.g, color.b);
       }

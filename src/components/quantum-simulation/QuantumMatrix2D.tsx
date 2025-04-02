@@ -17,7 +17,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wordsRef = useRef<HTMLDivElement[]>([]);
   
-  // Calculate color based on position in grid - smoother gradient
+  // Calculate color based on position in grid
   const calculateColor = (index: number) => {
     const gridSize = Math.ceil(Math.sqrt(wordList.length));
     const row = Math.floor(index / gridSize);
@@ -27,10 +27,10 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     const normalizedRow = row / gridSize;
     const normalizedCol = col / gridSize;
     
-    // Create RGB components based on position with smoother gradients
-    const r = Math.floor(130 + normalizedCol * 110); // range from 130-240
-    const g = Math.floor(130 + normalizedRow * 110); // range from 130-240
-    const b = Math.floor(180 + ((normalizedRow + normalizedCol) / 2) * 70); // range from 180-250
+    // Create RGB components based on position
+    const r = Math.floor(normalizedCol * 180) + 30;
+    const g = Math.floor(normalizedRow * 180) + 30;
+    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -128,7 +128,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full overflow-auto bg-[#0a0a0a] relative"
+      className="w-full h-full overflow-hidden bg-[#0a0a0a] relative"
     >
       {/* Canvas for drawing connections */}
       <canvas 
@@ -136,8 +136,8 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
         className="absolute inset-0 pointer-events-none z-10"
       />
       
-      {/* Word grid - Ensure all words are visible */}
-      <div className="grid grid-cols-[repeat(45,1fr)] gap-[1px] p-2.5 w-[min(calc(100vh-100px),calc(100%-10px))] aspect-square mx-auto my-4">
+      {/* Word grid */}
+      <div className="grid grid-cols-[repeat(45,1fr)] gap-0.5 p-2.5 w-[min(90vh,90vw)] h-[min(90vh,90vw)] aspect-square mx-auto my-4">
         {wordList.map((word, index) => {
           const isActive = currentIndices.includes(index);
           const baseColor = calculateColor(index);
@@ -148,14 +148,14 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
             // Parse RGB values for creating a brighter version
             const rgb = baseColor.match(/\d+/g)?.map(Number) || [100, 100, 100];
             // Create a brighter version for active state
-            textColor = `rgb(${Math.min(255, rgb[0] + 40)}, ${Math.min(255, rgb[1] + 40)}, ${Math.min(255, rgb[2] + 40)})`;
+            textColor = `rgb(${Math.min(255, rgb[0] + 100)}, ${Math.min(255, rgb[1] + 100)}, ${Math.min(255, rgb[2] + 100)})`;
           }
           
           return (
             <div
               key={index}
               ref={(el) => setWordRef(el, index)}
-              className={`word text-[5px] xs:text-[6px] sm:text-[7px] md:text-[7px] border-[0.5px] rounded-sm bg-[#1a1a1a] flex items-center justify-center p-0.5 transition-all duration-300 ${
+              className={`word text-[6px] sm:text-[8px] border-[0.5px] rounded-sm bg-[#1a1a1a] flex items-center justify-center p-0.5 transition-all duration-300 ${
                 isActive ? 'animate-pulse font-bold' : ''
               }`}
               style={{ 
