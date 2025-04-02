@@ -23,6 +23,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const pointsRef = useRef<THREE.Points[]>([]);
   const linesRef = useRef<THREE.Line | null>(null);
   const frameIdRef = useRef<number | null>(null);
+  
+  // Define layerCount constant that was missing
+  const LAYERS_COUNT = 12;
 
   // Calculate color based on position with smoother gradient
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
@@ -179,7 +182,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     if (!sceneRef.current) return;
     
     const scene = sceneRef.current;
-    const layerCount = 12;
+    const layerCount = LAYERS_COUNT; // Use the constant defined at the top of the component
     const totalWords = wordList.length;
     const wordsPerLayer = Math.ceil(totalWords / layerCount);
     const gridSize = 45;
@@ -267,8 +270,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       // Find positions of active words
       currentIndices.forEach(index => {
-        const layer = Math.floor(index / (wordList.length / 12));
-        const layerOffset = index % Math.ceil(wordList.length / 12);
+        const layer = Math.floor(index / (wordList.length / LAYERS_COUNT));
+        const layerOffset = index % Math.ceil(wordList.length / LAYERS_COUNT);
         
         if (pointsRef.current[layer]) {
           const geometry = pointsRef.current[layer].geometry;
@@ -309,10 +312,10 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       // Reset all colors
       for (let i = 0; i < colors.length; i += 3) {
-        const index = layer * Math.ceil(wordList.length / 12) + i / 3;
+        const index = layer * Math.ceil(wordList.length / LAYERS_COUNT) + i / 3;
         const row = Math.floor((i/3) / 45);
         const col = (i/3) % 45;
-        const depthFactor = 0.6 + (layer / layerCount) * 0.4;
+        const depthFactor = 0.6 + (layer / LAYERS_COUNT) * 0.4; // Using LAYERS_COUNT instead of layerCount
         const color = calculateColor(row, col, depthFactor);
         
         colors[i] = color.r;
@@ -322,8 +325,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       // Highlight active indices
       currentIndices.forEach(index => {
-        const activeLayer = Math.floor(index / Math.ceil(wordList.length / 12));
-        const layerOffset = index % Math.ceil(wordList.length / 12);
+        const activeLayer = Math.floor(index / Math.ceil(wordList.length / LAYERS_COUNT));
+        const layerOffset = index % Math.ceil(wordList.length / LAYERS_COUNT);
         
         if (activeLayer === layer) {
           const i = layerOffset * 3;
