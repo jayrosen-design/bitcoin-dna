@@ -3,6 +3,7 @@ import React from 'react';
 import { SeedPhrase } from '@/hooks/useQuantumSimulation';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 
 interface PhrasesTableProps {
   phrases: SeedPhrase[];
@@ -29,7 +30,7 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
       const normalizedRow = row / gridSize;
       const normalizedCol = col / gridSize;
       
-      // Create RGB components based on position
+      // Create RGB components based on position with smoother gradient
       const r = Math.floor(100 + normalizedCol * 155); // range from 100-255
       const g = Math.floor(100 + normalizedRow * 155); // range from 100-255
       const b = Math.floor(150 + ((normalizedRow + normalizedCol) / 2) * 100); // range from 150-250
@@ -70,36 +71,34 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
       
       {/* Phrases table */}
       <div className="flex-1 overflow-auto">
-        <table className="w-full border-collapse">
-          <thead className="bg-gray-900">
-            <tr>
-              <th className="p-2 text-left text-xs">#</th>
-              <th className="p-2 text-left text-xs">Visual</th>
-              <th className="p-2 text-left text-xs">Seed Phrase / Address</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-10 text-xs">#</TableHead>
+              <TableHead className="w-16 text-xs">Visual</TableHead>
+              <TableHead className="text-xs">Seed Phrase / Address</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {phrases.map((phrase, index) => (
-              <React.Fragment key={phrase.id}>
-                <tr className="border-b border-gray-800">
-                  <td className="p-2 text-xs align-top">{index + 1}</td>
-                  <td className="p-2 align-top">
-                    {createPixelGraphic(phrase.visualData)}
-                  </td>
-                  <td className="p-2">
-                    {/* Show BTC address above the words */}
-                    <div className="text-xs text-cyan-500 font-mono mb-1 break-all">
-                      {phrase.address}
-                    </div>
-                    <div className="text-xs break-words">
-                      {phrase.words.join(' ')}
-                    </div>
-                  </td>
-                </tr>
-              </React.Fragment>
+              <TableRow key={`phrase-${phrase.id}`}>
+                <TableCell className="text-xs">{index + 1}</TableCell>
+                <TableCell>
+                  {createPixelGraphic(phrase.visualData)}
+                </TableCell>
+                <TableCell>
+                  {/* Show BTC address above the words */}
+                  <div className="text-xs text-cyan-500 font-mono mb-1 break-all">
+                    {phrase.address}
+                  </div>
+                  <div className="text-xs break-words">
+                    {phrase.words.join(' ')}
+                  </div>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

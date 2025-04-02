@@ -36,9 +36,12 @@ export const useQuantumSimulation = () => {
     // Generate a random BTC address for this phrase
     const address = generateRandomBTCAddress();
     
+    // Create timestamp with milliseconds for unique ID
+    const uniqueId = Date.now() + Math.floor(Math.random() * 10000);
+    
     // Add to phrases history (limited to 100)
     const newPhrase: SeedPhrase = {
-      id: Date.now(),
+      id: uniqueId,
       words: selectedWords,
       visualData: selectedIndices,
       address

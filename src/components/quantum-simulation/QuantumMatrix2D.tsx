@@ -37,7 +37,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   
   // Draw connections between active words
   useEffect(() => {
-    if (!showConnections || !canvasRef.current || currentIndices.length === 0) return;
+    if (!showConnections || !canvasRef.current || currentIndices.length === 0 || !containerRef.current) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -47,11 +47,9 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Update canvas dimensions to match container
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
+    const rect = containerRef.current.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
     
     // Draw connections
     if (wordsRef.current.length > 0) {
@@ -126,7 +124,10 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full overflow-auto bg-[#0a0a0a] relative"
+      className="w-full h-full bg-[#0a0a0a] relative flex items-center justify-center p-4"
+      style={{
+        minHeight: "300px", // Ensure minimal height
+      }}
     >
       {/* Canvas for drawing connections */}
       {showConnections && (
@@ -137,7 +138,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
       )}
       
       {/* Word grid - Ensure all words are visible */}
-      <div className="grid grid-cols-[repeat(45,1fr)] gap-[1px] p-2.5 w-[min(90vh,calc(100%-20px))] aspect-square mx-auto my-4">
+      <div className="grid grid-cols-[repeat(45,minmax(0,1fr))] gap-[1px] w-full max-w-[90vh] aspect-square mx-auto">
         {wordList.map((word, index) => {
           const isActive = currentIndices.includes(index);
           const baseColor = calculateColor(index);
@@ -161,7 +162,8 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
               style={{ 
                 color: textColor,
                 borderColor: baseColor,
-                textShadow: isActive ? `0 0 5px ${textColor}, 0 0 10px ${textColor}` : 'none'
+                textShadow: isActive ? `0 0 5px ${textColor}, 0 0 10px ${textColor}` : 'none',
+                overflow: 'hidden'
               }}
             >
               {word}

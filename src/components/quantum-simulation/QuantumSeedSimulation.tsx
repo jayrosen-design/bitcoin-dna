@@ -4,14 +4,12 @@ import { PhrasesTable } from './PhrasesTable';
 import { QuantumMatrix2D } from './QuantumMatrix2D';
 import { QuantumMatrix3D } from './QuantumMatrix3D';
 import { Button } from '@/components/ui/button';
-import { useQuantumSimulation, SeedPhrase } from '@/hooks/useQuantumSimulation';
+import { useQuantumSimulation } from '@/hooks/useQuantumSimulation';
 import { PanelLeft } from 'lucide-react';
 
 export interface QuantumSeedSimulationProps {
   // Props can be added here if needed
 }
-
-export { type SeedPhrase };
 
 export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () => {
   const [view, setView] = useState<'2D' | '3D'>('2D');
@@ -88,7 +86,12 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
         {/* Visualization container */}
         <div className="flex-1 overflow-hidden relative">
           {/* 2D View */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+          <div 
+            className={`absolute inset-0 transition-opacity duration-300 ${
+              view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            }`}
+            style={{ height: '100%' }}
+          >
             <QuantumMatrix2D 
               showConnections={showConnections}
               currentPhrase={currentPhrase}
@@ -97,7 +100,12 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
           </div>
           
           {/* 3D View */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+          <div 
+            className={`absolute inset-0 transition-opacity duration-300 ${
+              view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            }`}
+            style={{ height: '100%' }}
+          >
             <QuantumMatrix3D 
               showConnections={showConnections}
               currentPhrase={currentPhrase}

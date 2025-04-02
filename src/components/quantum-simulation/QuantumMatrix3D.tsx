@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { wordList } from '@/utils/wordList';
@@ -23,6 +23,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const pointsRef = useRef<THREE.Points[]>([]);
   const linesRef = useRef<THREE.Line | null>(null);
   const frameIdRef = useRef<number | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Calculate color based on position - smoother gradient
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
@@ -42,90 +43,95 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   
   // Initialize 3D scene
   useEffect(() => {
-    if (!containerRef.current) return;
-    
-    // Scene setup
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a0a);
-    sceneRef.current = scene;
-    
-    // Calculate container dimensions
-    const width = containerRef.current.clientWidth;
-    const height = containerRef.current.clientHeight;
-    
-    // Ensure we have valid dimensions
-    if (width === 0 || height === 0) {
-      console.error('Container has zero width or height');
-      return;
-    }
-    
-    const aspect = width / height;
-    
-    // Create orthographic camera for isometric view
-    const frustumSize = 100;
-    const camera = new THREE.OrthographicCamera(
-      frustumSize * aspect / -2,
-      frustumSize * aspect / 2,
-      frustumSize / 2,
-      frustumSize / -2,
-      0.1,
-      1000
-    );
-    
-    // Position camera for isometric view
-    camera.position.set(80, 60, 80);
-    camera.lookAt(0, 0, 0);
-    cameraRef.current = camera;
-    
-    // Create renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    containerRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
-    
-    // Create controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controlsRef.current = controls;
-    
-    // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0x444444);
-    scene.add(ambientLight);
-    
-    // Add directional lights
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight1.position.set(1, 1, 1);
-    scene.add(dirLight1);
-    
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-    dirLight2.position.set(-1, -1, -1);
-    scene.add(dirLight2);
-    
-    // Add point light
-    const pointLight = new THREE.PointLight(0x00ccff, 1, 100);
-    pointLight.position.set(0, 0, 50);
-    scene.add(pointLight);
-    
-    // Create 12 layers with words
-    createWordLayers();
-    
-    // Animation loop
-    const animate = () => {
-      if (controlsRef.current) {
-        controlsRef.current.update();
+    // Wait for container to be properly rendered with dimensions
+    const initTimeout = setTimeout(() => {
+      if (!containerRef.current) return;
+      
+      // Check for valid dimensions
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
+      
+      if (width <= 0 || height <= 0) {
+        console.log("Container still has invalid dimensions, will retry");
+        return;
       }
       
-      if (rendererRef.current && sceneRef.current && cameraRef.current) {
-        rendererRef.current.render(sceneRef.current, cameraRef.current);
-      }
+      // Scene setup
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0a0a0a);
+      sceneRef.current = scene;
       
-      frameIdRef.current = requestAnimationFrame(animate);
-    };
-    
-    // Start animation
-    animate();
+      const aspect = width / height;
+      
+      // Create orthographic camera for isometric view
+      const frustumSize = 100;
+      const camera = new THREE.OrthographicCamera(
+        frustumSize * aspect / -2,
+        frustumSize * aspect / 2,
+        frustumSize / 2,
+        frustumSize / -2,
+        0.1,
+        1000
+      );
+      
+      // Position camera for isometric view
+      camera.position.set(80, 60, 80);
+      camera.lookAt(0, 0, 0);
+      cameraRef.current = camera;
+      
+      // Create renderer
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      containerRef.current.appendChild(renderer.domElement);
+      rendererRef.current = renderer;
+      
+      // Create controls
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controlsRef.current = controls;
+      
+      // Add ambient light
+      const ambientLight = new THREE.AmbientLight(0x444444);
+      scene.add(ambientLight);
+      
+      // Add directional lights
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight1.position.set(1, 1, 1);
+      scene.add(dirLight1);
+      
+      const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+      dirLight2.position.set(-1, -1, -1);
+      scene.add(dirLight2);
+      
+      // Add point light
+      const pointLight = new THREE.PointLight(0x00ccff, 1, 100);
+      pointLight.position.set(0, 0, 50);
+      scene.add(pointLight);
+      
+      // Create 12 layers with words
+      createWordLayers();
+      
+      // Animation loop
+      const animate = () => {
+        if (controlsRef.current) {
+          controlsRef.current.update();
+        }
+        
+        if (rendererRef.current && sceneRef.current && cameraRef.current) {
+          rendererRef.current.render(sceneRef.current, cameraRef.current);
+        }
+        
+        frameIdRef.current = requestAnimationFrame(animate);
+      };
+      
+      // Start animation
+      animate();
+      
+      setIsInitialized(true);
+      console.log("3D Scene initialized successfully");
+    }, 500); // Allow time for container to properly render
     
     // Handle window resize
     const handleResize = () => {
@@ -156,6 +162,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     
     // Cleanup
     return () => {
+      clearTimeout(initTimeout);
       window.removeEventListener('resize', handleResize);
       
       if (frameIdRef.current !== null) {
@@ -351,10 +358,18 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   
   // Update connections when currentIndices or showConnections changes
   useEffect(() => {
-    updateActivePoints();
-  }, [currentIndices, showConnections]);
+    if (isInitialized) {
+      updateActivePoints();
+    }
+  }, [currentIndices, showConnections, isInitialized]);
   
   return (
-    <div ref={containerRef} className="w-full h-full bg-[#0a0a0a]" />
+    <div 
+      ref={containerRef} 
+      className="w-full h-full bg-[#0a0a0a] flex items-center justify-center"
+      style={{ 
+        minHeight: "300px" // Ensure minimal height
+      }}
+    />
   );
 };
