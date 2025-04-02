@@ -122,7 +122,8 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
           address,
           balance: result.balance,
           timestamp: new Date(),
-          cryptoType: activeCrypto
+          cryptoType: activeCrypto,
+          source: 'user' // Fixed: Added required source property
         };
         setWalletHistory(prev => [...prev, newWallet]);
         

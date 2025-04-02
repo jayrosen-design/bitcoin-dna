@@ -1,10 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Button } from './ui/button';
-import { Eye, Lock } from 'lucide-react';
+import { Eye, Lock, Copy, ExternalLink, Key, FileText } from 'lucide-react';
 import { formatAddress } from '@/utils/walletUtils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from './ui/pagination';
 
 export interface WalletEntry {
   id: string;
@@ -21,6 +30,7 @@ interface WalletTableProps {
   emptyMessage?: string;
   isAccessLocked?: boolean;
   onRequestUnlock?: () => void;
+  pageSize?: number;
 }
 
 // Function to create a visual representation based on a seed phrase or hash
@@ -81,12 +91,37 @@ const generateVisualDataFromAddress = (address: string): number[] => {
   return visualData;
 };
 
+// Helper function to copy text to clipboard
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+  toast.success('Address copied to clipboard');
+};
+
+// Helper function to open blockchain explorer
+const openExplorer = (address: string) => {
+  // Simple implementation - in production should use a service to determine correct explorer
+  window.open(`https://www.blockchain.com/explorer/addresses/btc/${address}`, '_blank');
+};
+
 const WalletTable: React.FC<WalletTableProps> = ({ 
   wallets, 
   emptyMessage = "No wallet data available.",
   isAccessLocked = false,
-  onRequestUnlock 
+  onRequestUnlock,
+  pageSize = 10
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Calculate pagination
+  const totalPages = Math.ceil(wallets.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, wallets.length);
+  const currentWallets = wallets.slice(startIndex, endIndex);
+  
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
   
   if (wallets.length === 0) {
     return (
@@ -98,17 +133,6 @@ const WalletTable: React.FC<WalletTableProps> = ({
   
   return (
     <div className="relative">
-      {isAccessLocked && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 rounded-md">
-          <Lock className="h-12 w-12 text-amber-500 mb-2" />
-          <p className="text-gray-600 mb-4">Address data is hidden</p>
-          <Button onClick={onRequestUnlock} className="gap-2" variant="outline" size="sm">
-            <Eye className="h-4 w-4" />
-            View Addresses
-          </Button>
-        </div>
-      )}
-      
       <div className="rounded-md overflow-hidden">
         <Table>
           <TableHeader>
@@ -118,10 +142,11 @@ const WalletTable: React.FC<WalletTableProps> = ({
               <TableHead className="w-[100px] text-right">Balance</TableHead>
               <TableHead className="w-[100px] text-right">Time</TableHead>
               <TableHead className="w-[100px] text-right">Date</TableHead>
+              <TableHead className="w-[180px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {wallets.map((wallet) => (
+            {currentWallets.map((wallet) => (
               <TableRow key={wallet.id}>
                 <TableCell className="py-2">
                   <div
@@ -134,11 +159,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
                   />
                 </TableCell>
                 <TableCell>
-                  {isAccessLocked ? (
-                    <Skeleton className="h-4 w-32" />
-                  ) : (
-                    <div className="font-mono text-xs">{formatAddress(wallet.address)}</div>
-                  )}
+                  <div className="font-mono text-xs">{formatAddress(wallet.address)}</div>
                 </TableCell>
                 <TableCell className="text-right">
                   {typeof wallet.balance === 'number' 
@@ -147,11 +168,105 @@ const WalletTable: React.FC<WalletTableProps> = ({
                 </TableCell>
                 <TableCell className="text-right">{wallet.time || '—'}</TableCell>
                 <TableCell className="text-right">{wallet.date || '—'}</TableCell>
+                <TableCell>
+                  <div className="flex justify-end gap-2">
+                    {/* Copy Address Button */}
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7" 
+                      onClick={() => copyToClipboard(wallet.address)}
+                      title="Copy Address"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
+
+                    {/* View on Explorer Button */}
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7" 
+                      onClick={() => openExplorer(wallet.address)}
+                      title="View on Explorer"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </Button>
+
+                    {/* View Transactions Button */}
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7"
+                      title="View Transactions"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                    </Button>
+
+                    {/* View Seed Phrase Button - Only this is locked */}
+                    {isAccessLocked ? (
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-7 w-7" 
+                        onClick={onRequestUnlock}
+                        title="Access Locked"
+                      >
+                        <Lock className="h-3.5 w-3.5 text-amber-500" />
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-7 w-7"
+                        title="View Seed Phrase"
+                      >
+                        <Key className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+      
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => handlePageChange(currentPage - 1)} 
+                  className="cursor-pointer"
+                />
+              </PaginationItem>
+            )}
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => handlePageChange(page)}
+                  isActive={page === currentPage}
+                  className="cursor-pointer"
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => handlePageChange(currentPage + 1)} 
+                  className="cursor-pointer"
+                />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
