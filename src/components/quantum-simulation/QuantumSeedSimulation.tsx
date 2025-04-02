@@ -50,7 +50,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
       </div>
       
       {/* Main visualization area */}
-      <div className="flex-1 flex flex-col h-full">
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Controls */}
         <div className="p-2 flex justify-between items-center bg-[#111] border-b border-gray-800">
           <div className="flex gap-2">
@@ -84,13 +84,12 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
         </div>
         
         {/* Visualization container */}
-        <div className="flex-1 overflow-hidden relative">
+        <div className="flex-1 relative overflow-hidden">
           {/* 2D View */}
           <div 
             className={`absolute inset-0 transition-opacity duration-300 ${
               view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
-            style={{ height: '100%' }}
           >
             <QuantumMatrix2D 
               showConnections={showConnections}
@@ -104,7 +103,6 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
             className={`absolute inset-0 transition-opacity duration-300 ${
               view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
-            style={{ height: '100%' }}
           >
             <QuantumMatrix3D 
               showConnections={showConnections}

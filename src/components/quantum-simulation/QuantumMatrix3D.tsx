@@ -34,27 +34,43 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     const normalizedCol = col / gridSize;
     
     // Create RGB components with smoother transitions
-    const r = 0.4 + normalizedCol * 0.5 * layerFactor; // 0.4 to 0.9
-    const g = 0.4 + normalizedRow * 0.5 * layerFactor; // 0.4 to 0.9
-    const b = 0.6 + ((normalizedRow + normalizedCol) / 2) * 0.4 * layerFactor; // 0.6 to 1.0
+    const r = 0.2 + normalizedCol * 0.7 * layerFactor; // 0.2 to 0.9
+    const g = 0.2 + normalizedRow * 0.7 * layerFactor; // 0.2 to 0.9
+    const b = 0.4 + ((normalizedRow + normalizedCol) / 2) * 0.6 * layerFactor; // 0.4 to 1.0
     
     return new THREE.Color(r, g, b);
   };
   
   // Initialize 3D scene
   useEffect(() => {
-    // Wait for container to be properly rendered with dimensions
-    const initTimeout = setTimeout(() => {
-      if (!containerRef.current) return;
+    console.log("Initializing 3D view");
+    
+    const initScene = () => {
+      if (!containerRef.current) {
+        console.log("No container ref");
+        return false;
+      }
       
       // Check for valid dimensions
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
       
       if (width <= 0 || height <= 0) {
-        console.log("Container still has invalid dimensions, will retry");
-        return;
+        console.log("Container has zero width or height:", width, height);
+        return false;
       }
+      
+      // Clean up any existing scene
+      if (rendererRef.current && containerRef.current.contains(rendererRef.current.domElement)) {
+        containerRef.current.removeChild(rendererRef.current.domElement);
+      }
+      
+      if (frameIdRef.current !== null) {
+        cancelAnimationFrame(frameIdRef.current);
+        frameIdRef.current = null;
+      }
+      
+      console.log("Creating scene with dimensions:", width, height);
       
       // Scene setup
       const scene = new THREE.Scene();
@@ -110,6 +126,15 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       pointLight.position.set(0, 0, 50);
       scene.add(pointLight);
       
+      console.log("Scene created successfully");
+      return true;
+    };
+    
+    // Try to initialize the scene
+    const initSuccess = initScene();
+    
+    if (initSuccess) {
+      console.log("Creating word layers");
       // Create 12 layers with words
       createWordLayers();
       
@@ -131,7 +156,36 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       setIsInitialized(true);
       console.log("3D Scene initialized successfully");
-    }, 500); // Allow time for container to properly render
+    } else {
+      // Retry after a delay
+      console.log("Failed to initialize scene, retrying in 500ms");
+      const retryTimeout = setTimeout(() => {
+        const retrySuccess = initScene();
+        if (retrySuccess) {
+          createWordLayers();
+          
+          const animate = () => {
+            if (controlsRef.current) {
+              controlsRef.current.update();
+            }
+            
+            if (rendererRef.current && sceneRef.current && cameraRef.current) {
+              rendererRef.current.render(sceneRef.current, cameraRef.current);
+            }
+            
+            frameIdRef.current = requestAnimationFrame(animate);
+          };
+          
+          animate();
+          setIsInitialized(true);
+          console.log("3D Scene initialized on retry successfully");
+        } else {
+          console.error("Failed to initialize 3D scene after retry");
+        }
+      }, 500);
+      
+      return () => clearTimeout(retryTimeout);
+    }
     
     // Handle window resize
     const handleResize = () => {
@@ -141,6 +195,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       const height = containerRef.current.clientHeight;
       
       if (width === 0 || height === 0) return;
+      
+      console.log("Resizing 3D view:", width, height);
       
       const aspect = width / height;
       
@@ -162,7 +218,6 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     
     // Cleanup
     return () => {
-      clearTimeout(initTimeout);
       window.removeEventListener('resize', handleResize);
       
       if (frameIdRef.current !== null) {
@@ -196,7 +251,12 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   
   // Create word layers
   const createWordLayers = () => {
-    if (!sceneRef.current) return;
+    if (!sceneRef.current) {
+      console.log("No scene reference for creating word layers");
+      return;
+    }
+    
+    console.log("Creating word layers for 3D view");
     
     const scene = sceneRef.current;
     const layerCount = 12;
@@ -236,9 +296,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       
-      // Create points material
+      // Create points material with larger size
       const material = new THREE.PointsMaterial({
-        size: 0.6, // Increased size for better visibility
+        size: 0.8, // Increased size for better visibility
         vertexColors: true,
         transparent: true,
         opacity: 0.9, // Increased opacity
@@ -266,13 +326,18 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     
     pointsRef.current = pointsArray;
     
+    console.log("Word layers created, updating active points");
     // Update active points based on current indices
     updateActivePoints();
   };
   
   // Update active points based on current indices
   const updateActivePoints = () => {
-    if (!sceneRef.current || !currentIndices.length) return;
+    if (!sceneRef.current || !currentIndices.length || pointsRef.current.length === 0) {
+      return;
+    }
+    
+    console.log("Updating active points for indices:", currentIndices);
     
     // Remove previous line if exists
     if (linesRef.current && sceneRef.current) {
@@ -283,25 +348,23 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     // Create lines between active points if showConnections is true
     if (showConnections) {
       const positions: THREE.Vector3[] = [];
+      const gridSize = 45;
       
       // Find positions of active words
       currentIndices.forEach(index => {
-        const layer = Math.floor(index / (wordList.length / 12));
+        const layer = Math.floor(index / Math.ceil(wordList.length / 12));
         const layerOffset = index % Math.ceil(wordList.length / 12);
         
-        if (pointsRef.current[layer]) {
-          const geometry = pointsRef.current[layer].geometry;
-          const position = new THREE.Vector3();
+        if (layer < pointsRef.current.length) {
+          const col = layerOffset % gridSize;
+          const row = Math.floor(layerOffset / gridSize);
           
-          // Get position from buffer attribute
-          position.fromBufferAttribute(
-            geometry.attributes.position as THREE.BufferAttribute, 
-            layerOffset
-          );
+          // Calculate point position directly
+          const x = (col - gridSize / 2) * 0.5;
+          const y = (gridSize / 2 - row) * 0.5;
+          const z = layer * -8;
           
-          // Transform to world space
-          pointsRef.current[layer].localToWorld(position);
-          positions.push(position);
+          positions.push(new THREE.Vector3(x, y, z));
         }
       });
       
@@ -311,7 +374,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const lineMaterial = new THREE.LineBasicMaterial({
           color: 0x00ffff,
           transparent: true,
-          opacity: 0.6, // Increased opacity
+          opacity: 0.7, // Increased opacity
           linewidth: 2  // Thicker line
         });
         
@@ -326,11 +389,14 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       const geometry = points.geometry;
       const colors = geometry.attributes.color.array as Float32Array;
       
+      const wordsPerLayer = Math.ceil(wordList.length / 12);
+      const gridSize = 45;
+      
       // Reset all colors
       for (let i = 0; i < colors.length; i += 3) {
-        const index = layer * Math.ceil(wordList.length / 12) + i / 3;
-        const row = Math.floor((i/3) / 45);
-        const col = (i/3) % 45;
+        const pointIndex = i / 3;
+        const row = Math.floor(pointIndex / gridSize);
+        const col = pointIndex % gridSize;
         const color = calculateColor(row, col, 0.6 + layer * 0.03);
         
         colors[i] = color.r;
@@ -340,8 +406,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       // Highlight active indices
       currentIndices.forEach(index => {
-        const activeLayer = Math.floor(index / Math.ceil(wordList.length / 12));
-        const layerOffset = index % Math.ceil(wordList.length / 12);
+        const activeLayer = Math.floor(index / wordsPerLayer);
+        const layerOffset = index % wordsPerLayer;
         
         if (activeLayer === layer) {
           const i = layerOffset * 3;
@@ -368,7 +434,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       ref={containerRef} 
       className="w-full h-full bg-[#0a0a0a] flex items-center justify-center"
       style={{ 
-        minHeight: "300px" // Ensure minimal height
+        minHeight: "300px", // Ensure minimal height
+        overflow: "hidden"
       }}
     />
   );
