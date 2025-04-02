@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Button } from './ui/button';
 import { Copy, ExternalLink, FileText, Key, Lock } from 'lucide-react';
@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { wordList } from '@/utils/wordList';
 
 export interface WalletEntry {
   id: string;
@@ -116,6 +117,85 @@ const openExplorer = (address: string) => {
   window.open(`https://www.blockchain.com/explorer/addresses/btc/${address}`, '_blank');
 };
 
+// Generate a random seed phrase based on address (deterministic)
+const generateSeedPhrase = (address: string): string[] => {
+  const seedPhrase: string[] = [];
+  const addressHash = address.replace(/[^a-f0-9]/ig, '');
+  
+  // Use address hash to deterministically select words
+  for (let i = 0; i < 12; i++) {
+    // Take 2 chars from hash at different positions and convert to number
+    const startPos = (i * 3) % (addressHash.length - 2);
+    const hexPair = addressHash.substring(startPos, startPos + 2);
+    const index = parseInt(hexPair, 16) % wordList.length;
+    seedPhrase.push(wordList[index]);
+  }
+  
+  return seedPhrase;
+};
+
+// Generate random transactions based on address (deterministic)
+const generateTransactions = (address: string, balance: string | number): Array<{
+  hash: string;
+  amount: string;
+  timestamp: string;
+  type: 'incoming' | 'outgoing';
+}> => {
+  const transactions = [];
+  const addressHash = address.replace(/[^a-f0-9]/ig, '');
+  const numTransactions = (parseInt(addressHash.substring(0, 2), 16) % 5) + 3; // 3-7 transactions
+  const totalBalance = typeof balance === 'string' ? parseFloat(balance) : balance;
+  const now = new Date();
+  
+  // Generate transaction dates and amounts
+  let remainingBalance = totalBalance;
+  
+  for (let i = 0; i < numTransactions; i++) {
+    // Deterministically create a somewhat realistic timestamp spread over the last 30 days
+    const seed = parseInt(addressHash.substring(i * 2, i * 2 + 2), 16);
+    const daysAgo = seed % 30;
+    const hoursAgo = (seed * 3) % 24;
+    const minutesAgo = (seed * 7) % 60;
+    
+    const txDate = new Date(now);
+    txDate.setDate(txDate.getDate() - daysAgo);
+    txDate.setHours(txDate.getHours() - hoursAgo);
+    txDate.setMinutes(txDate.getMinutes() - minutesAgo);
+    
+    // Last transaction uses remaining balance, others use portions
+    let txAmount;
+    if (i === numTransactions - 1) {
+      txAmount = remainingBalance;
+    } else {
+      // Generate a portion of the remaining balance (10-30%)
+      const portion = 0.1 + (parseInt(addressHash.substring(i * 2, i * 2 + 2), 16) % 20) / 100;
+      txAmount = remainingBalance * portion;
+      remainingBalance -= txAmount;
+    }
+    
+    // Ensure the amount has the right number of decimal places
+    txAmount = Number(txAmount.toFixed(8));
+    
+    // Determine transaction type
+    const txType = i === 0 ? 'incoming' : ((parseInt(addressHash.substring(i * 4, i * 4 + 2), 16) % 2) === 0 ? 'incoming' : 'outgoing');
+    
+    // Generate transaction hash (use address hash + position for deterministic but unique hash)
+    const txHash = `0x${addressHash.substring(0, 8)}${i}${addressHash.substring(8, 40)}`;
+    
+    transactions.push({
+      hash: txHash,
+      amount: txAmount.toString(),
+      timestamp: txDate.toISOString(),
+      type: txType
+    });
+  }
+  
+  // Sort transactions by timestamp (newest first)
+  return transactions.sort((a, b) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+};
+
 const WalletTable: React.FC<WalletTableProps> = ({ 
   wallets, 
   emptyMessage = "No wallet data available.",
@@ -126,12 +206,40 @@ const WalletTable: React.FC<WalletTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTransaction, setSelectedTransaction] = useState<WalletEntry | null>(null);
   const [selectedSeedPhrase, setSelectedSeedPhrase] = useState<WalletEntry | null>(null);
+  const [processedWallets, setProcessedWallets] = useState<WalletEntry[]>([]);
+  
+  // Process wallets to ensure they all have seed phrases and transactions
+  useEffect(() => {
+    // Create a deep copy of wallets with added data where needed
+    const processed = wallets.map(wallet => {
+      const walletCopy = { ...wallet };
+      
+      // If no seed phrase, generate one deterministically from address
+      if (!walletCopy.seedPhrase) {
+        walletCopy.seedPhrase = generateSeedPhrase(walletCopy.address);
+      }
+      
+      // If no transactions, generate some deterministically from address
+      if (!walletCopy.transactions || walletCopy.transactions.length === 0) {
+        walletCopy.transactions = generateTransactions(walletCopy.address, walletCopy.balance);
+      }
+      
+      // If no visual data, generate it
+      if (!walletCopy.visualData) {
+        walletCopy.visualData = generateVisualDataFromAddress(walletCopy.address);
+      }
+      
+      return walletCopy;
+    });
+    
+    setProcessedWallets(processed);
+  }, [wallets]);
   
   // Calculate pagination
-  const totalPages = Math.ceil(wallets.length / pageSize);
+  const totalPages = Math.ceil(processedWallets.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, wallets.length);
-  const currentWallets = wallets.slice(startIndex, endIndex);
+  const endIndex = Math.min(startIndex + pageSize, processedWallets.length);
+  const currentWallets = processedWallets.slice(startIndex, endIndex);
   
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -150,7 +258,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
     setSelectedSeedPhrase(wallet);
   };
   
-  if (wallets.length === 0) {
+  if (processedWallets.length === 0) {
     return (
       <div className="w-full p-8 text-center text-gray-500">
         <p>{emptyMessage}</p>
@@ -187,16 +295,6 @@ const WalletTable: React.FC<WalletTableProps> = ({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center">
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-7 w-7 mr-1" 
-                      onClick={() => copyToClipboard(wallet.address)}
-                      title="Copy Address"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                    </Button>
-                    
                     <div 
                       className="font-mono text-xs cursor-pointer hover:underline"
                       onClick={() => openExplorer(wallet.address)}
@@ -204,6 +302,15 @@ const WalletTable: React.FC<WalletTableProps> = ({
                     >
                       {formatAddress(wallet.address)}
                     </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7 ml-1" 
+                      onClick={() => copyToClipboard(wallet.address)}
+                      title="Copy Address"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
@@ -320,7 +427,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
                         {tx.type === 'incoming' ? '↓ Received' : '↑ Sent'}
                       </TableCell>
                       <TableCell>{tx.amount} BTC</TableCell>
-                      <TableCell>{tx.timestamp}</TableCell>
+                      <TableCell>{new Date(tx.timestamp).toLocaleString()}</TableCell>
                       <TableCell className="font-mono text-xs text-right">
                         {tx.hash.substring(0, 8)}...{tx.hash.substring(tx.hash.length - 8)}
                       </TableCell>
