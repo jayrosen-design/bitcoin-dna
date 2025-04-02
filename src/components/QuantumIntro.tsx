@@ -32,6 +32,9 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 
     return `${value.toFixed(1)} BTC`;
   };
 
+  // Ensure we always have a valid number for display
+  const displayValue = isNaN(currentValue) || currentValue < 0 ? 0 : currentValue;
+
   return (
     <Card className="h-full bg-card/80 backdrop-blur-sm border-primary/10">
       <CardContent className="pt-6 h-full">
@@ -54,7 +57,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 
             <div className="flex flex-col sm:flex-row justify-center items-center gap-12 w-full">
               <div className="text-center p-4 rounded-lg bg-secondary/30 backdrop-blur-sm w-full sm:w-auto">
                 <div className="text-sm font-medium mb-2 text-muted-foreground">Total USD Value Unlocked</div>
-                <div className="text-5xl font-bold text-bitcoin bg-gradient-to-r from-bitcoin to-bitcoin/70 bg-clip-text">{formatCurrency(currentValue)}</div>
+                <div className="text-5xl font-bold text-bitcoin bg-gradient-to-r from-bitcoin to-bitcoin/70 bg-clip-text">{formatCurrency(displayValue)}</div>
               </div>
               
               <div className="text-center p-4 rounded-lg bg-secondary/30 backdrop-blur-sm w-full sm:w-auto">

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -18,6 +17,9 @@ import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSe
 import type { WalletEntry as TableWalletEntry } from '@/components/WalletTable';
 
 const Index = () => {
+  const initialBtcPrice = 65000; 
+  const initialBtcAmount = 43.1;
+  
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
   const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
@@ -28,8 +30,8 @@ const Index = () => {
     wallets: number, 
     totalSeedPhrases: number
   }>({
-    btc: 43.1, 
-    usd: 0, 
+    btc: initialBtcAmount, 
+    usd: initialBtcAmount * initialBtcPrice,
     wallets: 679,
     totalSeedPhrases: 48931056
   });
@@ -47,7 +49,7 @@ const Index = () => {
     isLoading: isRandomWalletsLoading, 
     addWallet, 
     addMockWallet 
-  } = useGetRandomWallets(10); // Reduced from 100 to 10 to improve performance
+  } = useGetRandomWallets(10);
   
   const {
     seedPhrase,
@@ -70,21 +72,19 @@ const Index = () => {
   const [lastQuantumId, setLastQuantumId] = useState<number>(0);
   
   useEffect(() => {
-    // Initialize price data after a significant delay to prioritize UI rendering
     const timer = setTimeout(() => {
       initializePriceData();
-    }, 3000); // Increased to 3 seconds
+    }, 3000);
     
     return () => clearTimeout(timer);
   }, [initializePriceData]);
   
   useEffect(() => {
     if (!isAutoGenerating) {
-      // Start auto-generation after page fully loads with increased delay
       const timer = setTimeout(() => {
         toggleAutoGeneration();
         toast.info('Auto-generation started for demonstration');
-      }, 5000); // Increased to 5 seconds
+      }, 5000);
       
       return () => clearTimeout(timer);
     }
@@ -93,7 +93,6 @@ const Index = () => {
   const prevTotalWallets = React.useRef(totalValueUnlocked.wallets);
   useEffect(() => {
     if (totalValueUnlocked.wallets > prevTotalWallets.current) {
-      // Add mock wallets less frequently
       if (Math.random() > 0.5) {
         addMockWallet();
       }
@@ -102,31 +101,27 @@ const Index = () => {
   }, [totalValueUnlocked.wallets, addMockWallet]);
 
   useEffect(() => {
-    // Reduce the frequency of seed phrases increment
     const seedPhrasesInterval = setInterval(() => {
       const randomIncrement = Math.floor(Math.random() * 2) + 1;
       setTotalValueUnlocked(prev => ({
         ...prev,
         totalSeedPhrases: prev.totalSeedPhrases + randomIncrement
       }));
-    }, 5000); // Increased to 5 seconds
-
+    }, 5000);
+    
     return () => clearInterval(seedPhrasesInterval);
   }, []);
 
   useEffect(() => {
     if (btcPrice) {
-      const usdValue = totalValueUnlocked.btc * btcPrice;
-      
       setTotalValueUnlocked(prev => ({
         ...prev,
-        usd: usdValue
+        usd: prev.btc * btcPrice
       }));
     }
   }, [btcPrice, totalValueUnlocked.btc]);
   
   useEffect(() => {
-    // Only update when we have actual data, and throttle the updates
     if (walletData.balance && activeCrypto === 'bitcoin') {
       const foundBalance = parseFloat(walletData.balance) || 0;
       
@@ -140,7 +135,7 @@ const Index = () => {
         };
       });
       
-      if (walletHistory.length > 0 && Math.random() > 0.3) { // Only add some wallets to reduce the load
+      if (walletHistory.length > 0 && Math.random() > 0.3) {
         const latestWallet = {
           ...walletHistory[walletHistory.length - 1],
           source: 'user' as const
@@ -165,7 +160,6 @@ const Index = () => {
       const day = now.getDate().toString().padStart(2, '0');
       const month = (now.getMonth() + 1).toString().padStart(2, '0');
       
-      // Only add wallets with some probability to reduce load
       if (Math.random() > 0.7) {
         const quantumWallet: TableWalletEntry = {
           id: `quantum-${phrase.id}`,
@@ -238,7 +232,6 @@ const Index = () => {
   };
 
   const renderContent = () => {
-    // Only show the transaction view if explicitly instructed to do so
     if (walletStatus === 'unlocked' && walletData.balance && shouldShowTransactions) {
       return (
         <div className="animate-fade-up space-y-8 w-full">

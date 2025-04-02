@@ -23,12 +23,15 @@ const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked: initialVa
   const autoIncrementTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
-    // Only update specific values from props
+    // Update all values from props when they change
     setTotalValueUnlocked(prev => ({
       ...prev,
+      btc: initialValues.btc,
+      usd: initialValues.usd,
       totalSeedPhrases: initialValues.totalSeedPhrases,
+      wallets: initialValues.wallets
     }));
-  }, [initialValues.totalSeedPhrases]);
+  }, [initialValues.btc, initialValues.usd, initialValues.totalSeedPhrases, initialValues.wallets]);
   
   useEffect(() => {
     // Start auto-incrementing at a more reasonable rate
@@ -56,7 +59,10 @@ const StatusCards: React.FC<StatusCardsProps> = ({ totalValueUnlocked: initialVa
           const btcValue = parseFloat(randomBtcIncrement);
           
           const newBtc = prev.btc + btcValue;
-          const newUsd = newBtc * (prev.usd / prev.btc); // Maintain the same BTC/USD ratio
+          // Calculate USD value based on a realistic BTC price
+          // Using a conservative estimate of around $65,000 per BTC if we don't have real data
+          const btcPrice = prev.usd && prev.btc > 0 ? prev.usd / prev.btc : 65000;
+          const newUsd = newBtc * btcPrice;
           
           return {
             ...prev,

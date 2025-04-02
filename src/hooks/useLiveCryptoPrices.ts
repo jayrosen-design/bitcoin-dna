@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { CryptoType } from '@/utils/walletUtils';
@@ -25,7 +24,8 @@ const addressCache: Record<string, RecentAddress[]> = {
 let initialDataLoaded = false;
 
 export const useLiveCryptoPrices = () => {
-  const [btcPrice, setBtcPrice] = useState<number | null>(61432.50); // Default fallback price
+  // Update default values to more realistic current BTC price
+  const [btcPrice, setBtcPrice] = useState<number | null>(65000); // Higher default fallback price
   const [ethPrice, setEthPrice] = useState<number | null>(3389.75); // Default fallback price
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
