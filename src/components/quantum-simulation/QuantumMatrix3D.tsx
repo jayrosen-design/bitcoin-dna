@@ -29,6 +29,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const LAYERS_COUNT = 12;
   const POINT_SIZE = 1.5; // Point size for visibility
   const GRID_SIZE = 45; // Grid size to match the 2D view's layout
+  const GRID_EXTENT = 45; // Visual extent of the grid in the scene
 
   // Calculate color based on position with higher contrast
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
@@ -219,9 +220,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         
         // Calculate position to create a square grid that fills the entire viewable area
         // Scale the grid to be visible within the camera frustum
-        const gridExtent = 45; // Larger grid extent for bigger distribution
-        const x = (col - gridDimension/2) * (gridExtent/gridDimension);
-        const y = (gridDimension/2 - row) * (gridExtent/gridDimension);
+        const x = (col - gridDimension/2) * (GRID_EXTENT/gridDimension);
+        const y = (gridDimension/2 - row) * (GRID_EXTENT/gridDimension);
         
         // Add point to vertices array
         vertices.push(x, y, zPosition);
@@ -252,7 +252,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       scene.add(points);
       
       // Create a semi-transparent plane for each layer to enhance depth perception
-      const planeGeometry = new THREE.PlaneGeometry(gridExtent, gridExtent);
+      const planeGeometry = new THREE.PlaneGeometry(GRID_EXTENT, GRID_EXTENT);
       const planeMaterial = new THREE.MeshBasicMaterial({
         color: 0x223344,
         transparent: true,
