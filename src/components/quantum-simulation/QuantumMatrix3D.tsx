@@ -2,6 +2,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { wordList } from '@/utils/wordList';
 
 interface QuantumMatrix3DProps {
@@ -20,16 +22,18 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
-  const pointsRef = useRef<THREE.Points[]>([]);
+  const textGroupsRef = useRef<THREE.Group[]>([]);
   const linesRef = useRef<THREE.Line | null>(null);
   const frameIdRef = useRef<number | null>(null);
   const initCompletedRef = useRef<boolean>(false);
+  const fontRef = useRef<THREE.Font | null>(null);
   
   // Define constants
   const LAYERS_COUNT = 12;
-  const POINT_SIZE = 1.5; // Point size for visibility
   const GRID_SIZE = 45; // Grid size to match the 2D view's layout
   const GRID_EXTENT = 45; // Visual extent of the grid in the scene
+  const TEXT_SIZE = 0.5; // Size of the text
+  const LAYER_SPACING = 10; // Space between layers
 
   // Calculate color based on position with higher contrast
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
@@ -117,8 +121,21 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     // Force initial render before creating word layers
     renderer.render(scene, camera);
     
-    // Create word layers
-    createWordLayers();
+    // Load font first, then create word layers
+    const fontLoader = new FontLoader();
+    const fontUrl = 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json';
+    
+    fontLoader.load(fontUrl, (font) => {
+      fontRef.current = font;
+      // Create word layers once font is loaded
+      createWordLayers();
+      
+      // Animation loop
+      animate();
+      
+      // Set initialization flag
+      initCompletedRef.current = true;
+    });
     
     // Animation loop
     const animate = () => {
@@ -132,9 +149,6 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       frameIdRef.current = requestAnimationFrame(animate);
     };
-    
-    // Start animation
-    animate();
     
     // Handle window resize
     const handleResize = () => {
@@ -159,9 +173,6 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     };
     
     window.addEventListener('resize', handleResize);
-    
-    // Set initialization flag
-    initCompletedRef.current = true;
     
     // Cleanup
     return () => {
@@ -192,64 +203,25 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     };
   }, []);
   
-  // Create word layers with full grid distribution
+  // Create word layers with full text representation
   const createWordLayers = () => {
-    if (!sceneRef.current) return;
+    if (!sceneRef.current || !fontRef.current) return;
     
     const scene = sceneRef.current;
+    const font = fontRef.current;
     const wordCount = wordList.length; // Full BIP-39 wordlist (2048 words)
-    const pointsArray: THREE.Points[] = [];
+    const textGroups: THREE.Group[] = [];
     
     // Calculate grid dimensions to ensure square layout
     const gridDimension = Math.ceil(Math.sqrt(wordCount));
     
     // Distribute all words across layers
     for (let layer = 0; layer < LAYERS_COUNT; layer++) {
-      // Create point geometry for this layer
-      const vertices: number[] = [];
-      const colors: number[] = [];
+      // Create a group for this layer
+      const layerGroup = new THREE.Group();
       
       // Position of this layer (stacked along z-axis)
-      const zPosition = layer * -8;
-      
-      // Create a point for EACH word in the wordlist - full 2048 word distribution
-      for (let i = 0; i < wordCount; i++) {
-        // Calculate row and column in the grid
-        const col = i % gridDimension;
-        const row = Math.floor(i / gridDimension);
-        
-        // Calculate position to create a square grid that fills the entire viewable area
-        // Scale the grid to be visible within the camera frustum
-        const x = (col - gridDimension/2) * (GRID_EXTENT/gridDimension);
-        const y = (gridDimension/2 - row) * (GRID_EXTENT/gridDimension);
-        
-        // Add point to vertices array
-        vertices.push(x, y, zPosition);
-        
-        // Create color with layer depth factor for gradient
-        const depthFactor = 0.7 + (layer / LAYERS_COUNT) * 0.6;
-        const color = calculateColor(row, col, depthFactor);
-        colors.push(color.r, color.g, color.b);
-      }
-      
-      // Create points geometry with all words
-      const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-      
-      // Create points material with larger size for better visibility
-      const material = new THREE.PointsMaterial({
-        size: POINT_SIZE,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.9,
-        sizeAttenuation: true
-      });
-      
-      // Create points object
-      const points = new THREE.Points(geometry, material);
-      pointsArray.push(points);
-      scene.add(points);
+      const zPosition = layer * -LAYER_SPACING;
       
       // Create a semi-transparent plane for each layer to enhance depth perception
       const planeGeometry = new THREE.PlaneGeometry(GRID_EXTENT, GRID_EXTENT);
@@ -262,18 +234,67 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       const plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.position.set(0, 0, zPosition);
-      scene.add(plane);
+      layerGroup.add(plane);
+      
+      // Create a text for EACH word in the wordlist
+      for (let i = 0; i < wordCount; i++) {
+        // Calculate row and column in the grid
+        const col = i % gridDimension;
+        const row = Math.floor(i / gridDimension);
+        
+        // Calculate position to create a square grid that fills the entire viewable area
+        const x = (col - gridDimension/2) * (GRID_EXTENT/gridDimension);
+        const y = (gridDimension/2 - row) * (GRID_EXTENT/gridDimension);
+        
+        // Create text geometry for this word
+        const word = wordList[i];
+        const textGeometry = new TextGeometry(word, {
+          font: font,
+          size: TEXT_SIZE,
+          height: 0.05,
+          curveSegments: 1  // Lower for better performance
+        });
+        
+        // Center the text horizontally
+        textGeometry.computeBoundingBox();
+        const textWidth = textGeometry.boundingBox?.max.x ?? TEXT_SIZE * word.length * 0.6;
+        textGeometry.translate(-textWidth / 2, 0, 0);
+        
+        // Create color with layer depth factor for gradient
+        const depthFactor = 0.7 + (layer / LAYERS_COUNT) * 0.6;
+        const color = calculateColor(row, col, depthFactor);
+        
+        // Create text material
+        const textMaterial = new THREE.MeshBasicMaterial({
+          color: color,
+          transparent: true,
+          opacity: 0.9
+        });
+        
+        // Create mesh and position
+        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+        textMesh.position.set(x, y, zPosition);
+        textMesh.userData = { wordIndex: i, isActive: false };
+        
+        // Add to layer group
+        layerGroup.add(textMesh);
+      }
+      
+      // Add layer group to scene
+      scene.add(layerGroup);
+      textGroups.push(layerGroup);
     }
     
-    pointsRef.current = pointsArray;
+    // Store reference to text groups
+    textGroupsRef.current = textGroups;
     
-    // Update active points based on current indices
-    updateActivePoints();
+    // Update active words based on current indices
+    updateActiveWords();
   };
   
-  // Update active points based on current indices
-  const updateActivePoints = () => {
-    if (!sceneRef.current || !currentIndices.length) return;
+  // Update active words based on current indices
+  const updateActiveWords = () => {
+    if (!sceneRef.current || !textGroupsRef.current.length || !currentIndices.length) return;
     
     // Remove previous line if exists
     if (linesRef.current && sceneRef.current) {
@@ -281,88 +302,81 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       linesRef.current = null;
     }
     
-    // Create lines between active points if showConnections is true
-    if (showConnections) {
-      const positions: THREE.Vector3[] = [];
-      
-      // Find positions of active words in each layer
-      currentIndices.forEach((wordIndex, layerIndex) => {
-        if (layerIndex < LAYERS_COUNT && pointsRef.current[layerIndex]) {
-          const geometry = pointsRef.current[layerIndex].geometry;
-          const position = new THREE.Vector3();
+    // Reset all words to normal state
+    textGroupsRef.current.forEach((group, layerIndex) => {
+      group.children.forEach(child => {
+        if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshBasicMaterial 
+            && child.userData && typeof child.userData.wordIndex === 'number') {
           
-          // Get position from buffer attribute
-          position.fromBufferAttribute(
-            geometry.attributes.position as THREE.BufferAttribute, 
-            wordIndex
-          );
+          // Skip the plane (which is the first child)
+          if (child.userData.wordIndex === undefined) return;
           
-          // Transform to world space
-          pointsRef.current[layerIndex].localToWorld(position);
-          positions.push(position);
+          // Calculate original grid position for this word
+          const gridDimension = Math.ceil(Math.sqrt(wordList.length));
+          const wordIndex = child.userData.wordIndex;
+          const col = wordIndex % gridDimension;
+          const row = Math.floor(wordIndex / gridDimension);
+          
+          // Restore original color based on position
+          const depthFactor = 0.7 + (layerIndex / LAYERS_COUNT) * 0.6;
+          const color = calculateColor(row, col, depthFactor);
+          
+          child.material.color = color;
+          child.material.opacity = 0.8;
+          child.userData.isActive = false;
         }
       });
-      
-      // Create connection lines with improved visibility
-      if (positions.length > 1) {
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(positions);
-        const lineMaterial = new THREE.LineBasicMaterial({
-          color: 0x00ffff, // Bright cyan
-          transparent: true,
-          opacity: 0.8,
-          linewidth: 2
-        });
-        
-        const line = new THREE.Line(lineGeometry, lineMaterial);
-        sceneRef.current.add(line);
-        linesRef.current = line;
-      }
-    }
-    
-    // Highlight active points in each layer with brighter colors
-    pointsRef.current.forEach((points, layerIndex) => {
-      const geometry = points.geometry;
-      const colors = geometry.attributes.color.array as Float32Array;
-      const positions = geometry.attributes.position.array as Float32Array;
-      
-      // Reset all colors to their original state
-      for (let i = 0; i < wordList.length; i++) {
-        const baseIndex = i * 3;
-        
-        // Calculate original grid position for this point
-        const gridDimension = Math.ceil(Math.sqrt(wordList.length));
-        const col = i % gridDimension;
-        const row = Math.floor(i / gridDimension);
-        
-        // Restore original color based on position
-        const depthFactor = 0.7 + (layerIndex / LAYERS_COUNT) * 0.6;
-        const color = calculateColor(row, col, depthFactor);
-        
-        colors[baseIndex] = color.r;
-        colors[baseIndex + 1] = color.g;
-        colors[baseIndex + 2] = color.b;
-      }
-      
-      // Now highlight the specific active word in this layer
-      if (layerIndex < currentIndices.length) {
-        const activeWordIndex = currentIndices[layerIndex];
-        const baseIndex = activeWordIndex * 3;
-        
-        // Very bright cyan for active point
-        colors[baseIndex] = 0.2;     // R - a bit of red for better visibility
-        colors[baseIndex + 1] = 1.0; // G - full green
-        colors[baseIndex + 2] = 1.0; // B - full blue
-      }
-      
-      // Update the attribute
-      geometry.attributes.color.needsUpdate = true;
     });
+    
+    // Highlight active words and collect positions for connecting lines
+    const activePositions: THREE.Vector3[] = [];
+    
+    currentIndices.forEach((wordIndex, layerIndex) => {
+      if (layerIndex < textGroupsRef.current.length) {
+        const layerGroup = textGroupsRef.current[layerIndex];
+        
+        // Find the mesh with the matching word index
+        layerGroup.children.forEach(child => {
+          if (child instanceof THREE.Mesh && 
+              child.userData && 
+              child.userData.wordIndex === wordIndex) {
+            
+            // Highlight this word
+            if (child.material instanceof THREE.MeshBasicMaterial) {
+              child.material.color.set(0x00ffff); // Bright cyan
+              child.material.opacity = 1.0;
+              child.userData.isActive = true;
+              
+              // Get world position for connection line
+              const position = new THREE.Vector3();
+              child.getWorldPosition(position);
+              activePositions.push(position);
+            }
+          }
+        });
+      }
+    });
+    
+    // Create connection lines if enabled
+    if (showConnections && activePositions.length > 1) {
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints(activePositions);
+      const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x00ffff, // Bright cyan
+        transparent: true,
+        opacity: 0.8,
+        linewidth: 2
+      });
+      
+      const line = new THREE.Line(lineGeometry, lineMaterial);
+      sceneRef.current.add(line);
+      linesRef.current = line;
+    }
   };
   
   // Update connections when currentIndices or showConnections changes
   useEffect(() => {
     if (initCompletedRef.current) {
-      updateActivePoints();
+      updateActiveWords();
     }
   }, [currentIndices, showConnections]);
   
