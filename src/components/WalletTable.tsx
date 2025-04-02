@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Button } from './ui/button';
-import { Eye, Lock, Copy, ExternalLink, Key, FileText } from 'lucide-react';
+import { Copy, ExternalLink, FileText, Key, Lock } from 'lucide-react';
 import { formatAddress } from '@/utils/walletUtils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -14,6 +14,12 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from './ui/pagination';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export interface WalletEntry {
   id: string;
@@ -23,6 +29,13 @@ export interface WalletEntry {
   date?: string;
   source: 'global' | 'user';
   visualData?: number[];
+  seedPhrase?: string[];
+  transactions?: Array<{
+    hash: string;
+    amount: string;
+    timestamp: string;
+    type: 'incoming' | 'outgoing';
+  }>;
 }
 
 interface WalletTableProps {
@@ -111,6 +124,8 @@ const WalletTable: React.FC<WalletTableProps> = ({
   pageSize = 10
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTransaction, setSelectedTransaction] = useState<WalletEntry | null>(null);
+  const [selectedSeedPhrase, setSelectedSeedPhrase] = useState<WalletEntry | null>(null);
   
   // Calculate pagination
   const totalPages = Math.ceil(wallets.length / pageSize);
@@ -121,6 +136,18 @@ const WalletTable: React.FC<WalletTableProps> = ({
   // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+  
+  const handleViewTransactions = (wallet: WalletEntry) => {
+    setSelectedTransaction(wallet);
+  };
+  
+  const handleViewSeedPhrase = (wallet: WalletEntry) => {
+    if (isAccessLocked) {
+      onRequestUnlock?.();
+      return;
+    }
+    setSelectedSeedPhrase(wallet);
   };
   
   if (wallets.length === 0) {
@@ -142,7 +169,7 @@ const WalletTable: React.FC<WalletTableProps> = ({
               <TableHead className="w-[100px] text-right">Balance</TableHead>
               <TableHead className="w-[100px] text-right">Time</TableHead>
               <TableHead className="w-[100px] text-right">Date</TableHead>
-              <TableHead className="w-[180px] text-right">Actions</TableHead>
+              <TableHead className="w-[200px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -159,7 +186,25 @@ const WalletTable: React.FC<WalletTableProps> = ({
                   />
                 </TableCell>
                 <TableCell>
-                  <div className="font-mono text-xs">{formatAddress(wallet.address)}</div>
+                  <div className="flex items-center">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7 mr-1" 
+                      onClick={() => copyToClipboard(wallet.address)}
+                      title="Copy Address"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
+                    
+                    <div 
+                      className="font-mono text-xs cursor-pointer hover:underline"
+                      onClick={() => openExplorer(wallet.address)}
+                      title="View on Explorer"
+                    >
+                      {formatAddress(wallet.address)}
+                    </div>
+                  </div>
                 </TableCell>
                 <TableCell className="text-right">
                   {typeof wallet.balance === 'number' 
@@ -170,57 +215,40 @@ const WalletTable: React.FC<WalletTableProps> = ({
                 <TableCell className="text-right">{wallet.date || '—'}</TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-2">
-                    {/* Copy Address Button */}
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-7 w-7" 
-                      onClick={() => copyToClipboard(wallet.address)}
-                      title="Copy Address"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                    </Button>
-
-                    {/* View on Explorer Button */}
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-7 w-7" 
-                      onClick={() => openExplorer(wallet.address)}
-                      title="View on Explorer"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </Button>
-
                     {/* View Transactions Button */}
                     <Button 
                       variant="ghost" 
-                      size="icon" 
-                      className="h-7 w-7"
+                      size="sm"
+                      onClick={() => handleViewTransactions(wallet)}
+                      className="text-xs h-7"
                       title="View Transactions"
                     >
-                      <FileText className="h-3.5 w-3.5" />
+                      <FileText className="h-3.5 w-3.5 mr-1" />
+                      Transactions
                     </Button>
 
-                    {/* View Seed Phrase Button - Only this is locked */}
+                    {/* View Seed Phrase Button */}
                     {isAccessLocked ? (
                       <Button 
                         variant="ghost" 
-                        size="icon" 
-                        className="h-7 w-7" 
+                        size="sm"
                         onClick={onRequestUnlock}
+                        className="text-xs h-7"
                         title="Access Locked"
                       >
-                        <Lock className="h-3.5 w-3.5 text-amber-500" />
+                        <Lock className="h-3.5 w-3.5 mr-1 text-amber-500" />
+                        Seed Phrase
                       </Button>
                     ) : (
                       <Button 
                         variant="ghost" 
-                        size="icon" 
-                        className="h-7 w-7"
+                        size="sm"
+                        onClick={() => handleViewSeedPhrase(wallet)}
+                        className="text-xs h-7"
                         title="View Seed Phrase"
                       >
-                        <Key className="h-3.5 w-3.5" />
+                        <Key className="h-3.5 w-3.5 mr-1" />
+                        Seed Phrase
                       </Button>
                     )}
                   </div>
@@ -267,6 +295,77 @@ const WalletTable: React.FC<WalletTableProps> = ({
           </PaginationContent>
         </Pagination>
       )}
+      
+      {/* Transactions Dialog */}
+      <Dialog open={!!selectedTransaction} onOpenChange={() => setSelectedTransaction(null)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Transaction History</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[60vh] overflow-y-auto">
+            {selectedTransaction?.transactions?.length ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead className="text-right">Hash</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {selectedTransaction.transactions.map((tx, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell className={tx.type === 'incoming' ? 'text-green-500' : 'text-red-500'}>
+                        {tx.type === 'incoming' ? '↓ Received' : '↑ Sent'}
+                      </TableCell>
+                      <TableCell>{tx.amount} BTC</TableCell>
+                      <TableCell>{tx.timestamp}</TableCell>
+                      <TableCell className="font-mono text-xs text-right">
+                        {tx.hash.substring(0, 8)}...{tx.hash.substring(tx.hash.length - 8)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                No transaction history available
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Seed Phrase Dialog */}
+      <Dialog open={!!selectedSeedPhrase} onOpenChange={() => setSelectedSeedPhrase(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Seed Phrase</DialogTitle>
+          </DialogHeader>
+          <div className="border rounded-md p-4 bg-muted/30">
+            {selectedSeedPhrase?.seedPhrase ? (
+              <div className="grid grid-cols-3 gap-2">
+                {selectedSeedPhrase.seedPhrase.map((word, idx) => (
+                  <div key={idx} className="flex items-center">
+                    <span className="text-muted-foreground mr-2 text-xs font-mono">
+                      {(idx + 1).toString().padStart(2, '0')}
+                    </span>
+                    <span className="font-medium">{word}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                Seed phrase not available for this wallet
+              </div>
+            )}
+          </div>
+          <div className="text-xs text-muted-foreground mt-2">
+            Warning: Never share your seed phrase with anyone
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

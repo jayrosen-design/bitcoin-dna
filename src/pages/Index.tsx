@@ -144,7 +144,14 @@ const Index = () => {
         time: `${hours}:${minutes}`,
         date: `${month}/${day}`,
         source: 'user',
-        visualData: phrase.visualData
+        visualData: phrase.visualData,
+        seedPhrase: phrase.words,
+        transactions: Array(Math.floor(Math.random() * 3)).fill(0).map((_, i) => ({
+          hash: `0x${Math.random().toString(16).substring(2, 42)}`,
+          amount: (Math.random() * 0.0001).toFixed(8),
+          timestamp: new Date(Date.now() - i * 86400000).toLocaleString(),
+          type: Math.random() > 0.5 ? 'incoming' as const : 'outgoing' as const
+        }))
       };
       
       addWallet(quantumWallet);

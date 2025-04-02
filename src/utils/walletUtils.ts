@@ -7,7 +7,9 @@ export type CryptoType = 'bitcoin' | 'ethereum';
 // Format address for display (shortened with ellipsis)
 export const formatAddress = (address: string): string => {
   if (!address) return '';
-  return `${address.substring(0, 10)}...${address.substring(address.length - 8)}`;
+  if (address.length <= 16) return address;
+  
+  return `${address.slice(0, 8)}...${address.slice(-8)}`;
 };
 
 // Generate a random seed phrase

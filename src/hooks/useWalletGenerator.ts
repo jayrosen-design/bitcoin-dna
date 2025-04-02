@@ -15,10 +15,16 @@ export interface WalletEntry {
   balance: string;
   timestamp: Date;
   cryptoType: CryptoType;
-  source: 'global' | 'user'; // Changed from optional to required to match WalletTable
+  source: 'global' | 'user';
   time?: string;
   date?: string;
   visualData?: number[];
+  transactions?: Array<{
+    hash: string;
+    amount: string;
+    timestamp: string;
+    type: 'incoming' | 'outgoing';
+  }>;
 }
 
 export const useWalletGenerator = (activeCrypto: CryptoType) => {
@@ -116,14 +122,22 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
           transactions: result.transactions
         });
 
+        // Format timestamp for display
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const dateStr = now.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
+
         const newWallet: WalletEntry = {
           id: Math.random().toString(36).substring(2, 9),
           seedPhrase: [...seedPhrase],
           address,
           balance: result.balance,
-          timestamp: new Date(),
+          timestamp: now,
           cryptoType: activeCrypto,
-          source: 'user' // Fixed: Added required source property
+          source: 'user',
+          time: timeStr,
+          date: dateStr,
+          transactions: result.transactions
         };
         setWalletHistory(prev => [...prev, newWallet]);
         
