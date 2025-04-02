@@ -15,6 +15,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const wordElementsRef = useRef<HTMLDivElement[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Calculate color based on position in grid - using a simpler gradient closer to the original HTML
   const calculateColor = (row: number, col: number, gridSize: number) => {
@@ -127,9 +128,23 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
       }
     });
     
-    // Draw connections if enabled
-    if (showConnections && containerRef.current) {
+    // Clear and recreate connections if enabled
+    clearConnections();
+    
+    // Only draw connections if explicitly enabled
+    if (showConnections && currentIndices.length > 0) {
       drawConnections();
+    }
+  };
+  
+  // Clear any existing connections
+  const clearConnections = () => {
+    if (!containerRef.current) return;
+    
+    // Remove any existing canvas
+    if (canvasRef.current) {
+      canvasRef.current.remove();
+      canvasRef.current = null;
     }
   };
   
@@ -137,11 +152,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   const drawConnections = () => {
     if (!containerRef.current) return;
     
-    // Remove any existing canvas
-    const existingCanvas = containerRef.current.querySelector('canvas');
-    if (existingCanvas) {
-      existingCanvas.remove();
-    }
+    clearConnections();
     
     const container = containerRef.current;
     const wordElements = wordElementsRef.current;
@@ -158,6 +169,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     canvas.width = container.offsetWidth;
     canvas.height = container.offsetHeight;
     container.appendChild(canvas);
+    canvasRef.current = canvas;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -210,6 +222,8 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     const handleResize = () => {
       if (showConnections) {
         drawConnections();
+      } else {
+        clearConnections();
       }
     };
     

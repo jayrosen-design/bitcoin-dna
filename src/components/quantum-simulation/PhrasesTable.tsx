@@ -62,17 +62,18 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
         <p className="text-xs text-gray-500">History of attempted 12-word combinations</p>
       </div>
       
-      {/* Moved the toggle above the table */}
-      <div className="px-3 py-2 border-b border-gray-700 flex items-center justify-between">
-        <Toggle
-          pressed={showConnections}
-          onPressedChange={setShowConnections}
-          variant="outline"
-          size="sm"
-          className="data-[state=on]:bg-cyan-900 data-[state=on]:text-cyan-50"
-        >
-          Show Word Connections
-        </Toggle>
+      {/* Toggle for connections */}
+      <div className="px-3 py-2 border-b border-gray-700 flex items-center">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-400">Show Word Connections</span>
+          <Toggle
+            pressed={showConnections}
+            onPressedChange={setShowConnections}
+            variant="outline"
+            size="sm"
+            className="h-6 w-10 rounded-full bg-slate-900 border-cyan-800 data-[state=on]:bg-cyan-900 data-[state=on]:border-cyan-400"
+          />
+        </div>
       </div>
       
       <div className="flex-1 overflow-y-auto p-1">
