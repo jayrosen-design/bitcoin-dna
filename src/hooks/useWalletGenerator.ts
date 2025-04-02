@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { 
@@ -49,6 +48,7 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
   const [autoCount, setAutoCount] = useState(0);
   const [totalGenerations, setTotalGenerations] = useState(0);
   const [lastAutoTime, setLastAutoTime] = useState(0);
+  const [shouldShowTransactions, setShouldShowTransactions] = useState(false);
   
   useEffect(() => {
     generateNewSeedPhrase();
@@ -61,12 +61,12 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     if (isAutoGenerating && !isLoading && !isGenerating) {
       const now = Date.now();
       
-      // Make sure we're not generating too fast (at least 1s between generations)
+      // Make sure we're not generating too fast (at least 3s between generations)
       const delay = Math.max(0, lastAutoTime + 3000 - now);
       
       autoGenTimeout = setTimeout(() => {
         setLastAutoTime(Date.now());
-        generateAndCheck();
+        generateAndCheck(false); // Pass false to not trigger transaction view in auto mode
         setAutoCount(prev => prev + 1);
         setTotalGenerations(prev => prev + 1);
       }, delay);
@@ -81,6 +81,7 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     setIsGenerating(true);
     setWalletStatus('idle');
     setWalletData({});
+    setShouldShowTransactions(false);
     
     setTimeout(() => {
       const newSeedPhrase = generateSeedPhrase();
@@ -100,7 +101,7 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     }, 500);
   }, [activeCrypto]);
 
-  const checkWalletBalance = useCallback(async () => {
+  const checkWalletBalance = useCallback(async (showTransactions = true) => {
     if (isLoading) return;
     
     setIsLoading(true);
@@ -149,13 +150,23 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
         };
         setWalletHistory(prev => [...prev, newWallet]);
         
-        setTimeout(() => {
-          setWalletStatus('unlocking');
-          
+        // Only proceed to show transaction view if explicitly requested 
+        // (i.e., not during auto generation)
+        if (showTransactions) {
+          setShouldShowTransactions(true);
           setTimeout(() => {
-            setWalletStatus('unlocked');
-          }, 2000);
-        }, 1500);
+            setWalletStatus('unlocking');
+            
+            setTimeout(() => {
+              setWalletStatus('unlocked');
+            }, 2000);
+          }, 1500);
+        } else {
+          // Otherwise just go back to idle after a short delay
+          setTimeout(() => {
+            setWalletStatus('idle');
+          }, 800);
+        }
       } else {
         setWalletStatus('no-balance');
         setWalletData({});
@@ -169,11 +180,11 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     }
   }, [activeCrypto, address, isLoading, seedPhrase]);
 
-  const generateAndCheck = useCallback(() => {
+  const generateAndCheck = useCallback((showTransactions = true) => {
     generateNewSeedPhrase();
     
     setTimeout(() => {
-      checkWalletBalance();
+      checkWalletBalance(showTransactions);
     }, 800);
   }, [generateNewSeedPhrase, checkWalletBalance]);
 
@@ -184,6 +195,9 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     if (newState) {
       toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
       setLastAutoTime(Date.now());
+      // Make sure transaction view is not shown when starting auto-generation
+      setShouldShowTransactions(false);
+      setWalletStatus('idle');
     } else {
       toast.info(`Auto-generation stopped after ${autoCount} attempts`);
       setAutoCount(0);
@@ -230,6 +244,7 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     walletHistory,
     isAutoGenerating,
     autoCount,
+    shouldShowTransactions,
     generateNewSeedPhrase,
     checkWalletBalance,
     generateAndCheck,

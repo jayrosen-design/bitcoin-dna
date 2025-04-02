@@ -59,6 +59,7 @@ const Index = () => {
     walletHistory,
     isAutoGenerating,
     autoCount,
+    shouldShowTransactions,
     generateNewSeedPhrase,
     checkWalletBalance,
     generateAndCheck,
@@ -237,7 +238,8 @@ const Index = () => {
   };
 
   const renderContent = () => {
-    if (walletStatus === 'unlocked' && walletData.balance) {
+    // Only show the transaction view if explicitly instructed to do so
+    if (walletStatus === 'unlocked' && walletData.balance && shouldShowTransactions) {
       return (
         <div className="animate-fade-up space-y-8 w-full">
           <WalletDashboard
@@ -272,8 +274,8 @@ const Index = () => {
               <SeedPhraseGenerator
                 seedPhrase={seedPhrase}
                 onRegenerateSeed={generateNewSeedPhrase}
-                onCheckWallet={checkWalletBalance}
-                onGenerateAndCheck={generateAndCheck}
+                onCheckWallet={() => checkWalletBalance(true)}
+                onGenerateAndCheck={() => generateAndCheck(true)}
                 onToggleAutoGeneration={toggleAutoGeneration}
                 isLoading={isLoading}
                 isGenerating={isGenerating}
