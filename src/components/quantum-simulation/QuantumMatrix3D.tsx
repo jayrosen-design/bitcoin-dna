@@ -27,8 +27,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   
   // Define constants
   const LAYERS_COUNT = 12;
-  const POINT_SIZE = 1.5; // Increased point size for better visibility
-  const GRID_SIZE = 45;
+  const POINT_SIZE = 1.5; // Point size for visibility
+  const GRID_SIZE = 45; // Grid size to match the 2D view's layout
 
   // Calculate color based on position with higher contrast
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
@@ -36,14 +36,14 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     const normalizedRow = row / GRID_SIZE;
     const normalizedCol = col / GRID_SIZE;
     
-    // Create RGB components based on position similar to HTML example but with higher contrast
+    // Create RGB components based on position with higher contrast
     const r = Math.floor(normalizedCol * 200) + 55; // Higher contrast
     const g = Math.floor(normalizedRow * 200) + 55;
     const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 75;
     
     // Apply layer factor for depth with increased brightness
     return new THREE.Color(
-      Math.min(1, r / 255 * layerFactor * 1.2), // Increase brightness by 20%
+      Math.min(1, r / 255 * layerFactor * 1.2),
       Math.min(1, g / 255 * layerFactor * 1.2),
       Math.min(1, b / 255 * layerFactor * 1.2)
     );
@@ -97,19 +97,19 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     controlsRef.current = controls;
     
     // Add stronger lighting for better visibility
-    const ambientLight = new THREE.AmbientLight(0x666666); // Brighter ambient light
+    const ambientLight = new THREE.AmbientLight(0x777777); // Brighter ambient light
     scene.add(ambientLight);
     
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.0); // Increased intensity
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.0);
     dirLight1.position.set(1, 1, 1);
     scene.add(dirLight1);
     
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.8); // Increased intensity
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
     dirLight2.position.set(-1, -1, -1);
     scene.add(dirLight2);
     
-    // Add point light
-    const pointLight = new THREE.PointLight(0x00aaff, 1.5, 120); // Brighter blue light
+    // Add brighter point light
+    const pointLight = new THREE.PointLight(0x00aaff, 2, 140);
     pointLight.position.set(0, 0, 60);
     scene.add(pointLight);
     
@@ -191,18 +191,19 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     };
   }, []);
   
-  // Create word layers with improved distribution
+  // Create word layers with full grid distribution
   const createWordLayers = () => {
     if (!sceneRef.current) return;
     
     const scene = sceneRef.current;
-    const layerCount = LAYERS_COUNT;
-    const totalWords = wordList.length;
-    const wordsPerLayer = Math.ceil(totalWords / layerCount);
+    const wordCount = wordList.length; // Full BIP-39 wordlist (2048 words)
     const pointsArray: THREE.Points[] = [];
     
-    // Create layers
-    for (let layer = 0; layer < layerCount; layer++) {
+    // Calculate grid dimensions to ensure square layout
+    const gridDimension = Math.ceil(Math.sqrt(wordCount));
+    
+    // Distribute all words across layers
+    for (let layer = 0; layer < LAYERS_COUNT; layer++) {
       // Create point geometry for this layer
       const vertices: number[] = [];
       const colors: number[] = [];
@@ -210,27 +211,28 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       // Position of this layer (stacked along z-axis)
       const zPosition = layer * -8;
       
-      // Calculate a more even distribution of points across the entire layer
-      for (let i = 0; i < wordsPerLayer && layer * wordsPerLayer + i < totalWords; i++) {
-        // Use modulo and division for grid positioning
-        const col = i % GRID_SIZE;
-        const row = Math.floor(i / GRID_SIZE);
+      // Create a point for EACH word in the wordlist - full 2048 word distribution
+      for (let i = 0; i < wordCount; i++) {
+        // Calculate row and column in the grid
+        const col = i % gridDimension;
+        const row = Math.floor(i / gridDimension);
         
-        // Distribute points evenly across the grid
-        // Scale to fill the entire viewable area
-        const x = (col - GRID_SIZE / 2) * 0.6;
-        const y = (GRID_SIZE / 2 - row) * 0.6;
-        const z = zPosition;
+        // Calculate position to create a square grid that fills the entire viewable area
+        // Scale the grid to be visible within the camera frustum
+        const gridExtent = 45; // Larger grid extent for bigger distribution
+        const x = (col - gridDimension/2) * (gridExtent/gridDimension);
+        const y = (gridDimension/2 - row) * (gridExtent/gridDimension);
         
-        vertices.push(x, y, z);
+        // Add point to vertices array
+        vertices.push(x, y, zPosition);
         
         // Create color with layer depth factor for gradient
-        const depthFactor = 0.7 + (layer / layerCount) * 0.6; // Increased brightness
+        const depthFactor = 0.7 + (layer / LAYERS_COUNT) * 0.6;
         const color = calculateColor(row, col, depthFactor);
         colors.push(color.r, color.g, color.b);
       }
       
-      // Create points geometry
+      // Create points geometry with all words
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
@@ -240,7 +242,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         size: POINT_SIZE,
         vertexColors: true,
         transparent: true,
-        opacity: 0.9, // Higher opacity for better visibility
+        opacity: 0.9,
         sizeAttenuation: true
       });
       
@@ -249,10 +251,10 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       pointsArray.push(points);
       scene.add(points);
       
-      // Also create a semi-transparent plane for each layer
-      const planeGeometry = new THREE.PlaneGeometry(GRID_SIZE * 0.6, GRID_SIZE * 0.6);
+      // Create a semi-transparent plane for each layer to enhance depth perception
+      const planeGeometry = new THREE.PlaneGeometry(gridExtent, gridExtent);
       const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x223344, // Slightly bluer for contrast
+        color: 0x223344,
         transparent: true,
         opacity: 0.08,
         side: THREE.DoubleSide
@@ -283,23 +285,20 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     if (showConnections) {
       const positions: THREE.Vector3[] = [];
       
-      // Find positions of active words
-      currentIndices.forEach(index => {
-        const layer = Math.floor(index / (wordList.length / LAYERS_COUNT));
-        const layerOffset = index % Math.ceil(wordList.length / LAYERS_COUNT);
-        
-        if (pointsRef.current[layer]) {
-          const geometry = pointsRef.current[layer].geometry;
+      // Find positions of active words in each layer
+      currentIndices.forEach((wordIndex, layerIndex) => {
+        if (layerIndex < LAYERS_COUNT && pointsRef.current[layerIndex]) {
+          const geometry = pointsRef.current[layerIndex].geometry;
           const position = new THREE.Vector3();
           
           // Get position from buffer attribute
           position.fromBufferAttribute(
             geometry.attributes.position as THREE.BufferAttribute, 
-            layerOffset
+            wordIndex
           );
           
           // Transform to world space
-          pointsRef.current[layer].localToWorld(position);
+          pointsRef.current[layerIndex].localToWorld(position);
           positions.push(position);
         }
       });
@@ -310,7 +309,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const lineMaterial = new THREE.LineBasicMaterial({
           color: 0x00ffff, // Bright cyan
           transparent: true,
-          opacity: 0.8, // Higher opacity
+          opacity: 0.8,
           linewidth: 2
         });
         
@@ -320,38 +319,42 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       }
     }
     
-    // Highlight active points with brighter colors
-    pointsRef.current.forEach((points, layer) => {
+    // Highlight active points in each layer with brighter colors
+    pointsRef.current.forEach((points, layerIndex) => {
       const geometry = points.geometry;
       const colors = geometry.attributes.color.array as Float32Array;
+      const positions = geometry.attributes.position.array as Float32Array;
       
-      // Reset all colors
-      for (let i = 0; i < colors.length; i += 3) {
-        const index = layer * Math.ceil(wordList.length / LAYERS_COUNT) + i / 3;
-        const row = Math.floor((i/3) / GRID_SIZE);
-        const col = (i/3) % GRID_SIZE;
-        const depthFactor = 0.7 + (layer / LAYERS_COUNT) * 0.6;
+      // Reset all colors to their original state
+      for (let i = 0; i < wordList.length; i++) {
+        const baseIndex = i * 3;
+        
+        // Calculate original grid position for this point
+        const gridDimension = Math.ceil(Math.sqrt(wordList.length));
+        const col = i % gridDimension;
+        const row = Math.floor(i / gridDimension);
+        
+        // Restore original color based on position
+        const depthFactor = 0.7 + (layerIndex / LAYERS_COUNT) * 0.6;
         const color = calculateColor(row, col, depthFactor);
         
-        colors[i] = color.r;
-        colors[i + 1] = color.g;
-        colors[i + 2] = color.b;
+        colors[baseIndex] = color.r;
+        colors[baseIndex + 1] = color.g;
+        colors[baseIndex + 2] = color.b;
       }
       
-      // Highlight active indices with much brighter colors
-      currentIndices.forEach(index => {
-        const activeLayer = Math.floor(index / Math.ceil(wordList.length / LAYERS_COUNT));
-        const layerOffset = index % Math.ceil(wordList.length / LAYERS_COUNT);
+      // Now highlight the specific active word in this layer
+      if (layerIndex < currentIndices.length) {
+        const activeWordIndex = currentIndices[layerIndex];
+        const baseIndex = activeWordIndex * 3;
         
-        if (activeLayer === layer) {
-          const i = layerOffset * 3;
-          // Very bright cyan for active points
-          colors[i] = 0.2;     // R - a bit of red for better visibility
-          colors[i + 1] = 1.0; // G - full green
-          colors[i + 2] = 1.0; // B - full blue
-        }
-      });
+        // Very bright cyan for active point
+        colors[baseIndex] = 0.2;     // R - a bit of red for better visibility
+        colors[baseIndex + 1] = 1.0; // G - full green
+        colors[baseIndex + 2] = 1.0; // B - full blue
+      }
       
+      // Update the attribute
       geometry.attributes.color.needsUpdate = true;
     });
   };
