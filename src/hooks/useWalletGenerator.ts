@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { 
   generateSeedPhrase, 
@@ -48,28 +48,36 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
   const [isAutoGenerating, setIsAutoGenerating] = useState(false);
   const [autoCount, setAutoCount] = useState(0);
   const [totalGenerations, setTotalGenerations] = useState(0);
+  const [lastAutoTime, setLastAutoTime] = useState(0);
   
   useEffect(() => {
     generateNewSeedPhrase();
   }, []);
   
+  // Fixed auto-generation with proper timer management
   useEffect(() => {
-    let autoGenInterval: NodeJS.Timeout;
+    let autoGenTimeout: NodeJS.Timeout | null = null;
 
     if (isAutoGenerating && !isLoading && !isGenerating) {
-      autoGenInterval = setTimeout(() => {
+      const now = Date.now();
+      
+      // Make sure we're not generating too fast (at least 1s between generations)
+      const delay = Math.max(0, lastAutoTime + 3000 - now);
+      
+      autoGenTimeout = setTimeout(() => {
+        setLastAutoTime(Date.now());
         generateAndCheck();
         setAutoCount(prev => prev + 1);
         setTotalGenerations(prev => prev + 1);
-      }, 3000);
+      }, delay);
     }
 
     return () => {
-      if (autoGenInterval) clearTimeout(autoGenInterval);
+      if (autoGenTimeout) clearTimeout(autoGenTimeout);
     };
-  }, [isAutoGenerating, isLoading, isGenerating, autoCount, activeCrypto]);
+  }, [isAutoGenerating, isLoading, isGenerating, autoCount, activeCrypto, lastAutoTime]);
   
-  const generateNewSeedPhrase = () => {
+  const generateNewSeedPhrase = useCallback(() => {
     setIsGenerating(true);
     setWalletStatus('idle');
     setWalletData({});
@@ -90,9 +98,9 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
           toast.error('Error generating address');
         });
     }, 500);
-  };
+  }, [activeCrypto]);
 
-  const checkWalletBalance = async () => {
+  const checkWalletBalance = useCallback(async () => {
     if (isLoading) return;
     
     setIsLoading(true);
@@ -159,27 +167,30 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activeCrypto, address, isLoading, seedPhrase]);
 
-  const generateAndCheck = () => {
+  const generateAndCheck = useCallback(() => {
     generateNewSeedPhrase();
     
     setTimeout(() => {
       checkWalletBalance();
     }, 800);
-  };
+  }, [generateNewSeedPhrase, checkWalletBalance]);
 
-  const toggleAutoGeneration = () => {
-    if (isAutoGenerating) {
+  const toggleAutoGeneration = useCallback(() => {
+    const newState = !isAutoGenerating;
+    setIsAutoGenerating(newState);
+    
+    if (newState) {
+      toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
+      setLastAutoTime(Date.now());
+    } else {
       toast.info(`Auto-generation stopped after ${autoCount} attempts`);
       setAutoCount(0);
-    } else {
-      toast.info('Auto-generation started - system will continuously generate and check new seed phrases');
     }
-    setIsAutoGenerating(!isAutoGenerating);
-  };
+  }, [isAutoGenerating, autoCount]);
   
-  const calculateMetrics = () => {
+  const calculateMetrics = useCallback(() => {
     const bitcoinWallets = walletHistory.filter(w => w.cryptoType === 'bitcoin');
     const ethereumWallets = walletHistory.filter(w => w.cryptoType === 'ethereum');
     
@@ -207,7 +218,7 @@ export const useWalletGenerator = (activeCrypto: CryptoType) => {
       totalGenerations,
       autoCount
     };
-  };
+  }, [walletHistory, totalGenerations, autoCount]);
 
   return {
     seedPhrase,

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -33,7 +34,14 @@ const Index = () => {
     totalSeedPhrases: 48931056
   });
   
-  const { btcPrice, ethPrice, isLoading: isPriceLoading } = useLiveCryptoPrices();
+  const { 
+    btcPrice, 
+    ethPrice, 
+    isLoading: isPriceLoading,
+    initialized: isPriceInitialized,
+    initializeData: initializePriceData
+  } = useLiveCryptoPrices();
+  
   const { 
     randomWallets, 
     isLoading: isRandomWalletsLoading, 
@@ -61,11 +69,25 @@ const Index = () => {
   const [lastQuantumId, setLastQuantumId] = useState<number>(0);
   
   useEffect(() => {
+    // Initialize price data after a short delay to prioritize UI rendering
+    const timer = setTimeout(() => {
+      initializePriceData();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [initializePriceData]);
+  
+  useEffect(() => {
     if (!isAutoGenerating) {
-      toggleAutoGeneration();
-      toast.info('Auto-generation started for demonstration');
+      // Start auto-generation after page fully loads
+      const timer = setTimeout(() => {
+        toggleAutoGeneration();
+        toast.info('Auto-generation started for demonstration');
+      }, 1500);
+      
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [isAutoGenerating, toggleAutoGeneration]);
 
   const prevTotalWallets = React.useRef(totalValueUnlocked.wallets);
   useEffect(() => {
@@ -298,7 +320,7 @@ const Index = () => {
         isAccessUnlocked={isAccessUnlocked}
         onToggleUnlock={toggleUnlockModal}
         btcPrice={btcPrice}
-        isPriceLoading={isPriceLoading}
+        isPriceLoading={isPriceLoading && isPriceInitialized}
       />
       
       <main className="flex-1 pt-10 pb-8 px-3 sm:px-4 container mx-auto">
