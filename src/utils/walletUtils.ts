@@ -1,9 +1,14 @@
-
 import { wordList } from './wordList';
 import { toast } from 'sonner';
 
 // Define crypto types
 export type CryptoType = 'bitcoin' | 'ethereum';
+
+// Format address for display (shortened with ellipsis)
+export const formatAddress = (address: string): string => {
+  if (!address) return '';
+  return `${address.substring(0, 10)}...${address.substring(address.length - 8)}`;
+};
 
 // Generate a random seed phrase
 export const generateSeedPhrase = (): string[] => {

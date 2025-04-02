@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
 import WalletDashboard from '@/components/WalletDashboard';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
 import { CryptoType } from '@/utils/walletUtils';
-import { useWalletGenerator, WalletEntry } from '@/hooks/useWalletGenerator';
+import { useWalletGenerator } from '@/hooks/useWalletGenerator';
 import StatusCards from '@/components/StatusCards';
 import SeedPhraseGenerator from '@/components/SeedPhraseGenerator';
 import GenerationSummary from '@/components/GenerationSummary';
@@ -15,6 +14,7 @@ import QuantumIntro from '@/components/QuantumIntro';
 import TabbedWalletTable from '@/components/TabbedWalletTable';
 import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
 import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSeedSimulation';
+import type { WalletEntry as TableWalletEntry } from '@/components/WalletTable';
 
 const Index = () => {
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
@@ -58,7 +58,6 @@ const Index = () => {
     calculateMetrics
   } = useWalletGenerator(activeCrypto);
 
-  // Track quantum simulation phrases to add to wallet history
   const [lastQuantumId, setLastQuantumId] = useState<number>(0);
   
   useEffect(() => {
@@ -116,32 +115,29 @@ const Index = () => {
       if (walletHistory.length > 0) {
         const latestWallet = {
           ...walletHistory[walletHistory.length - 1],
-          source: 'user' as 'global' | 'user'
+          source: 'user' as const
         };
-        addWallet(latestWallet);
+        addWallet(latestWallet as TableWalletEntry);
       }
     }
   }, [walletData.balance, walletHistory, activeCrypto, btcPrice, addWallet]);
 
-  // Handler for quantum simulation phrases
   const handleQuantumPhrase = useCallback((phrase: {
     id: number;
     words: string[];
     visualData: number[];
     btcAddress: string;
   }) => {
-    // Only process new phrases
     if (phrase.id > lastQuantumId) {
       setLastQuantumId(phrase.id);
       
-      // Create a wallet entry from the quantum phrase
       const now = new Date();
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
       const day = now.getDate().toString().padStart(2, '0');
       const month = (now.getMonth() + 1).toString().padStart(2, '0');
       
-      const quantumWallet: WalletEntry = {
+      const quantumWallet: TableWalletEntry = {
         id: `quantum-${phrase.id}`,
         address: phrase.btcAddress,
         balance: (Math.random() * 0.001).toFixed(8),
@@ -151,7 +147,6 @@ const Index = () => {
         visualData: phrase.visualData
       };
       
-      // Add to wallet history
       addWallet(quantumWallet);
     }
   }, [lastQuantumId, addWallet]);

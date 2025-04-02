@@ -15,7 +15,10 @@ export interface WalletEntry {
   balance: string;
   timestamp: Date;
   cryptoType: CryptoType;
-  source?: 'global' | 'user'; // Added source property
+  source: 'global' | 'user'; // Changed from optional to required to match WalletTable
+  time?: string;
+  date?: string;
+  visualData?: number[];
 }
 
 export const useWalletGenerator = (activeCrypto: CryptoType) => {
