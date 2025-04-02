@@ -1,3 +1,4 @@
+
 import { wordList } from './wordList';
 import { toast } from 'sonner';
 
@@ -25,7 +26,7 @@ export const generateSeedPhrase = (): string[] => {
   return seedPhrase;
 };
 
-// Fetch recent active address from block explorer instead of generating one
+// Derive an address from a seed phrase (mock implementation)
 export const deriveAddress = async (seedPhrase: string[], cryptoType: CryptoType = 'bitcoin'): Promise<string> => {
   try {
     // For simulation purposes, we'll use the seed phrase to create a deterministic but fake address
@@ -41,7 +42,7 @@ export const deriveAddress = async (seedPhrase: string[], cryptoType: CryptoType
     // Convert to a hex string and use as part of the address
     const hashHex = Math.abs(hash).toString(16).padStart(8, '0');
     
-    // Try to fetch a real address from recent blockchain activity
+    // Get an address from the known addresses list for a realistic simulation
     const recentAddresses = await fetchRecentActiveAddresses(cryptoType);
     
     if (recentAddresses && recentAddresses.length > 0) {
@@ -69,11 +70,10 @@ export const deriveAddress = async (seedPhrase: string[], cryptoType: CryptoType
   }
 };
 
-// Fetch recent active addresses with balance over threshold
+// Fixed list of known active addresses (no API calls)
 export const fetchRecentActiveAddresses = async (cryptoType: CryptoType): Promise<string[]> => {
   try {
     // For Bitcoin, we'll use some known active addresses
-    // In a production app, we'd need to get these from a reliable source
     if (cryptoType === 'bitcoin') {
       return [
         '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ', // Binance cold wallet
@@ -136,117 +136,9 @@ const generateUniqueBalance = (address: string, cryptoType: CryptoType): string 
   return balance.toFixed(8);
 };
 
-// Fetch actual Bitcoin address balance and transactions from mempool.space API
-const fetchBitcoinAddressData = async (address: string): Promise<{
-  balance: string;
-  transactions: Array<{
-    hash: string;
-    amount: string;
-    timestamp: string;
-    type: 'incoming' | 'outgoing';
-  }>;
-}> => {
-  try {
-    // Fetch address details to get balance
-    const addressResponse = await fetch(`https://mempool.space/api/address/${address}`);
-    if (!addressResponse.ok) {
-      throw new Error(`Failed to fetch address data: ${addressResponse.status}`);
-    }
-    const addressData = await addressResponse.json();
-    
-    // Calculate balance in satoshis (funded - spent)
-    const chainStats = addressData.chain_stats;
-    const mempoolStats = addressData.mempool_stats;
-    const totalFunded = chainStats.funded_txo_sum + mempoolStats.funded_txo_sum;
-    const totalSpent = chainStats.spent_txo_sum + mempoolStats.spent_txo_sum;
-    const balanceSats = totalFunded - totalSpent;
-    
-    // Convert satoshis to BTC (1 BTC = 100,000,000 satoshis)
-    const balanceBTC = (balanceSats / 100000000).toFixed(8);
-    
-    // Fetch transactions
-    const txResponse = await fetch(`https://mempool.space/api/address/${address}/txs`);
-    if (!txResponse.ok) {
-      throw new Error(`Failed to fetch address transactions: ${txResponse.status}`);
-    }
-    const txData = await txResponse.json();
-    
-    // Process transactions (max 10)
-    const processedTxs = [];
-    const maxTxs = Math.min(txData.length, 10);
-    
-    for (let i = 0; i < maxTxs; i++) {
-      const tx = txData[i];
-      
-      // Determine if transaction is incoming or outgoing and the amount
-      let type: 'incoming' | 'outgoing' = 'incoming';
-      let amount = 0;
-      
-      // Check if address is in inputs (outgoing) or outputs (incoming)
-      let isInInput = false;
-      let isInOutput = false;
-      
-      // Check inputs (vins)
-      if (tx.vin) {
-        for (const input of tx.vin) {
-          if (input.prevout && input.prevout.scriptpubkey_address === address) {
-            isInInput = true;
-            amount += input.prevout.value || 0;
-          }
-        }
-      }
-      
-      // Check outputs (vouts)
-      if (tx.vout) {
-        for (const output of tx.vout) {
-          if (output.scriptpubkey_address === address) {
-            isInOutput = true;
-            if (!isInInput) { // Only add to amount if this is purely incoming
-              amount += output.value || 0;
-            }
-          }
-        }
-      }
-      
-      // If address is in input, it's an outgoing transaction
-      if (isInInput) {
-        type = 'outgoing';
-      }
-      
-      // If we couldn't determine the amount, use a default based on the transaction size
-      if (amount === 0) {
-        amount = tx.vout && tx.vout.length > 0 ? 
-          tx.vout.reduce((sum: number, out: any) => sum + (out.value || 0), 0) / 3 : 
-          10000000; // Default 0.1 BTC
-      }
-      
-      // Convert amount from satoshis to BTC
-      const amountBTC = (amount / 100000000).toFixed(8);
-      
-      // Get timestamp from block time or current time if unconfirmed
-      const timestamp = tx.status && tx.status.block_time 
-        ? new Date(tx.status.block_time * 1000).toISOString() 
-        : new Date().toISOString();
-      
-      processedTxs.push({
-        hash: tx.txid,
-        amount: amountBTC,
-        timestamp,
-        type
-      });
-    }
-    
-    return {
-      balance: balanceBTC,
-      transactions: processedTxs
-    };
-  } catch (error) {
-    console.error('Error fetching Bitcoin address data:', error);
-    throw error;
-  }
-};
+// REMOVED: fetchBitcoinAddressData - no more API calls to mempool.space
 
-// Simulate checking if an address has a balance but using real addresses
+// Simulate checking if an address has a balance but using MOCKED data
 export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', address?: string): Promise<{
   hasBalance: boolean;
   balance?: string;
@@ -258,51 +150,18 @@ export const checkAddressBalance = async (cryptoType: CryptoType = 'bitcoin', ad
   }>;
 }> => {
   try {
-    if (cryptoType === 'bitcoin' && address) {
-      try {
-        // Fetch real Bitcoin data from mempool.space API
-        const result = await fetchBitcoinAddressData(address);
-        
-        // Check if balance is greater than 0
-        const balanceValue = parseFloat(result.balance);
-        
-        return {
-          hasBalance: balanceValue > 0,
-          balance: result.balance,
-          transactions: result.transactions
-        };
-      } catch (error) {
-        console.error('Error fetching real Bitcoin data:', error);
-        // Fallback to generated data
-        toast.error('Failed to fetch real blockchain data, using simulation instead');
-        
-        // Generate a unique balance based on the address
-        const balance = generateUniqueBalance(address, cryptoType);
-        
-        // Generate transactions that reflect portions of the total balance
-        const totalBalance = parseFloat(balance);
-        const transactions = await generateFallbackTransactions(address, cryptoType, totalBalance);
-        
-        return {
-          hasBalance: true,
-          balance,
-          transactions
-        };
-      }
-    } else {
-      // For Ethereum or if no address provided, use generated data
-      const balance = generateUniqueBalance(address || '', cryptoType);
-      
-      // Generate transactions that reflect portions of the total balance
-      const totalBalance = parseFloat(balance);
-      const transactions = await generateFallbackTransactions(address || '', cryptoType, totalBalance);
-      
-      return {
-        hasBalance: true,
-        balance,
-        transactions
-      };
-    }
+    // Generate a unique balance based on the address
+    const balance = generateUniqueBalance(address || '', cryptoType);
+    
+    // Generate transactions that reflect portions of the total balance
+    const totalBalance = parseFloat(balance);
+    const transactions = await generateFallbackTransactions(address || '', cryptoType, totalBalance);
+    
+    return {
+      hasBalance: true,
+      balance,
+      transactions
+    };
   } catch (error) {
     console.error('Error checking balance:', error);
     toast.error('Failed to check wallet balance');

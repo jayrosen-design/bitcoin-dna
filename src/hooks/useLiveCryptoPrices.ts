@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { CryptoType } from '@/utils/walletUtils';
 
@@ -15,6 +15,15 @@ interface RecentAddress {
   lastActive: string;
 }
 
+// Cache to prevent duplicate API calls
+const addressCache: Record<string, RecentAddress[]> = {
+  bitcoin: [],
+  ethereum: []
+};
+
+// Flag to track if initial data load has happened
+let initialDataLoaded = false;
+
 export const useLiveCryptoPrices = () => {
   const [btcPrice, setBtcPrice] = useState<number | null>(61432.50); // Default fallback price
   const [ethPrice, setEthPrice] = useState<number | null>(3389.75); // Default fallback price
@@ -28,10 +37,36 @@ export const useLiveCryptoPrices = () => {
     ethereum: []
   });
   const [initialized, setInitialized] = useState<boolean>(false);
+  const apiCallsInProgress = useRef<number>(0);
+  const lastApiCallTime = useRef<number>(Date.now());
+
+  // Use predefined addresses to avoid API rate limiting
+  const knownBitcoinAddresses = [
+    '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ', // Binance cold wallet
+    '3Kzh9qAqVWQhEsfQz7zEQL1EuSx5tyNLNS', // Bitfinex cold wallet
+    '3LQUu4v9z6KNch71j7kbj8GPeAGUo1FW6a', // Coinbase
+    '385cR5DM96n1HvBDMzLHPYcw89fZAXULJP', // Kraken
+    '1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s'  // Huobi
+  ];
 
   const fetchPrices = useCallback(async () => {
+    // Don't make API calls if we already have too many in progress
+    if (apiCallsInProgress.current > 2) {
+      console.log('Too many API calls in progress, skipping price fetch');
+      return;
+    }
+    
+    // Rate limit API calls
+    const now = Date.now();
+    if (now - lastApiCallTime.current < 10000) { // 10 seconds
+      console.log('API call rate limit reached, skipping price fetch');
+      return;
+    }
+    
+    lastApiCallTime.current = now;
     setIsLoading(true);
     setError(null);
+    apiCallsInProgress.current++;
     
     try {
       // Using CoinGecko's public API (no API key required)
@@ -65,83 +100,117 @@ export const useLiveCryptoPrices = () => {
     } finally {
       setIsLoading(false);
       setInitialized(true);
+      apiCallsInProgress.current--;
     }
   }, [initialized]);
 
-  // Fetch active Bitcoin addresses - simplified to reduce API calls
-  const fetchActiveBitcoinAddresses = useCallback(async (): Promise<RecentAddress[]> => {
-    try {
-      // These are known active Bitcoin addresses with transactions
-      const knownAddresses = [
-        '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ', // Binance cold wallet
-        '3Kzh9qAqVWQhEsfQz7zEQL1EuSx5tyNLNS', // Bitfinex cold wallet
-        '3LQUu4v9z6KNch71j7kbj8GPeAGUo1FW6a', // Coinbase
-        '385cR5DM96n1HvBDMzLHPYcw89fZAXULJP', // Kraken
-        '1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s'  // Huobi
-      ];
-      
-      // Return mocked data to avoid API rate limits
-      return knownAddresses.map(address => ({
-        address,
-        balance: (Math.random() * 100).toFixed(8),
-        txCount: Math.floor(Math.random() * 1000) + 100,
-        lastActive: new Date().toISOString()
-      }));
-    } catch (error) {
-      console.error('Error generating active Bitcoin addresses:', error);
-      return [];
+  // Generate mock data for active Bitcoin addresses instead of making API calls
+  const generateMockBitcoinAddresses = useCallback((): RecentAddress[] => {
+    // If we already have cached addresses, return them
+    if (addressCache.bitcoin.length > 0) {
+      return addressCache.bitcoin;
     }
+    
+    const mockData = knownBitcoinAddresses.map(address => {
+      // Generate deterministic but realistic data based on the address
+      const addressHash = address.split('').reduce((a, b) => {
+        return a + b.charCodeAt(0);
+      }, 0);
+      
+      // Generate a balance between 0.1 and 10 BTC
+      const balance = (0.1 + (addressHash % 990) / 100).toFixed(8);
+      
+      return {
+        address,
+        balance,
+        txCount: Math.floor((addressHash % 500) + 100),
+        lastActive: new Date().toISOString()
+      };
+    });
+    
+    // Cache the result
+    addressCache.bitcoin = mockData;
+    return mockData;
   }, []);
 
-  // Fetch recent active addresses - now runs on demand instead of on mount
+  // Mock data for Ethereum addresses
+  const generateMockEthereumAddresses = useCallback((): RecentAddress[] => {
+    // If we already have cached addresses, return them
+    if (addressCache.ethereum.length > 0) {
+      return addressCache.ethereum;
+    }
+    
+    const ethAddresses = [
+      '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // WETH contract
+      '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', // Uniswap V2 Router
+      '0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8'  // Binance hot wallet
+    ];
+    
+    const mockData = ethAddresses.map(address => {
+      // Generate deterministic but realistic data based on the address
+      const addressHash = address.split('').reduce((a, b) => {
+        return a + b.charCodeAt(0);
+      }, 0);
+      
+      // Generate a balance between 1 and 25 ETH
+      const balance = (1 + (addressHash % 2400) / 100).toFixed(6);
+      
+      return {
+        address,
+        balance,
+        txCount: Math.floor((addressHash % 200) + 50),
+        lastActive: new Date().toISOString()
+      };
+    });
+    
+    // Cache the result
+    addressCache.ethereum = mockData;
+    return mockData;
+  }, []);
+
+  // Fetch recent active addresses - now uses mock data instead of making API calls
   const fetchRecentAddresses = useCallback(async () => {
     try {
-      // For Bitcoin, fetch data for active addresses
-      const btcAddressData = await fetchActiveBitcoinAddresses();
+      // For Bitcoin, use mock data instead of making API calls
+      const btcAddressData = generateMockBitcoinAddresses();
       
-      // For Ethereum, use hardcoded addresses
-      const ethAddresses: RecentAddress[] = [
-        {
-          address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-          balance: '8.43921782',
-          txCount: 5,
-          lastActive: new Date().toISOString()
-        },
-        {
-          address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-          balance: '24.6732901',
-          txCount: 12,
-          lastActive: new Date().toISOString()
-        }
-      ];
+      // For Ethereum, use mock data instead of making API calls
+      const ethAddresses = generateMockEthereumAddresses();
       
       setRecentAddresses({
         bitcoin: btcAddressData,
         ethereum: ethAddresses
       });
     } catch (error) {
-      console.error('Error fetching recent addresses:', error);
+      console.error('Error generating recent addresses:', error);
     }
-  }, [fetchActiveBitcoinAddresses]);
+  }, [generateMockBitcoinAddresses, generateMockEthereumAddresses]);
 
   // Initialize data lazily when needed
   const initializeData = useCallback(() => {
-    if (!initialized) {
-      fetchPrices();
+    if (!initialDataLoaded) {
+      initialDataLoaded = true;
       fetchRecentAddresses();
       
-      // Refresh prices every 5 minutes
-      const interval = setInterval(() => {
+      // Delay price fetching to avoid overwhelming the app at startup
+      setTimeout(() => {
         fetchPrices();
-        fetchRecentAddresses();
-      }, 5 * 60 * 1000);
-      
-      return () => clearInterval(interval);
+        
+        // Set up a less frequent refresh interval (once per minute)
+        const interval = setInterval(() => {
+          fetchPrices();
+        }, 60 * 1000); // 1 minute
+        
+        return () => clearInterval(interval);
+      }, 2000); // Delay initial price fetch by 2 seconds
     }
-  }, [fetchPrices, fetchRecentAddresses, initialized]);
+  }, [fetchPrices, fetchRecentAddresses]);
 
   const getRandomActiveAddress = (cryptoType: CryptoType): string => {
-    const addresses = cryptoType === 'bitcoin' ? recentAddresses.bitcoin : recentAddresses.ethereum;
+    const addresses = cryptoType === 'bitcoin' 
+      ? generateMockBitcoinAddresses() 
+      : generateMockEthereumAddresses();
     
     if (addresses.length === 0) {
       // Fallback addresses if no recent ones are available

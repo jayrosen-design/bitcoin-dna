@@ -47,8 +47,8 @@ const Index = () => {
     isLoading: isRandomWalletsLoading, 
     addWallet, 
     addMockWallet 
-  } = useGetRandomWallets(100);
-
+  } = useGetRandomWallets(10); // Reduced from 100 to 10 to improve performance
+  
   const {
     seedPhrase,
     address,
@@ -69,21 +69,21 @@ const Index = () => {
   const [lastQuantumId, setLastQuantumId] = useState<number>(0);
   
   useEffect(() => {
-    // Initialize price data after a short delay to prioritize UI rendering
+    // Initialize price data after a significant delay to prioritize UI rendering
     const timer = setTimeout(() => {
       initializePriceData();
-    }, 1000);
+    }, 3000); // Increased to 3 seconds
     
     return () => clearTimeout(timer);
   }, [initializePriceData]);
   
   useEffect(() => {
     if (!isAutoGenerating) {
-      // Start auto-generation after page fully loads
+      // Start auto-generation after page fully loads with increased delay
       const timer = setTimeout(() => {
         toggleAutoGeneration();
         toast.info('Auto-generation started for demonstration');
-      }, 1500);
+      }, 5000); // Increased to 5 seconds
       
       return () => clearTimeout(timer);
     }
@@ -92,19 +92,23 @@ const Index = () => {
   const prevTotalWallets = React.useRef(totalValueUnlocked.wallets);
   useEffect(() => {
     if (totalValueUnlocked.wallets > prevTotalWallets.current) {
-      addMockWallet();
+      // Add mock wallets less frequently
+      if (Math.random() > 0.5) {
+        addMockWallet();
+      }
       prevTotalWallets.current = totalValueUnlocked.wallets;
     }
   }, [totalValueUnlocked.wallets, addMockWallet]);
 
   useEffect(() => {
+    // Reduce the frequency of seed phrases increment
     const seedPhrasesInterval = setInterval(() => {
       const randomIncrement = Math.floor(Math.random() * 2) + 1;
       setTotalValueUnlocked(prev => ({
         ...prev,
         totalSeedPhrases: prev.totalSeedPhrases + randomIncrement
       }));
-    }, 3000);
+    }, 5000); // Increased to 5 seconds
 
     return () => clearInterval(seedPhrasesInterval);
   }, []);
@@ -121,6 +125,7 @@ const Index = () => {
   }, [btcPrice, totalValueUnlocked.btc]);
   
   useEffect(() => {
+    // Only update when we have actual data, and throttle the updates
     if (walletData.balance && activeCrypto === 'bitcoin') {
       const foundBalance = parseFloat(walletData.balance) || 0;
       
@@ -134,7 +139,7 @@ const Index = () => {
         };
       });
       
-      if (walletHistory.length > 0) {
+      if (walletHistory.length > 0 && Math.random() > 0.3) { // Only add some wallets to reduce the load
         const latestWallet = {
           ...walletHistory[walletHistory.length - 1],
           source: 'user' as const
@@ -159,24 +164,27 @@ const Index = () => {
       const day = now.getDate().toString().padStart(2, '0');
       const month = (now.getMonth() + 1).toString().padStart(2, '0');
       
-      const quantumWallet: TableWalletEntry = {
-        id: `quantum-${phrase.id}`,
-        address: phrase.btcAddress,
-        balance: (Math.random() * 0.001).toFixed(8),
-        time: `${hours}:${minutes}`,
-        date: `${month}/${day}`,
-        source: 'user',
-        visualData: phrase.visualData,
-        seedPhrase: phrase.words,
-        transactions: Array(Math.floor(Math.random() * 3)).fill(0).map((_, i) => ({
-          hash: `0x${Math.random().toString(16).substring(2, 42)}`,
-          amount: (Math.random() * 0.0001).toFixed(8),
-          timestamp: new Date(Date.now() - i * 86400000).toLocaleString(),
-          type: Math.random() > 0.5 ? 'incoming' as const : 'outgoing' as const
-        }))
-      };
-      
-      addWallet(quantumWallet);
+      // Only add wallets with some probability to reduce load
+      if (Math.random() > 0.7) {
+        const quantumWallet: TableWalletEntry = {
+          id: `quantum-${phrase.id}`,
+          address: phrase.btcAddress,
+          balance: (Math.random() * 0.001).toFixed(8),
+          time: `${hours}:${minutes}`,
+          date: `${month}/${day}`,
+          source: 'user',
+          visualData: phrase.visualData,
+          seedPhrase: phrase.words,
+          transactions: Array(Math.floor(Math.random() * 3)).fill(0).map((_, i) => ({
+            hash: `0x${Math.random().toString(16).substring(2, 42)}`,
+            amount: (Math.random() * 0.0001).toFixed(8),
+            timestamp: new Date(Date.now() - i * 86400000).toLocaleString(),
+            type: Math.random() > 0.5 ? 'incoming' as const : 'outgoing' as const
+          }))
+        };
+        
+        addWallet(quantumWallet);
+      }
     }
   }, [lastQuantumId, addWallet]);
 
