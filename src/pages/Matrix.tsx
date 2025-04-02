@@ -25,20 +25,22 @@ const Matrix = () => {
         isPriceLoading={isLoading}
       />
       
-      <main className="flex-1 container py-4">
-        <Card className="glass-card mb-4">
-          <CardContent className="p-4">
-            <h1 className="text-2xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text">
-              Quantum Seed Phrase Guesser Simulation
-            </h1>
-            <p className="text-muted-foreground">
-              Visualizing quantum attempts to discover Bitcoin seed phrases from the 2048-word BIP-39 dictionary.
-              Each attempt generates a random 12-word combination, simulating the quantum computing process.
-            </p>
-          </CardContent>
-        </Card>
+      <main className="flex-1 w-full">
+        <div className="max-w-screen-2xl mx-auto px-4 py-4">
+          <Card className="glass-card mb-4">
+            <CardContent className="p-4">
+              <h1 className="text-2xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text">
+                Quantum Seed Phrase Guesser Simulation
+              </h1>
+              <p className="text-muted-foreground">
+                Visualizing quantum attempts to discover Bitcoin seed phrases from the 2048-word BIP-39 dictionary.
+                Each attempt generates a random 12-word combination, simulating the quantum computing process.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
         
-        <div className="w-full h-[calc(100vh-280px)]">
+        <div className="w-full h-[calc(100vh-220px)]">
           <QuantumSeedSimulation />
         </div>
       </main>

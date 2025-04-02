@@ -73,7 +73,7 @@ export const QuantumSeedSimulation: React.FC = () => {
   }, []);
   
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-black text-gray-400 rounded-lg border border-gray-800">
+    <div className="flex flex-col h-full w-full overflow-hidden bg-black text-gray-400 rounded-lg border border-gray-800">
       <div className="flex items-center justify-between bg-black p-3 border-b border-gray-800">
         <div className="flex items-center gap-2">
           <Button 
@@ -104,10 +104,10 @@ export const QuantumSeedSimulation: React.FC = () => {
         </Button>
       </div>
       
-      <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100vh - 130px)" }}>
+      <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100% - 76px)" }}>
         {/* Phrases sidebar */}
         <div className={`bg-[#0a0a0a] border-r border-gray-800 transition-all duration-300 ${
-          sidebarOpen ? 'w-2/5 md:w-1/3' : 'w-0'
+          sidebarOpen ? 'w-2/5 md:w-1/3 lg:w-1/4' : 'w-0'
         } overflow-auto`}>
           {sidebarOpen && (
             <PhrasesTable 
