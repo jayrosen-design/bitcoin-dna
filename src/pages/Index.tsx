@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import UnlockModal from '@/components/UnlockModal';
@@ -57,6 +58,9 @@ const Index = () => {
     calculateMetrics
   } = useWalletGenerator(activeCrypto);
 
+  // Track quantum simulation phrases to add to wallet history
+  const [lastQuantumId, setLastQuantumId] = useState<number>(0);
+  
   useEffect(() => {
     if (!isAutoGenerating) {
       toggleAutoGeneration();
@@ -118,6 +122,39 @@ const Index = () => {
       }
     }
   }, [walletData.balance, walletHistory, activeCrypto, btcPrice, addWallet]);
+
+  // Handler for quantum simulation phrases
+  const handleQuantumPhrase = useCallback((phrase: {
+    id: number;
+    words: string[];
+    visualData: number[];
+    btcAddress: string;
+  }) => {
+    // Only process new phrases
+    if (phrase.id > lastQuantumId) {
+      setLastQuantumId(phrase.id);
+      
+      // Create a wallet entry from the quantum phrase
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const day = now.getDate().toString().padStart(2, '0');
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      
+      const quantumWallet: WalletEntry = {
+        id: `quantum-${phrase.id}`,
+        address: phrase.btcAddress,
+        balance: (Math.random() * 0.001).toFixed(8),
+        time: `${hours}:${minutes}`,
+        date: `${month}/${day}`,
+        source: 'user',
+        visualData: phrase.visualData
+      };
+      
+      // Add to wallet history
+      addWallet(quantumWallet);
+    }
+  }, [lastQuantumId, addWallet]);
 
   const handleCryptoChange = (crypto: CryptoType) => {
     if (crypto !== activeCrypto) {
@@ -227,7 +264,7 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', minHeight: '900px', height: 'calc(100vh - 200px)' }}>
+        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
           <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
             <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
             <div className="h-[calc(100%-2rem)]">

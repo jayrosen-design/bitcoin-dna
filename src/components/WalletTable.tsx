@@ -1,49 +1,19 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { formatDate, shortenAddress, formatCrypto, getExplorerUrl, type CryptoType } from '@/utils/walletUtils';
-import { Bitcoin, Coins, Eye, ReceiptText, ExternalLink, Copy, Lock, Globe, User, ArrowUpDown } from 'lucide-react';
-import { toast } from 'sonner';
+
+import React from 'react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
+import { Button } from './ui/button';
+import { Eye, Lock } from 'lucide-react';
+import { formatAddress } from '@/utils/walletUtils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface WalletEntry {
   id: string;
-  seedPhrase: string[];
   address: string;
-  balance: string;
-  timestamp: Date;
-  cryptoType?: CryptoType;
-  source?: 'global' | 'user';
+  balance: string | number;
+  time?: string;
+  date?: string;
+  source: 'global' | 'user';
+  visualData?: number[];
 }
 
 interface WalletTableProps {
@@ -53,417 +23,137 @@ interface WalletTableProps {
   onRequestUnlock?: () => void;
 }
 
-type TransactionType = {
-  hash: string;
-  amount: string;
-  timestamp: string;
-  type: 'incoming' | 'outgoing';
+// Function to create a visual representation based on a seed phrase or hash
+const createPixelGraphic = (walletEntry: WalletEntry) => {
+  // If visualData exists, use it, otherwise generate from address hash
+  const visualData = walletEntry.visualData || generateVisualDataFromAddress(walletEntry.address);
+  
+  // Create a DOM element for the pixel graphic
+  const pixelContainer = document.createElement('div');
+  pixelContainer.className = 'pixel-graphic';
+  pixelContainer.style.display = 'grid';
+  pixelContainer.style.gridTemplateColumns = 'repeat(3, 6px)';
+  pixelContainer.style.gridTemplateRows = 'repeat(4, 6px)';
+  pixelContainer.style.gap = '1px';
+  
+  // Calculate color based on grid position
+  const calculateColor = (index: number) => {
+    const gridSize = 45; // Match with matrix grid size
+    const row = Math.floor(index / gridSize);
+    const col = index % gridSize;
+    
+    // Calculate RGB components based on position
+    const r = Math.floor((col / gridSize) * 180) + 30;
+    const g = Math.floor((row / gridSize) * 180) + 30;
+    const b = Math.floor(((row / gridSize + col / gridSize) / 2) * 180) + 30;
+    
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+  
+  // Create 12 pixels based on the selected indices
+  visualData.forEach(index => {
+    const pixel = document.createElement('div');
+    pixel.className = 'pixel';
+    pixel.style.width = '6px';
+    pixel.style.height = '6px';
+    pixel.style.borderRadius = '1px';
+    pixel.style.backgroundColor = calculateColor(index);
+    pixelContainer.appendChild(pixel);
+  });
+  
+  return pixelContainer;
 };
 
-const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+// Generate visual data from address hash for wallets without visualData
+const generateVisualDataFromAddress = (address: string): number[] => {
+  const visualData: number[] = [];
+  const addressHash = address.replace(/[^a-f0-9]/ig, '');
+  
+  // Generate 12 pseudo-random indices based on address hash
+  for (let i = 0; i < 12; i++) {
+    // Take 2 chars from hash at different positions and convert to number
+    const startPos = (i * 3) % (addressHash.length - 2);
+    const hexPair = addressHash.substring(startPos, startPos + 2);
+    const value = parseInt(hexPair, 16) % 2048; // Map to wordlist size (0-2047)
+    visualData.push(value);
+  }
+  
+  return visualData;
+};
 
 const WalletTable: React.FC<WalletTableProps> = ({ 
   wallets, 
-  emptyMessage, 
+  emptyMessage = "No wallet data available.",
   isAccessLocked = false,
   onRequestUnlock 
 }) => {
-  const [selectedSeedPhrase, setSelectedSeedPhrase] = useState<string[]>([]);
-  const [selectedTransactions, setSelectedTransactions] = useState<TransactionType[]>([]);
-  const [dialogTitle, setDialogTitle] = useState<string>('');
-  const [dialogMode, setDialogMode] = useState<'seedPhrase' | 'transactions'>('seedPhrase');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
-  const getWalletSource = (wallet: WalletEntry): 'global' | 'user' => {
-    if (wallet.source) return wallet.source;
-    return wallet.id.startsWith('mock-') ? 'global' : 'user';
-  };
-
-  const getSourceIcon = (wallet: WalletEntry) => {
-    const source = getWalletSource(wallet);
-    return source === 'global' 
-      ? <Globe className="h-4 w-4 text-muted-foreground" /> 
-      : <User className="h-4 w-4 text-primary" />;
-  };
-
-  const handleViewSeedPhrase = (seedPhrase: string[]) => {
-    if (isAccessLocked) {
-      onRequestUnlock?.();
-      return;
-    }
-    setSelectedSeedPhrase(seedPhrase);
-    setDialogTitle('Seed Phrase');
-    setDialogMode('seedPhrase');
-  };
-
-  const handleViewTransactions = (address: string, cryptoType: CryptoType = 'bitcoin') => {
-    const mockTransactions: TransactionType[] = Array(Math.floor(Math.random() * 5) + 2)
-      .fill(null)
-      .map((_, index) => {
-        const now = new Date();
-        const timestamp = new Date(now.setDate(now.getDate() - index)).toISOString();
-        const amount = (Math.random() * 0.5 + 0.01).toFixed(6);
-        const type = Math.random() > 0.5 ? 'incoming' : 'outgoing';
-        
-        return {
-          hash: `0x${Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')}`,
-          amount,
-          timestamp,
-          type
-        };
-      });
-    
-    setSelectedTransactions(mockTransactions);
-    setDialogTitle(`Transactions for ${shortenAddress(address)}`);
-    setDialogMode('transactions');
-  };
-
-  const getCryptoIcon = (type?: CryptoType) => {
-    return type === 'ethereum' ? 
-      <Coins className="h-4 w-4 text-ethereum" /> : 
-      <Bitcoin className="h-4 w-4 text-bitcoin" />;
-  };
-
-  const copyToClipboard = (text: string, description: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${description} copied to clipboard`);
-  };
-
-  const openExplorer = (address: string, cryptoType: CryptoType = 'bitcoin') => {
-    const url = getExplorerUrl(address, 'address', cryptoType);
-    window.open(url, '_blank');
-  };
-
-  const toggleSortDirection = () => {
-    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-  };
-
-  const sortedAndPagedWallets = useMemo(() => {
-    const sorted = [...wallets].sort((a, b) => {
-      const balanceA = parseFloat(a.balance);
-      const balanceB = parseFloat(b.balance);
-      
-      if (sortDirection === 'asc') {
-        return balanceA - balanceB;
-      } else {
-        return balanceB - balanceA;
-      }
-    });
-
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    
-    return sorted.slice(startIndex, endIndex);
-  }, [wallets, currentPage, rowsPerPage, sortDirection]);
-
-  const totalPages = Math.max(1, Math.ceil(wallets.length / rowsPerPage));
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const renderPagination = () => {
-    const pages = [];
-    const maxPagesToShow = 5;
-    
-    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-    
-    if (endPage - startPage + 1 < maxPagesToShow) {
-      startPage = Math.max(1, endPage - maxPagesToShow + 1);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <PaginationItem key={i}>
-          <PaginationLink 
-            onClick={() => handlePageChange(i)}
-            isActive={currentPage === i}
-          >
-            {i}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-    
+  
+  if (wallets.length === 0) {
     return (
-      <Pagination>
-        <PaginationContent>
-          {currentPage > 1 && (
-            <PaginationItem>
-              <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
-            </PaginationItem>
-          )}
-          
-          {startPage > 1 && (
-            <>
-              <PaginationItem>
-                <PaginationLink onClick={() => handlePageChange(1)}>1</PaginationLink>
-              </PaginationItem>
-              {startPage > 2 && <PaginationEllipsis />}
-            </>
-          )}
-          
-          {pages}
-          
-          {endPage < totalPages && (
-            <>
-              {endPage < totalPages - 1 && <PaginationEllipsis />}
-              <PaginationItem>
-                <PaginationLink onClick={() => handlePageChange(totalPages)}>{totalPages}</PaginationLink>
-              </PaginationItem>
-            </>
-          )}
-          
-          {currentPage < totalPages && (
-            <PaginationItem>
-              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
-    );
-  };
-
-  return (
-    <>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">Rows per page:</span>
-          <Select
-            value={rowsPerPage.toString()}
-            onValueChange={(value) => {
-              setRowsPerPage(Number(value));
-              setCurrentPage(1); // Reset to first page when changing rows per page
-            }}
-          >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={rowsPerPage.toString()} />
-            </SelectTrigger>
-            <SelectContent>
-              {ROWS_PER_PAGE_OPTIONS.map(option => (
-                <SelectItem key={option} value={option.toString()}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          Showing {wallets.length > 0 ? (currentPage - 1) * rowsPerPage + 1 : 0}-
-          {Math.min(currentPage * rowsPerPage, wallets.length)} of {wallets.length}
-        </div>
+      <div className="w-full p-8 text-center text-gray-500">
+        <p>{emptyMessage}</p>
       </div>
-
-      <Table>
-        <TableCaption>{emptyMessage}</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Source</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Address</TableHead>
-            <TableHead className="text-right cursor-pointer" onClick={toggleSortDirection}>
-              <div className="flex items-center justify-end">
-                Balance
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-                <span className="sr-only">
-                  Sort by balance ({sortDirection === 'asc' ? 'ascending' : 'descending'})
-                </span>
-              </div>
-            </TableHead>
-            <TableHead>Actions</TableHead>
-            <TableHead></TableHead>
-            <TableHead className="text-right">Found</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {wallets.length === 0 ? (
+    );
+  }
+  
+  return (
+    <div className="relative">
+      {isAccessLocked && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 rounded-md">
+          <Lock className="h-12 w-12 text-amber-500 mb-2" />
+          <p className="text-gray-600 mb-4">Address data is hidden</p>
+          <Button onClick={onRequestUnlock} className="gap-2" variant="outline" size="sm">
+            <Eye className="h-4 w-4" />
+            View Addresses
+          </Button>
+        </div>
+      )}
+      
+      <div className="rounded-md overflow-hidden">
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground">
-                No wallets found yet
-              </TableCell>
+              <TableHead className="w-[50px]">Visual</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead className="w-[100px] text-right">Balance</TableHead>
+              <TableHead className="w-[100px] text-right">Time</TableHead>
+              <TableHead className="w-[100px] text-right">Date</TableHead>
             </TableRow>
-          ) : (
-            sortedAndPagedWallets.map((wallet) => (
+          </TableHeader>
+          <TableBody>
+            {wallets.map((wallet) => (
               <TableRow key={wallet.id}>
-                <TableCell>
-                  <div className="flex justify-center">
-                    {getSourceIcon(wallet)}
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">
-                  <div className="flex items-center">
-                    {getCryptoIcon(wallet.cryptoType)}
-                    <span className="ml-2">
-                      {wallet.cryptoType === 'ethereum' ? 'ETH' : 'BTC'}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center space-x-2">
-                    <div 
-                      className="font-mono text-xs cursor-pointer hover:underline hover:text-primary"
-                      onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
-                    >
-                      {shortenAddress(wallet.address)}
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-5 w-5" 
-                      onClick={() => copyToClipboard(wallet.address, 'Address')}
-                    >
-                      <Copy className="h-3 w-3" />
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="h-5 w-5"
-                      onClick={() => openExplorer(wallet.address, wallet.cryptoType)}
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </TableCell>
-                <TableCell className="text-right">
-                  {formatCrypto(wallet.balance, wallet.cryptoType)}
+                <TableCell className="py-2">
+                  <div
+                    ref={el => {
+                      if (el) {
+                        el.innerHTML = '';
+                        el.appendChild(createPixelGraphic(wallet));
+                      }
+                    }}
+                  />
                 </TableCell>
                 <TableCell>
                   {isAccessLocked ? (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={onRequestUnlock}
-                    >
-                      <Lock className="h-3 w-3 mr-1" />
-                      Unlock to View
-                    </Button>
+                    <Skeleton className="h-4 w-32" />
                   ) : (
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleViewSeedPhrase(wallet.seedPhrase)}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          Seed Phrase
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{dialogTitle}</DialogTitle>
-                        </DialogHeader>
-                        <div className="mt-4">
-                          {dialogMode === 'seedPhrase' ? (
-                            <div>
-                              <div className="flex justify-end mb-2">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  onClick={() => copyToClipboard(wallet.seedPhrase.join(' '), 'Seed phrase')}
-                                >
-                                  <Copy className="h-3 w-3 mr-1" />
-                                  Copy All
-                                </Button>
-                              </div>
-                              <div className="grid grid-cols-3 gap-2">
-                                {selectedSeedPhrase.map((word, i) => (
-                                  <div key={i} className="flex items-center space-x-2">
-                                    <span className="text-muted-foreground text-xs">
-                                      {(i + 1).toString().padStart(2, '0')}
-                                    </span>
-                                    <span className="font-medium">{word}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="space-y-3">
-                              {selectedTransactions.map((tx, i) => (
-                                <div key={i} className="border p-3 rounded-md">
-                                  <div className="flex justify-between items-center">
-                                    <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
-                                      {tx.type === 'incoming' ? '+ ' : '- '}
-                                      {formatCrypto(tx.amount, wallet.cryptoType)}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                      {formatDate(tx.timestamp)}
-                                    </div>
-                                  </div>
-                                  <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
-                                    {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <div className="font-mono text-xs">{formatAddress(wallet.address)}</div>
                   )}
                 </TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleViewTransactions(wallet.address, wallet.cryptoType)}
-                      >
-                        <ReceiptText className="h-3 w-3 mr-1" />
-                        Transactions
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{dialogTitle}</DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4">
-                        <div className="space-y-3">
-                          {selectedTransactions.map((tx, i) => (
-                            <div key={i} className="border p-3 rounded-md">
-                              <div className="flex justify-between items-center">
-                                <div className={`font-medium ${tx.type === 'incoming' ? 'text-green-600' : 'text-red-600'}`}>
-                                  {tx.type === 'incoming' ? '+ ' : '- '}
-                                  {formatCrypto(tx.amount, wallet.cryptoType)}
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                  {formatDate(tx.timestamp)}
-                                </div>
-                              </div>
-                              <div className="mt-1 text-xs font-mono text-muted-foreground truncate">
-                                {tx.hash.substring(0, 16)}...{tx.hash.substring(tx.hash.length - 16)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
                 <TableCell className="text-right">
-                  {formatDate(wallet.timestamp.toISOString())}
+                  {typeof wallet.balance === 'number' 
+                    ? wallet.balance.toFixed(8)
+                    : wallet.balance} BTC
                 </TableCell>
+                <TableCell className="text-right">{wallet.time || '—'}</TableCell>
+                <TableCell className="text-right">{wallet.date || '—'}</TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-
-      {wallets.length > 0 && (
-        <div className="mt-4">
-          {renderPagination()}
-        </div>
-      )}
-    </>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
-};
-
-const cn = (...classes: (string | boolean | undefined)[]) => {
-  return classes.filter(Boolean).join(' ');
 };
 
 export default WalletTable;

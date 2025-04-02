@@ -19,7 +19,7 @@ export interface SeedPhrase {
 
 export const QuantumSeedSimulation: React.FC = () => {
   const [view, setView] = useState<'2D' | '3D'>('2D');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Default to hidden
   const [showConnections, setShowConnections] = useState(true); // Default to true
   const [iterations, setIterations] = useState(0);
   const [currentPhrase, setCurrentPhrase] = useState<string[]>([]);
@@ -149,13 +149,9 @@ export const QuantumSeedSimulation: React.FC = () => {
         {/* Phrases sidebar */}
         <div className={`bg-[#0a0a0a] border-r border-gray-800 transition-all duration-300 ${
           sidebarOpen ? 'w-2/5 md:w-1/3 lg:w-1/4' : 'w-0'
-        } overflow-auto`}>
+        } overflow-hidden`}>
           {sidebarOpen && (
-            <PhrasesTable 
-              phrases={phrases} 
-              setShowConnections={setShowConnections} 
-              showConnections={showConnections}
-            />
+            <PhrasesTable phrases={phrases} />
           )}
         </div>
         

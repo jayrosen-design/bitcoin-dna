@@ -4,15 +4,9 @@ import { SeedPhrase } from './QuantumSeedSimulation';
 
 interface PhrasesTableProps {
   phrases: SeedPhrase[];
-  showConnections: boolean;
-  setShowConnections: (show: boolean) => void;
 }
 
-export const PhrasesTable: React.FC<PhrasesTableProps> = ({ 
-  phrases, 
-  showConnections, 
-  setShowConnections 
-}) => {
+export const PhrasesTable: React.FC<PhrasesTableProps> = ({ phrases }) => {
   // Create a pixel graphic based on 12 selected words
   const createPixelGraphic = (visualData: number[]) => {
     const pixelContainer = document.createElement('div');
@@ -58,7 +52,7 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
         <p className="text-gray-500 text-sm">History of attempted 12-word combinations</p>
       </div>
       
-      <div className="overflow-y-auto max-h-[calc(100vh-180px)]">
+      <div className="h-[calc(100%-80px)] overflow-y-auto">
         <table className="w-full text-left">
           <thead>
             <tr>
