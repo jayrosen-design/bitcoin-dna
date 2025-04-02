@@ -23,28 +23,29 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const pointsRef = useRef<THREE.Points[]>([]);
   const linesRef = useRef<THREE.Line | null>(null);
   const frameIdRef = useRef<number | null>(null);
+  const initCompletedRef = useRef<boolean>(false);
   
-  // Define layerCount constant that was missing
+  // Define constants
   const LAYERS_COUNT = 12;
+  const POINT_SIZE = 1.5; // Increased point size for better visibility
+  const GRID_SIZE = 45;
 
-  // Calculate color based on position with simpler gradient - similar to original HTML
+  // Calculate color based on position with higher contrast
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
-    const gridSize = 45;
-    
     // Calculate normalized positions (0 to 1)
-    const normalizedRow = row / gridSize;
-    const normalizedCol = col / gridSize;
+    const normalizedRow = row / GRID_SIZE;
+    const normalizedCol = col / GRID_SIZE;
     
-    // Create RGB components based on position similar to HTML example
-    const r = Math.floor(normalizedCol * 180) + 30;
-    const g = Math.floor(normalizedRow * 180) + 30;
-    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
+    // Create RGB components based on position similar to HTML example but with higher contrast
+    const r = Math.floor(normalizedCol * 200) + 55; // Higher contrast
+    const g = Math.floor(normalizedRow * 200) + 55;
+    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 75;
     
-    // Apply layer factor for depth
+    // Apply layer factor for depth with increased brightness
     return new THREE.Color(
-      r / 255 * layerFactor,
-      g / 255 * layerFactor,
-      b / 255 * layerFactor
+      Math.min(1, r / 255 * layerFactor * 1.2), // Increase brightness by 20%
+      Math.min(1, g / 255 * layerFactor * 1.2),
+      Math.min(1, b / 255 * layerFactor * 1.2)
     );
   };
   
@@ -78,38 +79,44 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
     
-    // Create renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Create renderer with antialiasing for better visuals
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
     
-    // Create controls
+    // Create controls with better defaults
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controlsRef.current = controls;
     
-    // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0x444444);
+    // Add stronger lighting for better visibility
+    const ambientLight = new THREE.AmbientLight(0x666666); // Brighter ambient light
     scene.add(ambientLight);
     
-    // Add directional lights
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.0); // Increased intensity
     dirLight1.position.set(1, 1, 1);
     scene.add(dirLight1);
     
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.8); // Increased intensity
     dirLight2.position.set(-1, -1, -1);
     scene.add(dirLight2);
     
     // Add point light
-    const pointLight = new THREE.PointLight(0x0088ff, 1, 100);
-    pointLight.position.set(0, 0, 50);
+    const pointLight = new THREE.PointLight(0x00aaff, 1.5, 120); // Brighter blue light
+    pointLight.position.set(0, 0, 60);
     scene.add(pointLight);
     
-    // Create 12 layers with words
+    // Force initial render before creating word layers
+    renderer.render(scene, camera);
+    
+    // Create word layers
     createWordLayers();
     
     // Animation loop
@@ -152,6 +159,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     
     window.addEventListener('resize', handleResize);
     
+    // Set initialization flag
+    initCompletedRef.current = true;
+    
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -181,15 +191,14 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     };
   }, []);
   
-  // Create word layers
+  // Create word layers with improved distribution
   const createWordLayers = () => {
     if (!sceneRef.current) return;
     
     const scene = sceneRef.current;
-    const layerCount = LAYERS_COUNT; // Use the constant defined at the top of the component
+    const layerCount = LAYERS_COUNT;
     const totalWords = wordList.length;
     const wordsPerLayer = Math.ceil(totalWords / layerCount);
-    const gridSize = 45;
     const pointsArray: THREE.Points[] = [];
     
     // Create layers
@@ -201,20 +210,22 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       // Position of this layer (stacked along z-axis)
       const zPosition = layer * -8;
       
-      // Add words to this layer
+      // Calculate a more even distribution of points across the entire layer
       for (let i = 0; i < wordsPerLayer && layer * wordsPerLayer + i < totalWords; i++) {
-        const col = i % gridSize;
-        const row = Math.floor(i / gridSize);
+        // Use modulo and division for grid positioning
+        const col = i % GRID_SIZE;
+        const row = Math.floor(i / GRID_SIZE);
         
-        // Calculate point position
-        const x = (col - gridSize / 2) * 0.5;
-        const y = (gridSize / 2 - row) * 0.5;
+        // Distribute points evenly across the grid
+        // Scale to fill the entire viewable area
+        const x = (col - GRID_SIZE / 2) * 0.6;
+        const y = (GRID_SIZE / 2 - row) * 0.6;
         const z = zPosition;
         
         vertices.push(x, y, z);
         
         // Create color with layer depth factor for gradient
-        const depthFactor = 0.6 + (layer / layerCount) * 0.4; // Increases with depth
+        const depthFactor = 0.7 + (layer / layerCount) * 0.6; // Increased brightness
         const color = calculateColor(row, col, depthFactor);
         colors.push(color.r, color.g, color.b);
       }
@@ -224,12 +235,12 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       
-      // Create points material
+      // Create points material with larger size for better visibility
       const material = new THREE.PointsMaterial({
-        size: 0.6, // Slightly larger points for better visibility
+        size: POINT_SIZE,
         vertexColors: true,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.9, // Higher opacity for better visibility
         sizeAttenuation: true
       });
       
@@ -238,12 +249,12 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       pointsArray.push(points);
       scene.add(points);
       
-      // Also create a plane for each layer
-      const planeGeometry = new THREE.PlaneGeometry(gridSize * 0.5, gridSize * 0.5);
+      // Also create a semi-transparent plane for each layer
+      const planeGeometry = new THREE.PlaneGeometry(GRID_SIZE * 0.6, GRID_SIZE * 0.6);
       const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x111122,
+        color: 0x223344, // Slightly bluer for contrast
         transparent: true,
-        opacity: 0.05,
+        opacity: 0.08,
         side: THREE.DoubleSide
       });
       
@@ -293,14 +304,14 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         }
       });
       
-      // Create connection lines
+      // Create connection lines with improved visibility
       if (positions.length > 1) {
         const lineGeometry = new THREE.BufferGeometry().setFromPoints(positions);
         const lineMaterial = new THREE.LineBasicMaterial({
-          color: 0x00ffff,
+          color: 0x00ffff, // Bright cyan
           transparent: true,
-          opacity: 0.4,
-          linewidth: 1.5
+          opacity: 0.8, // Higher opacity
+          linewidth: 2
         });
         
         const line = new THREE.Line(lineGeometry, lineMaterial);
@@ -309,7 +320,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       }
     }
     
-    // Highlight active points
+    // Highlight active points with brighter colors
     pointsRef.current.forEach((points, layer) => {
       const geometry = points.geometry;
       const colors = geometry.attributes.color.array as Float32Array;
@@ -317,9 +328,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       // Reset all colors
       for (let i = 0; i < colors.length; i += 3) {
         const index = layer * Math.ceil(wordList.length / LAYERS_COUNT) + i / 3;
-        const row = Math.floor((i/3) / 45);
-        const col = (i/3) % 45;
-        const depthFactor = 0.6 + (layer / LAYERS_COUNT) * 0.4; // Using LAYERS_COUNT instead of layerCount
+        const row = Math.floor((i/3) / GRID_SIZE);
+        const col = (i/3) % GRID_SIZE;
+        const depthFactor = 0.7 + (layer / LAYERS_COUNT) * 0.6;
         const color = calculateColor(row, col, depthFactor);
         
         colors[i] = color.r;
@@ -327,17 +338,17 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         colors[i + 2] = color.b;
       }
       
-      // Highlight active indices
+      // Highlight active indices with much brighter colors
       currentIndices.forEach(index => {
         const activeLayer = Math.floor(index / Math.ceil(wordList.length / LAYERS_COUNT));
         const layerOffset = index % Math.ceil(wordList.length / LAYERS_COUNT);
         
         if (activeLayer === layer) {
           const i = layerOffset * 3;
-          // Bright cyan for active points
-          colors[i] = 0.0;     // R
-          colors[i + 1] = 1.0; // G
-          colors[i + 2] = 1.0; // B
+          // Very bright cyan for active points
+          colors[i] = 0.2;     // R - a bit of red for better visibility
+          colors[i + 1] = 1.0; // G - full green
+          colors[i + 2] = 1.0; // B - full blue
         }
       });
       
@@ -347,10 +358,16 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   
   // Update connections when currentIndices or showConnections changes
   useEffect(() => {
-    updateActivePoints();
+    if (initCompletedRef.current) {
+      updateActivePoints();
+    }
   }, [currentIndices, showConnections]);
   
   return (
-    <div ref={containerRef} className="w-full h-full" />
+    <div 
+      ref={containerRef} 
+      className="w-full h-full" 
+      style={{ backgroundColor: '#050505' }}
+    />
   );
 };

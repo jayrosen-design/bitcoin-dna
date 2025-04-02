@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { PanelLeft } from 'lucide-react';
 import { wordList } from '@/utils/wordList';
@@ -23,6 +23,7 @@ export const QuantumSeedSimulation: React.FC = () => {
   const [currentPhrase, setCurrentPhrase] = useState<string[]>([]);
   const [combinations, setCombinations] = useState(0);
   const [phrases, setPhrases] = useState<SeedPhrase[]>([]);
+  const firstRenderRef = useRef(true);
   
   // Generate a random seed phrase (12 words)
   const generateRandomSeedPhrase = () => {
@@ -61,6 +62,19 @@ export const QuantumSeedSimulation: React.FC = () => {
     });
   };
   
+  // Handle view change with proper initialization
+  const handleViewChange = (newView: '2D' | '3D') => {
+    setView(newView);
+    
+    // When switching to 3D view, force a small timeout to ensure proper rendering
+    if (newView === '3D') {
+      // Force a re-render of the component after a short delay
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 50);
+    }
+  };
+  
   // Start generating phrases on component mount
   useEffect(() => {
     generateRandomSeedPhrase();
@@ -68,6 +82,16 @@ export const QuantumSeedSimulation: React.FC = () => {
     const interval = setInterval(() => {
       generateRandomSeedPhrase();
     }, 1500);
+    
+    // Handle initial render
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+      
+      // Pre-render both views
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    }
     
     return () => clearInterval(interval);
   }, []);
@@ -77,7 +101,7 @@ export const QuantumSeedSimulation: React.FC = () => {
       <div className="flex items-center justify-between bg-black p-3 border-b border-gray-800">
         <div className="flex items-center gap-2">
           <Button 
-            onClick={() => setView('2D')}
+            onClick={() => handleViewChange('2D')}
             variant={view === '2D' ? 'default' : 'outline'}
             size="sm"
             className="h-8"
@@ -85,7 +109,7 @@ export const QuantumSeedSimulation: React.FC = () => {
             2D View
           </Button>
           <Button 
-            onClick={() => setView('3D')}
+            onClick={() => handleViewChange('3D')}
             variant={view === '3D' ? 'default' : 'outline'}
             size="sm"
             className="h-8"
@@ -120,6 +144,7 @@ export const QuantumSeedSimulation: React.FC = () => {
         
         {/* Visualization container */}
         <div className="flex-1 relative">
+          {/* Render both views but hide one based on state */}
           <div className={`absolute inset-0 ${view === '2D' ? 'block' : 'hidden'}`}>
             <QuantumMatrix2D 
               showConnections={showConnections} 
