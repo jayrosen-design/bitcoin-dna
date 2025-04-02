@@ -6,9 +6,10 @@ import { SeedPhrase } from './QuantumSeedSimulation';
 
 interface PhrasePixelProps {
   colors: number[];
+  visualData: number[]; // Word indices to get accurate colors
 }
 
-const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors }) => {
+const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors, visualData }) => {
   // Function to calculate color based on index with smoother gradient
   const calculateColor = (index: number) => {
     const row = Math.floor(index / 45);
@@ -28,13 +29,17 @@ const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors }) => {
 
   return (
     <div className="grid grid-cols-3 grid-rows-4 gap-[1px]">
-      {colors.map((index, i) => (
-        <div 
-          key={i} 
-          className="w-2 h-2 rounded-[1px]" 
-          style={{ backgroundColor: calculateColor(index) }}
-        />
-      ))}
+      {colors.map((_, i) => {
+        // Use the actual word index from visualData to get the correct color
+        const wordIndex = visualData[i];
+        return (
+          <div 
+            key={i} 
+            className="w-2 h-2 rounded-[1px]" 
+            style={{ backgroundColor: calculateColor(wordIndex) }}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -71,11 +76,11 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
               <TableRow key={phrase.id}>
                 <TableCell className="text-xs">{phrases.indexOf(phrase) + 1}</TableCell>
                 <TableCell>
-                  <PhrasePixel colors={phrase.visualData} />
+                  <PhrasePixel colors={phrase.visualData} visualData={phrase.visualData} />
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-400 font-mono mb-1">
+                    <span className="text-xs text-cyan-500 font-mono mb-1 break-all">
                       {phrase.btcAddress}
                     </span>
                     <span className="text-xs">
