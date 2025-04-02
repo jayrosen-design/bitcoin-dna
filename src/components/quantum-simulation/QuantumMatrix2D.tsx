@@ -14,162 +14,212 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   currentIndices
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wordsRef = useRef<HTMLDivElement[]>([]);
-  
-  // Calculate color based on position in grid with smoother gradient
-  const calculateColor = (index: number) => {
-    const gridSize = Math.ceil(Math.sqrt(wordList.length));
-    const row = Math.floor(index / gridSize);
-    const col = index % gridSize;
-    
+  const wordElementsRef = useRef<HTMLDivElement[]>([]);
+
+  // Calculate color based on position in grid - using a simpler gradient closer to the original HTML
+  const calculateColor = (row: number, col: number, gridSize: number) => {
     // Calculate normalized positions (0 to 1)
     const normalizedRow = row / gridSize;
     const normalizedCol = col / gridSize;
     
-    // Create smoother gradient using sine/cosine functions
-    const hue = (normalizedCol * 180 + normalizedRow * 180) % 360;
-    const saturation = 70 + Math.sin(normalizedRow * Math.PI) * 20;
-    const lightness = 35 + Math.cos(normalizedCol * Math.PI) * 15;
+    // Create RGB components based on position similar to HTML example
+    const r = Math.floor(normalizedCol * 180) + 30;
+    const g = Math.floor(normalizedRow * 180) + 30;
+    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
     
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  // Initialize the grid
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    
+    // Clear previous content
+    container.innerHTML = '';
+    
+    // Calculate the grid dimensions for a square-ish layout to fit all 2048 words
+    const gridSize = Math.ceil(Math.sqrt(wordList.length));
+    const wordElements: HTMLDivElement[] = [];
+    
+    // Create grid container
+    const gridElement = document.createElement('div');
+    gridElement.className = 'word-grid';
+    gridElement.style.display = 'grid';
+    gridElement.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+    gridElement.style.gap = '2px';
+    gridElement.style.width = '100%';
+    gridElement.style.height = '100%';
+    gridElement.style.overflow = 'hidden';
+    gridElement.style.padding = '10px';
+    
+    // Create all word elements
+    wordList.forEach((word, index) => {
+      const wordElement = document.createElement('div');
+      wordElement.className = 'word';
+      wordElement.textContent = word;
+      wordElement.dataset.index = index.toString();
+      
+      // Calculate position in grid
+      const row = Math.floor(index / gridSize);
+      const col = index % gridSize;
+      
+      // Apply position-based color
+      const baseColor = calculateColor(row, col, gridSize);
+      wordElement.style.color = baseColor;
+      wordElement.style.borderColor = baseColor;
+      wordElement.style.fontSize = '8px';
+      wordElement.style.padding = '2px';
+      wordElement.style.textAlign = 'center';
+      wordElement.style.borderRadius = '2px';
+      wordElement.style.backgroundColor = 'rgba(0,0,0,0.2)';
+      wordElement.style.overflow = 'hidden';
+      wordElement.style.whiteSpace = 'nowrap';
+      wordElement.style.textOverflow = 'ellipsis';
+      
+      gridElement.appendChild(wordElement);
+      wordElements.push(wordElement);
+    });
+    
+    container.appendChild(gridElement);
+    wordElementsRef.current = wordElements;
+    
+    // Initial highlight of active words
+    highlightActiveWords();
+  }, []);
+  
+  // Highlight active words effect
+  const highlightActiveWords = () => {
+    const wordElements = wordElementsRef.current;
+    
+    // Reset all words first
+    wordElements.forEach(element => {
+      const index = parseInt(element.dataset.index || '0', 10);
+      const row = Math.floor(index / Math.ceil(Math.sqrt(wordList.length)));
+      const col = index % Math.ceil(Math.sqrt(wordList.length));
+      const baseColor = calculateColor(row, col, Math.ceil(Math.sqrt(wordList.length)));
+      
+      element.style.color = baseColor;
+      element.style.textShadow = 'none';
+      element.style.fontWeight = 'normal';
+      element.style.backgroundColor = 'rgba(0,0,0,0.2)';
+    });
+    
+    // Highlight active words
+    currentIndices.forEach(index => {
+      if (index >= 0 && index < wordElements.length) {
+        const element = wordElements[index];
+        if (element) {
+          // Enhanced visibility for active words
+          const row = Math.floor(index / Math.ceil(Math.sqrt(wordList.length)));
+          const col = index % Math.ceil(Math.sqrt(wordList.length));
+          const baseColor = calculateColor(row, col, Math.ceil(Math.sqrt(wordList.length)));
+          
+          // Calculate brighter color for active state
+          const rgb = baseColor.match(/\d+/g)?.map(Number) || [0, 0, 0];
+          const brightColor = `rgb(${Math.min(255, rgb[0] + 100)}, ${Math.min(255, rgb[1] + 100)}, ${Math.min(255, rgb[2] + 100)})`;
+          
+          element.style.color = brightColor;
+          element.style.textShadow = `0 0 5px ${brightColor}, 0 0 10px ${brightColor}`;
+          element.style.fontWeight = 'bold';
+          element.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        }
+      }
+    });
+    
+    // Draw connections if enabled
+    if (showConnections && containerRef.current) {
+      drawConnections();
+    }
   };
   
   // Draw connections between active words
-  useEffect(() => {
-    if (!showConnections || !canvasRef.current || currentIndices.length === 0) return;
+  const drawConnections = () => {
+    if (!containerRef.current) return;
     
-    const canvas = canvasRef.current;
+    // Remove any existing canvas
+    const existingCanvas = containerRef.current.querySelector('canvas');
+    if (existingCanvas) {
+      existingCanvas.remove();
+    }
+    
+    const container = containerRef.current;
+    const wordElements = wordElementsRef.current;
+    const gridElement = container.querySelector('.word-grid') as HTMLDivElement;
+    
+    if (!gridElement || currentIndices.length < 2) return;
+    
+    // Create canvas for drawing connections
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.pointerEvents = 'none';
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+    container.appendChild(canvas);
+    
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Collect positions of active words
+    const positions: {x: number, y: number}[] = [];
     
-    // Update canvas dimensions to match container
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
-    
-    // Draw connections
-    if (wordsRef.current.length > 0) {
-      ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
-      ctx.lineWidth = 1;
-      
-      for (let i = 0; i < currentIndices.length - 1; i++) {
-        const wordElem1 = wordsRef.current[currentIndices[i]];
-        const wordElem2 = wordsRef.current[currentIndices[i + 1]];
-        
-        if (wordElem1 && wordElem2) {
-          const rect1 = wordElem1.getBoundingClientRect();
-          const rect2 = wordElem2.getBoundingClientRect();
-          const containerRect = containerRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
+    currentIndices.forEach(index => {
+      if (index >= 0 && index < wordElements.length) {
+        const element = wordElements[index];
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
           
-          const x1 = rect1.left + rect1.width / 2 - containerRect.left;
-          const y1 = rect1.top + rect1.height / 2 - containerRect.top;
-          const x2 = rect2.left + rect2.width / 2 - containerRect.left;
-          const y2 = rect2.top + rect2.height / 2 - containerRect.top;
-          
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.stroke();
+          positions.push({
+            x: rect.left + rect.width / 2 - containerRect.left,
+            y: rect.top + rect.height / 2 - containerRect.top
+          });
         }
       }
-      
-      // Connect last word to first word to complete the loop
-      const firstWordElem = wordsRef.current[currentIndices[0]];
-      const lastWordElem = wordsRef.current[currentIndices[currentIndices.length - 1]];
-      
-      if (firstWordElem && lastWordElem) {
-        const rect1 = firstWordElem.getBoundingClientRect();
-        const rect2 = lastWordElem.getBoundingClientRect();
-        const containerRect = containerRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
-        
-        const x1 = rect1.left + rect1.width / 2 - containerRect.left;
-        const y1 = rect1.top + rect1.height / 2 - containerRect.top;
-        const x2 = rect2.left + rect2.width / 2 - containerRect.left;
-        const y2 = rect2.top + rect2.height / 2 - containerRect.top;
-        
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-      }
+    });
+    
+    // Draw connections
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    
+    for (let i = 0; i < positions.length - 1; i++) {
+      ctx.beginPath();
+      ctx.moveTo(positions[i].x, positions[i].y);
+      ctx.lineTo(positions[i + 1].x, positions[i + 1].y);
+      ctx.stroke();
     }
-  }, [showConnections, currentIndices]);
+    
+    // Connect last to first to complete the loop
+    if (positions.length > 2) {
+      ctx.beginPath();
+      ctx.moveTo(positions[positions.length - 1].x, positions[positions.length - 1].y);
+      ctx.lineTo(positions[0].x, positions[0].y);
+      ctx.stroke();
+    }
+  };
   
-  // Update word references and connections when window is resized
+  // Update highlights when current indices change
+  useEffect(() => {
+    highlightActiveWords();
+  }, [currentIndices, showConnections]);
+  
+  // Update connections on window resize
   useEffect(() => {
     const handleResize = () => {
-      if (!showConnections || !canvasRef.current) return;
-      
-      const canvas = canvasRef.current;
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = rect.height;
+      if (showConnections) {
+        drawConnections();
       }
     };
     
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [showConnections]);
-  
-  // Set word references
-  const setWordRef = (el: HTMLDivElement | null, index: number) => {
-    if (el) {
-      wordsRef.current[index] = el;
-    }
-  };
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [showConnections, currentIndices]);
   
   return (
-    <div 
-      ref={containerRef} 
-      className="w-full h-full overflow-hidden bg-[#0a0a0a] relative"
-    >
-      {/* Canvas for drawing connections */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 pointer-events-none z-10"
-      />
-      
-      {/* Word grid */}
-      <div className="grid grid-cols-[repeat(45,1fr)] gap-0.5 p-2.5 w-[min(90vh,90vw)] h-[min(90vh,90vw)] aspect-square mx-auto my-4">
-        {wordList.map((word, index) => {
-          const isActive = currentIndices.includes(index);
-          const baseColor = calculateColor(index);
-          
-          // Calculate a brighter version for active words
-          let textColor = baseColor;
-          let textShadow = 'none';
-          
-          if (isActive) {
-            // For active words, brighten them and add glow effect
-            textColor = baseColor;
-            textShadow = `0 0 5px ${baseColor}, 0 0 10px ${baseColor}`;
-          }
-          
-          return (
-            <div
-              key={index}
-              ref={(el) => setWordRef(el, index)}
-              className={`word text-[6px] sm:text-[8px] border-[0.5px] rounded-sm bg-[#1a1a1a] flex items-center justify-center p-0.5 transition-all duration-300 ${
-                isActive ? 'animate-pulse font-bold' : ''
-              }`}
-              style={{ 
-                color: textColor,
-                borderColor: baseColor,
-                textShadow: textShadow
-              }}
-            >
-              {word}
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    <div ref={containerRef} className="w-full h-full relative" />
   );
 };

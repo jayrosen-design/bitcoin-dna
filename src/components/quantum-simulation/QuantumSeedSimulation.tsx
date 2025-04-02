@@ -104,11 +104,11 @@ export const QuantumSeedSimulation: React.FC = () => {
         </Button>
       </div>
       
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100vh - 130px)" }}>
         {/* Phrases sidebar */}
         <div className={`bg-[#0a0a0a] border-r border-gray-800 transition-all duration-300 ${
           sidebarOpen ? 'w-2/5 md:w-1/3' : 'w-0'
-        }`}>
+        } overflow-auto`}>
           {sidebarOpen && (
             <PhrasesTable 
               phrases={phrases} 

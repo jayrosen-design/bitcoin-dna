@@ -27,7 +27,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   // Define layerCount constant that was missing
   const LAYERS_COUNT = 12;
 
-  // Calculate color based on position with smoother gradient
+  // Calculate color based on position with simpler gradient - similar to original HTML
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
     const gridSize = 45;
     
@@ -35,13 +35,17 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     const normalizedRow = row / gridSize;
     const normalizedCol = col / gridSize;
     
-    // Create smoother gradient using sine/cosine functions for better color distribution
-    const hue = (normalizedCol * 180 + normalizedRow * 180) % 360;
-    const saturation = 0.7 + Math.sin(normalizedRow * Math.PI) * 0.2;
-    const lightness = 0.35 + Math.cos(normalizedCol * Math.PI) * 0.15;
+    // Create RGB components based on position similar to HTML example
+    const r = Math.floor(normalizedCol * 180) + 30;
+    const g = Math.floor(normalizedRow * 180) + 30;
+    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
     
-    // Apply layer factor to create depth variation
-    return new THREE.Color().setHSL(hue/360, saturation * layerFactor, lightness * layerFactor);
+    // Apply layer factor for depth
+    return new THREE.Color(
+      r / 255 * layerFactor,
+      g / 255 * layerFactor,
+      b / 255 * layerFactor
+    );
   };
   
   // Initialize 3D scene
@@ -222,10 +226,10 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       
       // Create points material
       const material = new THREE.PointsMaterial({
-        size: 0.4,
+        size: 0.6, // Slightly larger points for better visibility
         vertexColors: true,
         transparent: true,
-        opacity: 0.8,
+        opacity: 0.85,
         sizeAttenuation: true
       });
       
@@ -295,8 +299,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const lineMaterial = new THREE.LineBasicMaterial({
           color: 0x00ffff,
           transparent: true,
-          opacity: 0.3,
-          linewidth: 1
+          opacity: 0.4,
+          linewidth: 1.5
         });
         
         const line = new THREE.Line(lineGeometry, lineMaterial);
