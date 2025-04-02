@@ -7,6 +7,8 @@ import { QuantumMatrix2D } from './QuantumMatrix2D';
 import { QuantumMatrix3D } from './QuantumMatrix3D';
 import { PhrasesTable } from './PhrasesTable';
 import { generateRandomTaprootAddress } from '@/utils/cryptoUtils';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 export interface SeedPhrase {
   id: number;
@@ -18,7 +20,7 @@ export interface SeedPhrase {
 export const QuantumSeedSimulation: React.FC = () => {
   const [view, setView] = useState<'2D' | '3D'>('2D');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showConnections, setShowConnections] = useState(false);
+  const [showConnections, setShowConnections] = useState(true); // Default to true
   const [iterations, setIterations] = useState(0);
   const [currentPhrase, setCurrentPhrase] = useState<string[]>([]);
   const [combinations, setCombinations] = useState(0);
@@ -99,24 +101,39 @@ export const QuantumSeedSimulation: React.FC = () => {
   return (
     <div className="flex flex-col h-full w-full overflow-hidden bg-black text-gray-400 rounded-lg border border-gray-800">
       <div className="flex items-center justify-between bg-black p-3 border-b border-gray-800">
-        <div className="flex items-center gap-2">
-          <Button 
-            onClick={() => handleViewChange('2D')}
-            variant={view === '2D' ? 'default' : 'outline'}
-            size="sm"
-            className="h-8"
-          >
-            2D View
-          </Button>
-          <Button 
-            onClick={() => handleViewChange('3D')}
-            variant={view === '3D' ? 'default' : 'outline'}
-            size="sm"
-            className="h-8"
-          >
-            3D View
-          </Button>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={() => handleViewChange('2D')}
+              variant={view === '2D' ? 'default' : 'outline'}
+              size="sm"
+              className="h-8"
+            >
+              2D View
+            </Button>
+            <Button 
+              onClick={() => handleViewChange('3D')}
+              variant={view === '3D' ? 'default' : 'outline'}
+              size="sm"
+              className="h-8"
+            >
+              3D View
+            </Button>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="show-connections" 
+              checked={showConnections} 
+              onCheckedChange={setShowConnections}
+              className="data-[state=checked]:bg-cyan-600"
+            />
+            <Label htmlFor="show-connections" className="text-cyan-300 text-sm">
+              Word Connections
+            </Label>
+          </div>
         </div>
+        
         <Button 
           size="sm" 
           variant="ghost" 
