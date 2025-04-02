@@ -7,7 +7,7 @@ export interface SeedPhrase {
   id: number;
   words: string[];
   visualData: number[];
-  address: string; // Bitcoin address for this seed phrase
+  address: string; // Add Bitcoin address
 }
 
 export const useQuantumSimulation = () => {
@@ -36,15 +36,12 @@ export const useQuantumSimulation = () => {
     // Generate a random BTC address for this phrase
     const address = generateRandomBTCAddress();
     
-    // Create timestamp with milliseconds for unique ID
-    const uniqueId = Date.now() + Math.floor(Math.random() * 10000);
-    
     // Add to phrases history (limited to 100)
     const newPhrase: SeedPhrase = {
-      id: uniqueId,
+      id: Date.now(),
       words: selectedWords,
       visualData: selectedIndices,
-      address
+      address // Add the address to the phrase
     };
     
     setPhrases(prev => {
@@ -57,14 +54,6 @@ export const useQuantumSimulation = () => {
     
     return { selectedWords, selectedIndices, address };
   };
-  
-  // Initialize with first set of phrases when the hook mounts
-  useEffect(() => {
-    // Generate initial phrases
-    for (let i = 0; i < 10; i++) {
-      generateRandomSeedPhrase();
-    }
-  }, []);
   
   return {
     currentPhrase,

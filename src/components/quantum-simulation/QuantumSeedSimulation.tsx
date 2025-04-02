@@ -4,12 +4,14 @@ import { PhrasesTable } from './PhrasesTable';
 import { QuantumMatrix2D } from './QuantumMatrix2D';
 import { QuantumMatrix3D } from './QuantumMatrix3D';
 import { Button } from '@/components/ui/button';
-import { useQuantumSimulation } from '@/hooks/useQuantumSimulation';
+import { useQuantumSimulation, SeedPhrase } from '@/hooks/useQuantumSimulation';
 import { PanelLeft } from 'lucide-react';
 
 export interface QuantumSeedSimulationProps {
   // Props can be added here if needed
 }
+
+export { type SeedPhrase };
 
 export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () => {
   const [view, setView] = useState<'2D' | '3D'>('2D');
@@ -50,7 +52,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
       </div>
       
       {/* Main visualization area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <div className="flex-1 flex flex-col h-full">
         {/* Controls */}
         <div className="p-2 flex justify-between items-center bg-[#111] border-b border-gray-800">
           <div className="flex gap-2">
@@ -58,7 +60,6 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
               size="sm" 
               variant={view === '2D' ? 'default' : 'outline'} 
               onClick={() => setView('2D')}
-              className="text-cyan-400 border-cyan-700"
             >
               2D View
             </Button>
@@ -66,7 +67,6 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
               size="sm" 
               variant={view === '3D' ? 'default' : 'outline'} 
               onClick={() => setView('3D')}
-              className="text-cyan-400 border-cyan-700"
             >
               3D View
             </Button>
@@ -76,7 +76,6 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
             size="sm" 
             variant="ghost" 
             onClick={() => setShowSidebar(!showSidebar)}
-            className="text-cyan-400"
           >
             <PanelLeft className={`h-5 w-5 transition-transform ${!showSidebar ? 'rotate-180' : ''}`} />
             {showSidebar ? 'Hide' : 'Show'} History
@@ -84,14 +83,9 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
         </div>
         
         {/* Visualization container */}
-        <div className="flex-1 relative overflow-auto">
+        <div className="flex-1 overflow-hidden relative">
           {/* 2D View */}
-          <div 
-            className={`absolute inset-0 transition-opacity duration-300 ${
-              view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-            }`}
-            style={{ overflow: 'auto', minHeight: '100%', minWidth: '100%' }}
-          >
+          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
             <QuantumMatrix2D 
               showConnections={showConnections}
               currentPhrase={currentPhrase}
@@ -100,11 +94,7 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
           </div>
           
           {/* 3D View */}
-          <div 
-            className={`absolute inset-0 transition-opacity duration-300 ${
-              view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-            }`}
-          >
+          <div className={`absolute inset-0 transition-opacity duration-300 ${view === '3D' ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
             <QuantumMatrix3D 
               showConnections={showConnections}
               currentPhrase={currentPhrase}

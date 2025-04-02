@@ -38,7 +38,7 @@ const Matrix = () => {
           </CardContent>
         </Card>
         
-        <div className="flex-1 h-[calc(100vh-280px)] min-h-[500px] overflow-hidden border border-gray-700 rounded-md bg-[#0a0a0a]">
+        <div className="flex-1 h-[calc(100vh-280px)] min-h-[500px] overflow-hidden">
           <QuantumSeedSimulation />
         </div>
       </main>

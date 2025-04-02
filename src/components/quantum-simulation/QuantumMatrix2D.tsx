@@ -15,16 +15,11 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wordsRef = useRef<(HTMLDivElement | null)[]>([]);
-  
-  // Initialize word refs array once
-  useEffect(() => {
-    wordsRef.current = Array(wordList.length).fill(null);
-  }, []);
+  const wordsRef = useRef<HTMLDivElement[]>([]);
   
   // Calculate color based on position in grid - smoother gradient
   const calculateColor = (index: number) => {
-    const gridSize = 45;  // Fixed grid size for better layout
+    const gridSize = Math.ceil(Math.sqrt(wordList.length));
     const row = Math.floor(index / gridSize);
     const col = index % gridSize;
     
@@ -33,16 +28,16 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     const normalizedCol = col / gridSize;
     
     // Create RGB components based on position with smoother gradients
-    const r = Math.floor(60 + normalizedCol * 195); // range from 60-255
-    const g = Math.floor(60 + normalizedRow * 195); // range from 60-255
-    const b = Math.floor(100 + ((normalizedRow + normalizedCol) / 2) * 155); // range from 100-255
+    const r = Math.floor(130 + normalizedCol * 110); // range from 130-240
+    const g = Math.floor(130 + normalizedRow * 110); // range from 130-240
+    const b = Math.floor(180 + ((normalizedRow + normalizedCol) / 2) * 70); // range from 180-250
     
     return `rgb(${r}, ${g}, ${b})`;
   };
   
   // Draw connections between active words
   useEffect(() => {
-    if (!showConnections || !canvasRef.current || currentIndices.length === 0 || !containerRef.current) return;
+    if (!showConnections || !canvasRef.current || currentIndices.length === 0) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -52,9 +47,11 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Update canvas dimensions to match container
-    const rect = containerRef.current.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
     
     // Draw connections
     if (wordsRef.current.length > 0) {
@@ -107,8 +104,10 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   // Update word references and connections when window is resized
   useEffect(() => {
     const handleResize = () => {
-      if (showConnections && canvasRef.current && containerRef.current) {
-        const canvas = canvasRef.current;
+      if (!showConnections || !canvasRef.current) return;
+      
+      const canvas = canvasRef.current;
+      if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         canvas.width = rect.width;
         canvas.height = rect.height;
@@ -121,7 +120,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   
   // Set word references
   const setWordRef = (el: HTMLDivElement | null, index: number) => {
-    if (index >= 0 && index < wordsRef.current.length) {
+    if (el) {
       wordsRef.current[index] = el;
     }
   };
@@ -129,55 +128,40 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full bg-[#0a0a0a] relative flex items-center justify-center overflow-auto p-1"
+      className="w-full h-full overflow-auto bg-[#0a0a0a] relative"
     >
       {/* Canvas for drawing connections */}
-      {showConnections && (
-        <canvas 
-          ref={canvasRef} 
-          className="absolute inset-0 pointer-events-none z-10"
-        />
-      )}
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0 pointer-events-none z-10"
+      />
       
-      {/* Word grid - using fixed dimensions that allow all words to be visible */}
-      <div 
-        className="grid"
-        style={{
-          gridTemplateColumns: 'repeat(45, minmax(20px, 1fr))',
-          gap: '1px',
-          width: '100%',
-          height: '100%',
-          minWidth: '1350px', // Ensure grid is wide enough for all words
-          minHeight: '900px',  // Ensure grid is tall enough
-        }}
-      >
+      {/* Word grid - Ensure all words are visible */}
+      <div className="grid grid-cols-[repeat(45,1fr)] gap-[1px] p-2.5 w-[min(calc(100vh-100px),calc(100%-10px))] aspect-square mx-auto my-4">
         {wordList.map((word, index) => {
           const isActive = currentIndices.includes(index);
           const baseColor = calculateColor(index);
           
           // Calculate a brighter version for active words
           let textColor = baseColor;
-          let borderColor = baseColor;
-          
           if (isActive) {
             // Parse RGB values for creating a brighter version
             const rgb = baseColor.match(/\d+/g)?.map(Number) || [100, 100, 100];
             // Create a brighter version for active state
-            textColor = `rgb(${Math.min(255, rgb[0] + 100)}, ${Math.min(255, rgb[1] + 100)}, ${Math.min(255, rgb[2] + 100)})`;
+            textColor = `rgb(${Math.min(255, rgb[0] + 40)}, ${Math.min(255, rgb[1] + 40)}, ${Math.min(255, rgb[2] + 40)})`;
           }
           
           return (
             <div
               key={index}
               ref={(el) => setWordRef(el, index)}
-              className={`flex items-center justify-center text-center rounded-sm bg-[#1a1a1a] border-[0.5px] p-0.5 transition-all duration-300 overflow-hidden ${
-                isActive ? 'animate-pulse font-bold z-20' : ''
+              className={`word text-[5px] xs:text-[6px] sm:text-[7px] md:text-[7px] border-[0.5px] rounded-sm bg-[#1a1a1a] flex items-center justify-center p-0.5 transition-all duration-300 ${
+                isActive ? 'animate-pulse font-bold' : ''
               }`}
               style={{ 
                 color: textColor,
-                borderColor: borderColor,
-                textShadow: isActive ? `0 0 5px ${textColor}, 0 0 10px ${textColor}` : 'none',
-                fontSize: '6px',
+                borderColor: baseColor,
+                textShadow: isActive ? `0 0 5px ${textColor}, 0 0 10px ${textColor}` : 'none'
               }}
             >
               {word}
