@@ -17,7 +17,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wordsRef = useRef<HTMLDivElement[]>([]);
   
-  // Calculate color based on position in grid
+  // Calculate color based on position in grid with smoother gradient
   const calculateColor = (index: number) => {
     const gridSize = Math.ceil(Math.sqrt(wordList.length));
     const row = Math.floor(index / gridSize);
@@ -27,12 +27,12 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     const normalizedRow = row / gridSize;
     const normalizedCol = col / gridSize;
     
-    // Create RGB components based on position
-    const r = Math.floor(normalizedCol * 180) + 30;
-    const g = Math.floor(normalizedRow * 180) + 30;
-    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
+    // Create smoother gradient using sine/cosine functions
+    const hue = (normalizedCol * 180 + normalizedRow * 180) % 360;
+    const saturation = 70 + Math.sin(normalizedRow * Math.PI) * 20;
+    const lightness = 35 + Math.cos(normalizedCol * Math.PI) * 15;
     
-    return `rgb(${r}, ${g}, ${b})`;
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
   
   // Draw connections between active words
@@ -144,11 +144,12 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
           
           // Calculate a brighter version for active words
           let textColor = baseColor;
+          let textShadow = 'none';
+          
           if (isActive) {
-            // Parse RGB values for creating a brighter version
-            const rgb = baseColor.match(/\d+/g)?.map(Number) || [100, 100, 100];
-            // Create a brighter version for active state
-            textColor = `rgb(${Math.min(255, rgb[0] + 100)}, ${Math.min(255, rgb[1] + 100)}, ${Math.min(255, rgb[2] + 100)})`;
+            // For active words, brighten them and add glow effect
+            textColor = baseColor;
+            textShadow = `0 0 5px ${baseColor}, 0 0 10px ${baseColor}`;
           }
           
           return (
@@ -161,7 +162,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
               style={{ 
                 color: textColor,
                 borderColor: baseColor,
-                textShadow: isActive ? `0 0 5px ${textColor}, 0 0 10px ${textColor}` : 'none'
+                textShadow: textShadow
               }}
             >
               {word}

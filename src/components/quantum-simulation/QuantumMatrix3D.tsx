@@ -24,7 +24,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const linesRef = useRef<THREE.Line | null>(null);
   const frameIdRef = useRef<number | null>(null);
 
-  // Calculate color based on position
+  // Calculate color based on position with smoother gradient
   const calculateColor = (row: number, col: number, layerFactor = 1) => {
     const gridSize = 45;
     
@@ -32,12 +32,13 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     const normalizedRow = row / gridSize;
     const normalizedCol = col / gridSize;
     
-    // Create RGB components
-    const r = normalizedCol * layerFactor;
-    const g = normalizedRow * layerFactor;
-    const b = ((normalizedRow + normalizedCol) / 2) * layerFactor;
+    // Create smoother gradient using sine/cosine functions for better color distribution
+    const hue = (normalizedCol * 180 + normalizedRow * 180) % 360;
+    const saturation = 0.7 + Math.sin(normalizedRow * Math.PI) * 0.2;
+    const lightness = 0.35 + Math.cos(normalizedCol * Math.PI) * 0.15;
     
-    return new THREE.Color(r, g, b);
+    // Apply layer factor to create depth variation
+    return new THREE.Color().setHSL(hue/360, saturation * layerFactor, lightness * layerFactor);
   };
   
   // Initialize 3D scene
@@ -205,8 +206,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         
         vertices.push(x, y, z);
         
-        // Create color
-        const color = calculateColor(row, col, 0.6 + layer * 0.03);
+        // Create color with layer depth factor for gradient
+        const depthFactor = 0.6 + (layer / layerCount) * 0.4; // Increases with depth
+        const color = calculateColor(row, col, depthFactor);
         colors.push(color.r, color.g, color.b);
       }
       
@@ -310,7 +312,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const index = layer * Math.ceil(wordList.length / 12) + i / 3;
         const row = Math.floor((i/3) / 45);
         const col = (i/3) % 45;
-        const color = calculateColor(row, col, 0.6 + layer * 0.03);
+        const depthFactor = 0.6 + (layer / layerCount) * 0.4;
+        const color = calculateColor(row, col, depthFactor);
         
         colors[i] = color.r;
         colors[i + 1] = color.g;

@@ -9,7 +9,7 @@ interface PhrasePixelProps {
 }
 
 const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors }) => {
-  // Function to calculate color based on index
+  // Function to calculate color based on index with smoother gradient
   const calculateColor = (index: number) => {
     const row = Math.floor(index / 45);
     const col = index % 45;
@@ -18,12 +18,12 @@ const PhrasePixel: React.FC<PhrasePixelProps> = ({ colors }) => {
     const normalizedRow = row / 45;
     const normalizedCol = col / 45;
     
-    // Create RGB components based on position
-    const r = Math.floor(normalizedCol * 180) + 30;
-    const g = Math.floor(normalizedRow * 180) + 30;
-    const b = Math.floor(((normalizedRow + normalizedCol) / 2) * 180) + 30;
+    // Create smoother gradient using HSL
+    const hue = (normalizedCol * 180 + normalizedRow * 180) % 360;
+    const saturation = 70 + Math.sin(normalizedRow * Math.PI) * 20;
+    const lightness = 35 + Math.cos(normalizedCol * Math.PI) * 15;
     
-    return `rgb(${r}, ${g}, ${b})`;
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
   return (
@@ -63,7 +63,7 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
             <TableRow>
               <TableHead className="w-12">#</TableHead>
               <TableHead className="w-16">Visual</TableHead>
-              <TableHead>12-Word Seed Phrase</TableHead>
+              <TableHead>Seed Phrase & Address</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -73,8 +73,15 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
                 <TableCell>
                   <PhrasePixel colors={phrase.visualData} />
                 </TableCell>
-                <TableCell className="text-xs">
-                  {phrase.words.join(' ')}
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-400 font-mono mb-1">
+                      {phrase.btcAddress}
+                    </span>
+                    <span className="text-xs">
+                      {phrase.words.join(' ')}
+                    </span>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

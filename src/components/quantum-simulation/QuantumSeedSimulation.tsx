@@ -6,11 +6,13 @@ import { wordList } from '@/utils/wordList';
 import { QuantumMatrix2D } from './QuantumMatrix2D';
 import { QuantumMatrix3D } from './QuantumMatrix3D';
 import { PhrasesTable } from './PhrasesTable';
+import { generateRandomTaprootAddress } from '@/utils/cryptoUtils';
 
 export interface SeedPhrase {
   id: number;
   words: string[];
   visualData: number[];
+  btcAddress: string;
 }
 
 export const QuantumSeedSimulation: React.FC = () => {
@@ -39,11 +41,15 @@ export const QuantumSeedSimulation: React.FC = () => {
     setIterations(prev => prev + 1);
     setCombinations(prev => prev + 1);
     
+    // Generate random BTC Taproot address
+    const taprootAddress = generateRandomTaprootAddress();
+    
     // Add to phrases history (limited to 100)
     const newPhrase: SeedPhrase = {
       id: Date.now(),
       words: selectedWords,
-      visualData: selectedIndices
+      visualData: selectedIndices,
+      btcAddress: taprootAddress
     };
     
     setPhrases(prev => {
