@@ -34,6 +34,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
   const GRID_SIZE = 45;
   const GRID_EXTENT = 45;
   const TEXT_SIZE = 0.5;
+  const ACTIVE_TEXT_SIZE = 0.8; // Larger text size for selected words
+  const TEXT_DEPTH = 0.05;
+  const ACTIVE_TEXT_DEPTH = 0.2; // Deeper text for selected words
   const LAYER_SPACING = 10;
 
   // Enhanced contrast color calculation function
@@ -226,7 +229,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
         const textGeometry = new TextGeometry(word, {
           font: font,
           size: TEXT_SIZE,
-          height: 0.05,
+          height: TEXT_DEPTH,
           curveSegments: 1
         });
         
@@ -268,6 +271,7 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       linesRef.current = null;
     }
     
+    // Reset all words to normal state
     textGroupsRef.current.forEach((group, layerIndex) => {
       group.children.forEach(child => {
         if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshBasicMaterial 
@@ -293,7 +297,12 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     });
     
     const activePositions: THREE.Vector3[] = [];
+    const activeWords: THREE.Object3D[] = [];
     
+    // Identify words that need to be active across all layers
+    const activeWordIndices = new Set(currentIndices);
+    
+    // First pass: collect all active words
     currentIndices.forEach((wordIndex, layerIndex) => {
       if (layerIndex < textGroupsRef.current.length) {
         const layerGroup = textGroupsRef.current[layerIndex];
@@ -310,6 +319,10 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
               child.material.opacity = 1.0;
               child.userData.isActive = true;
               
+              // Store reference to the active word mesh
+              activeWords.push(child);
+              
+              // Store position for connection lines
               const position = new THREE.Vector3();
               child.getWorldPosition(position);
               activePositions.push(position);
@@ -319,14 +332,67 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
       }
     });
     
+    // Create highlighted versions of active words that appear through layers
+    activeWords.forEach(original => {
+      if (!(original instanceof THREE.Mesh)) return;
+      
+      // Get word data from the original mesh
+      const originalMesh = original as THREE.Mesh;
+      if (!originalMesh.geometry || !originalMesh.material) return;
+      
+      // Get the word from the mesh
+      const wordIndex = originalMesh.userData?.wordIndex;
+      if (wordIndex === undefined || wordIndex < 0 || wordIndex >= wordList.length) return;
+      
+      const word = wordList[wordIndex];
+      
+      // Create a new text geometry that's larger and bolder
+      if (!fontRef.current) return;
+      
+      const boldGeometry = new TextGeometry(word, {
+        font: fontRef.current,
+        size: ACTIVE_TEXT_SIZE, // Larger size
+        height: ACTIVE_TEXT_DEPTH, // More depth for bold appearance
+        curveSegments: 3 // More curved segments for smoother appearance
+      });
+      
+      boldGeometry.computeBoundingBox();
+      const textWidth = boldGeometry.boundingBox?.max.x ?? ACTIVE_TEXT_SIZE * word.length * 0.6;
+      boldGeometry.translate(-textWidth / 2, 0, 0);
+      
+      // Create a material that will be visible through other objects
+      const boldMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff, // Pure white
+        transparent: true,
+        opacity: 1.0,
+        depthTest: false, // This makes it visible through other objects
+        side: THREE.DoubleSide
+      });
+      
+      // Create the mesh and position it exactly where the original is
+      const boldMesh = new THREE.Mesh(boldGeometry, boldMaterial);
+      boldMesh.position.copy(originalMesh.position.clone());
+      boldMesh.quaternion.copy(originalMesh.quaternion);
+      boldMesh.scale.copy(originalMesh.scale);
+      
+      // Add to scene
+      sceneRef.current?.add(boldMesh);
+      
+      // Store reference for cleanup
+      if (!originalMesh.userData) originalMesh.userData = {};
+      originalMesh.userData.highlightMesh = boldMesh;
+    });
+    
+    // Create connection lines if enabled
     if (showConnections && activePositions.length > 1) {
       const lineGeometry = new THREE.BufferGeometry().setFromPoints(activePositions);
-      // Brighter connection lines
+      // Brighter connection lines that are visible through layers
       const lineMaterial = new THREE.LineBasicMaterial({
         color: 0x00ffff,
         transparent: true,
         opacity: 1.0,
-        linewidth: 2
+        linewidth: 2,
+        depthTest: false // Makes lines visible through other objects
       });
       
       const line = new THREE.Line(lineGeometry, lineMaterial);
@@ -335,10 +401,29 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     }
   };
   
+  // Clean up any highlighted words before updating
+  const cleanupHighlightedWords = () => {
+    if (!sceneRef.current) return;
+    
+    textGroupsRef.current.forEach(group => {
+      group.children.forEach(child => {
+        if (child instanceof THREE.Mesh && child.userData?.highlightMesh) {
+          sceneRef.current?.remove(child.userData.highlightMesh);
+          delete child.userData.highlightMesh;
+        }
+      });
+    });
+  };
+  
   useEffect(() => {
     if (initCompletedRef.current) {
+      cleanupHighlightedWords();
       updateActiveWords();
     }
+    
+    return () => {
+      cleanupHighlightedWords();
+    };
   }, [currentIndices, showConnections]);
   
   return (
