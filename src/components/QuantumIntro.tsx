@@ -49,7 +49,7 @@ const QuantumIntro: React.FC<QuantumIntroProps> = ({ currentValue, btcValue = 0 
             
             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3 bg-secondary/20 p-2 rounded-sm">
               <Info size={14} />
-              <span>System automatically filters out wallets with balances exceeding 10 BTC for stability.</span>
+              <span>This application was created for educational purposes at MIT Bitcoin Hackathon 2025.</span>
             </div>
           </div>
           
