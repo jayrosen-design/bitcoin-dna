@@ -84,12 +84,13 @@ export const QuantumSeedSimulation: React.FC<QuantumSeedSimulationProps> = () =>
         </div>
         
         {/* Visualization container */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-auto">
           {/* 2D View */}
           <div 
             className={`absolute inset-0 transition-opacity duration-300 ${
               view === '2D' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
+            style={{ overflow: 'auto', minHeight: '100%', minWidth: '100%' }}
           >
             <QuantumMatrix2D 
               showConnections={showConnections}

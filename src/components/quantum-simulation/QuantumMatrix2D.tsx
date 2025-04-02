@@ -24,7 +24,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   
   // Calculate color based on position in grid - smoother gradient
   const calculateColor = (index: number) => {
-    const gridSize = Math.ceil(Math.sqrt(wordList.length));
+    const gridSize = 45;  // Fixed grid size for better layout
     const row = Math.floor(index / gridSize);
     const col = index % gridSize;
     
@@ -129,11 +129,7 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full bg-[#0a0a0a] relative flex items-center justify-center p-2"
-      style={{
-        minHeight: "300px", // Ensure minimal height
-        overflow: "hidden",
-      }}
+      className="w-full h-full bg-[#0a0a0a] relative flex items-center justify-center overflow-auto p-1"
     >
       {/* Canvas for drawing connections */}
       {showConnections && (
@@ -143,35 +139,45 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
         />
       )}
       
-      {/* Word grid - Ensure all words are visible */}
-      <div className="grid grid-cols-[repeat(45,1fr)] gap-[1px] w-full h-full max-w-full max-h-full overflow-hidden">
+      {/* Word grid - using fixed dimensions that allow all words to be visible */}
+      <div 
+        className="grid"
+        style={{
+          gridTemplateColumns: 'repeat(45, minmax(20px, 1fr))',
+          gap: '1px',
+          width: '100%',
+          height: '100%',
+          minWidth: '1350px', // Ensure grid is wide enough for all words
+          minHeight: '900px',  // Ensure grid is tall enough
+        }}
+      >
         {wordList.map((word, index) => {
           const isActive = currentIndices.includes(index);
           const baseColor = calculateColor(index);
           
           // Calculate a brighter version for active words
           let textColor = baseColor;
+          let borderColor = baseColor;
+          
           if (isActive) {
             // Parse RGB values for creating a brighter version
             const rgb = baseColor.match(/\d+/g)?.map(Number) || [100, 100, 100];
             // Create a brighter version for active state
-            textColor = `rgb(${Math.min(255, rgb[0] + 70)}, ${Math.min(255, rgb[1] + 70)}, ${Math.min(255, rgb[2] + 70)})`;
+            textColor = `rgb(${Math.min(255, rgb[0] + 100)}, ${Math.min(255, rgb[1] + 100)}, ${Math.min(255, rgb[2] + 100)})`;
           }
           
           return (
             <div
               key={index}
               ref={(el) => setWordRef(el, index)}
-              className={`flex items-center justify-center rounded-sm bg-[#1a1a1a] border-[0.5px] text-[4px] xs:text-[5px] sm:text-[6px] p-0.5 transition-all duration-300 ${
-                isActive ? 'animate-pulse font-bold' : ''
+              className={`flex items-center justify-center text-center rounded-sm bg-[#1a1a1a] border-[0.5px] p-0.5 transition-all duration-300 overflow-hidden ${
+                isActive ? 'animate-pulse font-bold z-20' : ''
               }`}
               style={{ 
                 color: textColor,
-                borderColor: baseColor,
+                borderColor: borderColor,
                 textShadow: isActive ? `0 0 5px ${textColor}, 0 0 10px ${textColor}` : 'none',
-                overflow: 'hidden',
-                height: '100%',
-                width: '100%'
+                fontSize: '6px',
               }}
             >
               {word}
