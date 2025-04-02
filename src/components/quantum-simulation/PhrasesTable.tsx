@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { Toggle } from '@/components/ui/toggle';
 import { SeedPhrase } from './QuantumSeedSimulation';
 
 interface PhrasePixelProps {
@@ -62,6 +62,19 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
         <p className="text-xs text-gray-500">History of attempted 12-word combinations</p>
       </div>
       
+      {/* Moved the toggle above the table */}
+      <div className="px-3 py-2 border-b border-gray-700 flex items-center justify-between">
+        <Toggle
+          pressed={showConnections}
+          onPressedChange={setShowConnections}
+          variant="outline"
+          size="sm"
+          className="data-[state=on]:bg-cyan-900 data-[state=on]:text-cyan-50"
+        >
+          Show Word Connections
+        </Toggle>
+      </div>
+      
       <div className="flex-1 overflow-y-auto p-1">
         <Table>
           <TableHeader>
@@ -92,19 +105,6 @@ export const PhrasesTable: React.FC<PhrasesTableProps> = ({
             ))}
           </TableBody>
         </Table>
-      </div>
-      
-      <div className="p-3 border-t border-gray-700 bg-[#111]">
-        <div className="flex items-center gap-2">
-          <Checkbox 
-            id="showConnections" 
-            checked={showConnections}
-            onCheckedChange={(checked) => setShowConnections(!!checked)} 
-          />
-          <label htmlFor="showConnections" className="text-sm">
-            Show Word Connections
-          </label>
-        </div>
       </div>
     </div>
   );
