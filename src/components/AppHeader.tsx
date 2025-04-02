@@ -2,8 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bitcoin, Info, Loader } from 'lucide-react';
-import ThemeToggle from '@/components/ThemeToggle';
-import CryptoNavigation from '@/components/CryptoNavigation';
 import { CryptoType } from '@/utils/walletUtils';
 
 interface AppHeaderProps {
@@ -32,28 +30,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   return (
     <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center">
           {getCryptoIcon()}
-          <h1 className="text-xl font-medium tracking-tight">
+          <Link to="/" className="text-xl font-medium tracking-tight hover:text-primary/80 transition-colors">
             Quantum Crypto Keybreaker
-          </h1>
-          <div className="flex items-center space-x-4">
-            <Link to="/about" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-              <Info className="h-4 w-4 mr-1" />
-              About
-            </Link>
-            <Link to="/matrix" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-              <svg className="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 2H6V22H2V2Z" className="fill-current" fillOpacity="0.5" />
-                <path d="M10 2H14V22H10V2Z" className="fill-current" fillOpacity="0.5" />
-                <path d="M18 2H22V22H18V2Z" className="fill-current" fillOpacity="0.5" />
-                <path d="M4 8V16H4.5V8H4Z" className="fill-current" />
-                <path d="M12 4V20H12.5V4H12Z" className="fill-current" />
-                <path d="M20 6V18H20.5V6H20Z" className="fill-current" />
-              </svg>
-              Matrix
-            </Link>
-          </div>
+          </Link>
         </div>
         
         <div className="flex items-center space-x-2">
@@ -67,14 +48,22 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           </span>
         </div>
         
-        <div className="flex items-center gap-3">
-          <CryptoNavigation 
-            activeCrypto={activeCrypto} 
-            onCryptoChange={onCryptoChange}
-            isAccessUnlocked={isAccessUnlocked}
-            onToggleUnlock={onToggleUnlock}
-          />
-          <ThemeToggle />
+        <div className="flex items-center space-x-4">
+          <Link to="/about" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+            <Info className="h-4 w-4 mr-1" />
+            About
+          </Link>
+          <Link to="/matrix" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+            <svg className="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2H6V22H2V2Z" className="fill-current" fillOpacity="0.5" />
+              <path d="M10 2H14V22H10V2Z" className="fill-current" fillOpacity="0.5" />
+              <path d="M18 2H22V22H18V2Z" className="fill-current" fillOpacity="0.5" />
+              <path d="M4 8V16H4.5V8H4Z" className="fill-current" />
+              <path d="M12 4V20H12.5V4H12Z" className="fill-current" />
+              <path d="M20 6V18H20.5V6H20Z" className="fill-current" />
+            </svg>
+            Matrix
+          </Link>
         </div>
       </div>
     </header>
