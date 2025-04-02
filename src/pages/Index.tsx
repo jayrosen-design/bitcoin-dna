@@ -14,6 +14,7 @@ import AppFooter from '@/components/AppFooter';
 import QuantumIntro from '@/components/QuantumIntro';
 import TabbedWalletTable from '@/components/TabbedWalletTable';
 import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
+import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSeedSimulation';
 
 const Index = () => {
   const [privacyEnabled, setPrivacyEnabled] = useState(true);
@@ -223,6 +224,16 @@ const Index = () => {
                 address={address}
                 cryptoType={activeCrypto}
               />
+            </div>
+          </div>
+        </div>
+        
+        {/* Matrix Visualization Section - Added full-width */}
+        <div className="animate-fade-up w-full h-[500px]" style={{ animationDelay: '400ms' }}>
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
+            <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
+            <div className="h-[calc(100%-2rem)]">
+              <QuantumSeedSimulation />
             </div>
           </div>
         </div>
