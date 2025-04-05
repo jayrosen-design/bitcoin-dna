@@ -72,7 +72,7 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
         </ol>
       </div>
       
-      <div className="mt-4">
+      <div className="mt-auto pt-6">
         <h3 className="text-lg font-semibold mb-3">BTC DNA NFTs</h3>
         <div className="grid grid-cols-2 gap-4">
           {nftSamples.map((nft) => (
@@ -98,7 +98,7 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
         </div>
         <div className="mt-4 flex justify-center">
           <Link to="/gallery">
-            <Button className="w-full">
+            <Button className="w-full px-8 py-6 text-lg">
               View Gallery <ExternalLink className="ml-1 h-4 w-4" />
             </Button>
           </Link>
