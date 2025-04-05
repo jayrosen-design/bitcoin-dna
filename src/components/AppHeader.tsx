@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Bitcoin, Dna, Loader } from 'lucide-react';
+import { Bitcoin, Dna, ImageIcon, Loader } from 'lucide-react';
 import { CryptoType } from '@/utils/walletUtils';
 
 interface AppHeaderProps {
@@ -43,6 +43,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         </div>
         
         <div className="flex items-center space-x-4">
+          <Link to="/gallery" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+            <ImageIcon className="h-4 w-4 mr-1" />
+            Gallery
+          </Link>
           <Link to="/btc-dna" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
             <Dna className="h-4 w-4 mr-1" />
             BTC DNA

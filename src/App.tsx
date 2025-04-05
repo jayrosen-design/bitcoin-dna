@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Matrix from "./pages/Matrix";
 import BtcDna from "./pages/BtcDna";
+import Gallery from "./pages/Gallery";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/ThemeProvider";
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/matrix" element={<Matrix />} />
             <Route path="/btc-dna" element={<BtcDna />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
