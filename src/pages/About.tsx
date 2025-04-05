@@ -9,7 +9,7 @@ import { CryptoType } from '@/utils/walletUtils';
 import { useState } from 'react';
 
 const About = () => {
-  const [activeCrypto, setActiveCrypto] = useState<CryptoType>('BTC');
+  const [activeCrypto, setActiveCrypto] = useState<CryptoType>('bitcoin');
   const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
   const { btcPrice, ethPrice, isLoading } = useLiveCryptoPrices();
 
