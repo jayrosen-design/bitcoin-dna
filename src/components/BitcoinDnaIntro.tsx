@@ -21,6 +21,16 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
       id: 24,
       name: "BTC DNA #24",
       imageUrl: "https://btcdna.app/gif/24.gif"
+    },
+    {
+      id: 36,
+      name: "BTC DNA #36", 
+      imageUrl: "https://btcdna.app/gif/36.gif"
+    },
+    {
+      id: 48,
+      name: "BTC DNA #48", 
+      imageUrl: "https://btcdna.app/gif/48.gif"
     }
   ];
 
@@ -53,8 +63,8 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
         </ol>
       </div>
       
-      <div className="mt-auto">
-        <h3 className="text-lg font-semibold mb-3 mt-6">Gallery Samples</h3>
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-3">Gallery Samples</h3>
         <div className="grid grid-cols-2 gap-4">
           {nftSamples.map((nft) => (
             <Card key={nft.id} className="overflow-hidden">

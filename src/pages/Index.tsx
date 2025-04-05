@@ -298,32 +298,30 @@ const Index = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="flex flex-col space-y-6 h-full">
-            <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
-              <SeedPhraseGenerator
-                seedPhrase={seedPhrase}
-                onRegenerateSeed={generateNewSeedPhrase}
-                onCheckWallet={() => checkWalletBalance(true)}
-                onGenerateAndCheck={() => generateAndCheck(true)}
-                onToggleAutoGeneration={toggleAutoGeneration}
-                isLoading={isLoading}
-                isGenerating={isGenerating}
-                isAutoGenerating={isAutoGenerating}
-                autoCount={autoCount}
-                privacyEnabled={privacyEnabled}
-                isAccessLocked={!isAccessUnlocked}
-                onRequestUnlock={() => setIsUnlockModalOpen(true)}
-              />
-            </div>
-            
-            <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
-              <GenerationSummary
-                metrics={summaryMetrics}
-                walletStatus={walletStatus}
-                address={address}
-                cryptoType={activeCrypto}
-              />
-            </div>
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
+            <SeedPhraseGenerator
+              seedPhrase={seedPhrase}
+              onRegenerateSeed={generateNewSeedPhrase}
+              onCheckWallet={() => checkWalletBalance(true)}
+              onGenerateAndCheck={() => generateAndCheck(true)}
+              onToggleAutoGeneration={toggleAutoGeneration}
+              isLoading={isLoading}
+              isGenerating={isGenerating}
+              isAutoGenerating={isAutoGenerating}
+              autoCount={autoCount}
+              privacyEnabled={privacyEnabled}
+              isAccessLocked={!isAccessUnlocked}
+              onRequestUnlock={() => setIsUnlockModalOpen(true)}
+            />
+          </div>
+          
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
+            <GenerationSummary
+              metrics={summaryMetrics}
+              walletStatus={walletStatus}
+              address={address}
+              cryptoType={activeCrypto}
+            />
           </div>
         </div>
         
