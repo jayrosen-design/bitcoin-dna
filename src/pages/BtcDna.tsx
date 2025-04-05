@@ -67,7 +67,9 @@ const BtcDna = () => {
   const exampleCanvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const exampleAnimationFrameRef = useRef<number | null>(null);
   const animationPhaseRef = useRef(0);
+  const exampleAnimationPhaseRef = useRef(0);
   const { toast } = useToast();
 
   // Example NFT data for demonstration
@@ -106,7 +108,7 @@ const BtcDna = () => {
   useEffect(() => {
     const canvas = exampleCanvasRef.current;
     if (canvas) {
-      startAnimation(canvas, exampleNftData);
+      startExampleAnimation(canvas, exampleNftData);
     }
 
     // Create gallery animations
@@ -120,6 +122,9 @@ const BtcDna = () => {
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (exampleAnimationFrameRef.current) {
+        cancelAnimationFrame(exampleAnimationFrameRef.current);
       }
     };
   }, []);
@@ -135,10 +140,23 @@ const BtcDna = () => {
         const parsed = JSON.parse(e.target?.result as string);
         setJsonData(parsed);
         
-        // Start animation with the uploaded data
+        // Start animation with the uploaded data for the main canvas
         if (mainCanvasRef.current) {
+          // Stop the previous animation if running
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
           startAnimation(mainCanvasRef.current, parsed);
           setIsAnimating(true);
+        }
+        
+        // Also update the example canvas with the uploaded data
+        if (exampleCanvasRef.current) {
+          // Stop the previous example animation if running
+          if (exampleAnimationFrameRef.current) {
+            cancelAnimationFrame(exampleAnimationFrameRef.current);
+          }
+          startExampleAnimation(exampleCanvasRef.current, parsed);
         }
         
         setErrorMessage('');
@@ -167,7 +185,7 @@ const BtcDna = () => {
     reader.readAsText(file);
   };
 
-  // Animation loop
+  // Animation loop for main canvas
   const startAnimation = (canvas: HTMLCanvasElement, data: NftData) => {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -199,6 +217,43 @@ const BtcDna = () => {
       
       // Continue the animation loop
       animationFrameRef.current = requestAnimationFrame(animate);
+    };
+    
+    animate();
+  };
+
+  // Animation loop for example canvas
+  const startExampleAnimation = (canvas: HTMLCanvasElement, data: NftData) => {
+    if (exampleAnimationFrameRef.current) {
+      cancelAnimationFrame(exampleAnimationFrameRef.current);
+    }
+
+    exampleAnimationPhaseRef.current = 0;
+    
+    const animate = () => {
+      // Extract necessary data from the NFT
+      const seedPhrase = getAttributeValue(data, 'Seed Phrase') || '';
+      const privateKey = getAttributeValue(data, 'Private Key') || '';
+      const bgColor = getAttributeValue(data, 'Background Color') || 'blue';
+      const primaryHash = getAttributeValue(data, 'Primary Hash') || '';
+      const secondaryHash = getAttributeValue(data, 'Secondary Hash') || '';
+      
+      // Render the animation frame
+      renderDnaAnimation(
+        canvas, 
+        seedPhrase, 
+        privateKey, 
+        bgColor, 
+        primaryHash, 
+        secondaryHash, 
+        exampleAnimationPhaseRef.current
+      );
+      
+      // Update animation phase for the next frame
+      exampleAnimationPhaseRef.current += 0.05;
+      
+      // Continue the animation loop
+      exampleAnimationFrameRef.current = requestAnimationFrame(animate);
     };
     
     animate();
@@ -665,6 +720,11 @@ const BtcDna = () => {
     );
   };
 
+  // Get the active NFT data (either uploaded or example)
+  const activeNftData = jsonData || exampleNftData;
+  // Get title for example section
+  const exampleTitle = jsonData ? jsonData.name : "Live Example: Bitcoin Seed #59";
+
   return (
     <div className="min-h-screen flex flex-col">
       <AppHeader 
@@ -768,7 +828,7 @@ const BtcDna = () => {
           {/* Example Section */}
           <Card>
             <CardHeader>
-              <CardTitle>Live Example: Bitcoin Seed #59</CardTitle>
+              <CardTitle>{exampleTitle}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="relative">
@@ -782,16 +842,18 @@ const BtcDna = () => {
               
               <div className="mt-4">
                 <h4 className="font-semibold mb-2">Seed Phrase:</h4>
-                {formatSeedPhrase(getAttributeValue(exampleNftData, 'Seed Phrase'))}
+                {formatSeedPhrase(getAttributeValue(activeNftData, 'Seed Phrase'))}
                 
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <div>
                     <h4 className="text-sm font-semibold">Background Color:</h4>
-                    <p className="text-sm">Red</p>
+                    <p className="text-sm">{getAttributeValue(activeNftData, 'Background Color')}</p>
                   </div>
                   <div>
                     <h4 className="text-sm font-semibold">Bitcoin Address:</h4>
-                    <p className="text-sm font-mono truncate">1NYZLFcg...JYHz</p>
+                    <p className="text-sm font-mono truncate">
+                      {getAttributeValue(activeNftData, 'Bitcoin Address')}
+                    </p>
                   </div>
                 </div>
               </div>
