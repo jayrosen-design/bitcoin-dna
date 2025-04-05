@@ -1,127 +1,176 @@
 
 import React from 'react';
-import ThemeToggle from '@/components/ThemeToggle';
-import { Bitcoin, Coins } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import AppHeader from '@/components/AppHeader';
+import AppFooter from '@/components/AppFooter';
+import { Bitcoin, Dna } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { Link } from 'react-router-dom';
+import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
+import { CryptoType } from '@/utils/walletUtils';
+import { useState } from 'react';
 
 const About = () => {
+  const [activeCrypto, setActiveCrypto] = useState<CryptoType>('BTC');
+  const [isAccessUnlocked, setIsAccessUnlocked] = useState(false);
+  const { btcPrice, ethPrice, isLoading } = useLiveCryptoPrices();
+
+  const handleCryptoChange = (crypto: CryptoType) => {
+    setActiveCrypto(crypto);
+  };
+
+  const handleToggleUnlock = () => {
+    setIsAccessUnlocked(!isAccessUnlocked);
+  };
+
+  const handleToggleDeveloperAccess = () => {
+    setIsAccessUnlocked(!isAccessUnlocked);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <h1 className="text-xl font-medium tracking-tight">
-              Quantum Crypto Keybreaker
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/">Home</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/about">About</Link>
-            </Button>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <AppHeader
+        activeCrypto={activeCrypto}
+        onCryptoChange={handleCryptoChange}
+        isAccessUnlocked={isAccessUnlocked}
+        onToggleUnlock={handleToggleUnlock}
+        btcPrice={btcPrice}
+        isPriceLoading={isLoading}
+      />
       
       <main className="flex-1 container py-6">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>About Quantum Crypto Keybreaker</h1>
-          
-          <p>Quantum Crypto Keybreaker is an advanced quantum computing service designed for authorized security testing, cryptographic research, and educational demonstrations. Built on state-of-the-art quantum hardware and algorithms, the service explores vulnerabilities in crypto wallet security, particularly those based on seed phrases. Importantly, this app is entirely hypothetical and is presented solely for educational purposes. This lesson demonstrates how scams can be extremely convincing and why rigorous security practices are essential.</p>
-          
-          <h2>How It Works</h2>
-          
-          <h3>1. Quantum Computation & Qubits</h3>
-          <p><strong>Parallel Processing:</strong> Leveraging the power of qubits, the system can simultaneously explore an enormous number of potential seed phrase combinations—far surpassing the capabilities of classical brute-force methods.</p>
-          <p><strong>Superposition:</strong> Qubits allow the system to assess multiple cryptographic states concurrently, optimizing the search for vulnerabilities.</p>
-          
-          <h3>2. Advanced Quantum Algorithms</h3>
-          <p><strong>Algorithmic Foundations:</strong> Inspired by quantum algorithms such as Shor's, the system is tailored to identify and exploit weaknesses in seed phrase generation.</p>
-          <p><strong>Optimized Analysis:</strong> These algorithms efficiently evaluate the vast search space to "crack" seed phrases, demonstrating potential cryptographic vulnerabilities.</p>
-          
-          <h3>3. Cutting-Edge Quantum Hardware</h3>
-          <p><strong>High-Performance Processing:</strong> The service utilizes state-of-the-art quantum computing technology, making it possible to process computations that are infeasible for classical systems.</p>
-          <p><strong>Scalability:</strong> Designed to evolve alongside quantum hardware advancements, ensuring enhanced processing and refined analytical capabilities.</p>
-          
-          <h3>4. Security & Ethical Protocols</h3>
-          <p><strong>Authorized Use Only:</strong> Quantum Crypto Keybreaker is intended exclusively for ethical research, vulnerability assessments, and educational demonstrations. Unauthorized use is strictly prohibited and subject to legal enforcement.</p>
-          <p><strong>Compliance & Collaboration:</strong> The service adheres to industry best practices and regulatory standards, contributing positively to the evolution of blockchain security.</p>
-          
-          <h3>5. Data Analysis & Reporting</h3>
-          <p><strong>Vulnerability Reports:</strong> After analysis, detailed reports outline discovered vulnerabilities, providing actionable insights for developers and security professionals.</p>
-          <p><strong>Improvement Recommendations:</strong> These reports offer recommendations to bolster cryptographic defenses, fostering a more secure blockchain ecosystem.</p>
-          
-          <h2>How to Use the Service</h2>
-          <div className="bg-muted p-4 rounded-md mb-4">
-            <p className="font-semibold">Please Note: The following instructions are part of a hypothetical scenario created for educational purposes. This demonstration is designed to show how convincing scams can be and to educate students on the importance of verifying authenticity before taking any action.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <Dna className="h-8 w-8 text-bitcoin" />
+            <h1 className="text-3xl font-bold mb-0">About Bitcoin DNA</h1>
           </div>
           
-          <h3>Unlock Seed Phrases</h3>
-          <p>To gain access to view "cracked" seed phrases, the service simulates a payment-based unlock mechanism:</p>
+          <p className="text-lg">
+            Bitcoin DNA is an innovative visualization tool that explores the fascinating connection between cryptocurrency 
+            cryptography and biological DNA structures. This educational platform demonstrates how Bitcoin's underlying 
+            cryptographic principles can be represented as DNA-like patterns.
+          </p>
           
-          <h4>Deposit Requirement:</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-            <div className="border p-4 rounded-md">
-              <div className="flex items-center gap-2 mb-2">
-                <Bitcoin className="h-5 w-5 text-bitcoin" />
-                <p className="font-semibold">Bitcoin:</p>
-              </div>
-              <p>Deposit exactly 0.10 BTC to the following Bitcoin address:</p>
-              <div className="bg-muted p-2 rounded-md mt-2 overflow-auto">
-                <code>3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5</code>
-              </div>
+          <h2 className="flex items-center gap-2 mt-8">
+            <Bitcoin className="h-6 w-6 text-bitcoin" />
+            The Connection Between Bitcoin and DNA
+          </h2>
+          
+          <p>
+            Bitcoin's cryptographic principles and biological DNA share surprising similarities. 
+            Both represent fundamental information systems that encode, store, and transmit data. 
+            This visualization tool demonstrates their connection by transforming Bitcoin seed phrases 
+            and private keys into DNA-like patterns that are unique to each wallet.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+            <div className="bg-card rounded-lg p-6 shadow-sm">
+              <h3 className="text-bitcoin font-bold mb-3">Bitcoin Blockchain</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><strong>Digital Ledger:</strong> Records transactions in blocks linked cryptographically</li>
+                <li><strong>Cryptographic Keys:</strong> Uses public-private key pairs for security</li>
+                <li><strong>Immutable:</strong> Once recorded, data cannot be altered</li>
+                <li><strong>Consensus:</strong> Network verifies and agrees on valid transactions</li>
+                <li><strong>Seed Phrases:</strong> 12-24 words that generate private keys</li>
+              </ul>
             </div>
             
-            <div className="border p-4 rounded-md">
-              <div className="flex items-center gap-2 mb-2">
-                <Coins className="h-5 w-5 text-ethereum" />
-                <p className="font-semibold">Ethereum:</p>
-              </div>
-              <p>Deposit exactly 4 ETH to the following Ethereum address:</p>
-              <div className="bg-muted p-2 rounded-md mt-2 overflow-auto">
-                <code>0x742d35Cc6634C0532925a3b844Bc454e4438f44e</code>
-              </div>
+            <div className="bg-card rounded-lg p-6 shadow-sm">
+              <h3 className="text-primary font-bold mb-3">Biological DNA</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><strong>Genetic Code:</strong> Sequences of nucleotides storing biological information</li>
+                <li><strong>Base Pairs:</strong> Uses A-T and G-C pairings for stability</li>
+                <li><strong>Replication:</strong> Self-copies with high fidelity</li>
+                <li><strong>Mutation Resistance:</strong> Error-correction mechanisms protect integrity</li>
+                <li><strong>Evolutionary Record:</strong> Contains history of past generations</li>
+              </ul>
             </div>
           </div>
           
-          <h4>Unlock Process:</h4>
-          <ol>
-            <li>After making the deposit, click the "I've Sent the Payment" button.</li>
-            <li>You will be prompted to copy your wallet and transaction details to verify your payment.</li>
-          </ol>
+          <h2>How Bitcoin DNA Works</h2>
           
-          <h4>Verification:</h4>
-          <ul>
-            <li><strong>Your Wallet Address:</strong> Enter the address you sent from.</li>
-            <li><strong>Transaction ID:</strong> Provide the transaction identifier from your payment.</li>
-          </ul>
+          <p>
+            Our visualization engine transforms Bitcoin seed phrases and private keys into unique DNA-like patterns
+            using deterministic algorithms. Each visualization is cryptographically tied to its Bitcoin wallet,
+            creating a visual fingerprint that represents your digital assets.
+          </p>
           
-          <h4>Access Granted:</h4>
-          <p>Once your transaction details are verified, you will unlock unlimited access to view the simulated "cracked" seed phrases.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
+            <div className="bg-card rounded-lg p-4 shadow-sm relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-bitcoin text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+              <h3 className="text-center mt-4 mb-2 font-semibold">Seed Extraction</h3>
+              <p className="text-sm text-center">Your Bitcoin wallet's 12-word seed phrase is processed securely to extract its cryptographic properties</p>
+            </div>
+            
+            <div className="bg-card rounded-lg p-4 shadow-sm relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-bitcoin text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+              <h3 className="text-center mt-4 mb-2 font-semibold">Hash Generation</h3>
+              <p className="text-sm text-center">SHA-256 and SHA-512 hashing algorithms create deterministic patterns unique to your keys</p>
+            </div>
+            
+            <div className="bg-card rounded-lg p-4 shadow-sm relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-bitcoin text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+              <h3 className="text-center mt-4 mb-2 font-semibold">DNA Mapping</h3>
+              <p className="text-sm text-center">The hash values control DNA helix properties, creating visual patterns that are unique to your wallet</p>
+            </div>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md my-8 font-mono text-sm overflow-auto">
+            <pre><code># Generating primary hash from seed phrase and private key
+combined_data = seed_phrase + private_key
+primary_hash = hashlib.sha256(combined_data.encode()).hexdigest()
+secondary_hash = hashlib.sha512(combined_data.encode()).hexdigest()
+
+# Extract parameters for DNA visualization
+hash_values = [int(primary_hash[i:i+2], 16) for i in range(0, len(primary_hash), 2)]</code></pre>
+          </div>
+          
+          <h2>DNA-Inspired Visualization Features</h2>
+          
+          <p>
+            Our visualization algorithm creates unique DNA-like patterns with properties derived directly from 
+            your seed phrase and private key. The visual elements correspond to cryptographic properties.
+          </p>
+          
+          <div className="space-y-4 my-6">
+            <div className="bg-card rounded-lg p-6 shadow-sm">
+              <h3 className="font-bold mb-3">Double Helix Structure</h3>
+              <p>The visualization displays a double helix similar to DNA, with structural properties determined by:</p>
+              <ul className="list-disc pl-5 space-y-1 mt-2">
+                <li><strong>Amplitude:</strong> Controlled by the first bytes of your primary hash</li>
+                <li><strong>Direction:</strong> Determined by the parity of hash values</li>
+                <li><strong>Density:</strong> Reflects the entropy in your seed phrase</li>
+              </ul>
+            </div>
+            
+            <div className="bg-card rounded-lg p-6 shadow-sm">
+              <h3 className="font-bold mb-3">Base Pair Representation</h3>
+              <p>Just as DNA uses A-T and G-C base pairs, our visualization uses:</p>
+              <ul className="list-disc pl-5 space-y-1 mt-2">
+                <li><strong>Characters:</strong> A, C, G, T, 0, 1 plus hash-derived symbols</li>
+                <li><strong>Connectors:</strong> Represent the bonds between bases</li>
+                <li><strong>Spacing:</strong> Variations reflect cryptographic properties</li>
+              </ul>
+            </div>
+          </div>
           
           <Separator className="my-8" />
           
-          <div className="bg-destructive/10 dark:bg-destructive/20 p-4 rounded-md border border-destructive/30">
-            <h3 className="text-destructive dark:text-destructive/90 mt-0">Disclaimer:</h3>
-            <p className="mb-0">This service is a hypothetical demonstration and is used for educational purposes only. It is intended to teach students about potential scam tactics and the critical importance of safeguarding cryptocurrency assets. Do not attempt to use or replicate this system for any unauthorized activities.</p>
+          <div className="bg-muted p-6 rounded-md">
+            <h3 className="text-lg font-semibold mb-4">Educational Purpose</h3>
+            <p>
+              Bitcoin DNA is an educational tool designed to visualize the connection between cryptography and biology.
+              This application simulates the process of generating Bitcoin seed phrases, deriving private keys, and 
+              creating unique visual representations based on cryptographic hashes. All visualizations are deterministic
+              and unique to each seed phrase, demonstrating how complex information systems like Bitcoin and DNA share
+              conceptual similarities in their structure and function.
+            </p>
           </div>
-          
-          <p className="mt-8">By studying Quantum Crypto Keybreaker, students learn how seemingly compelling services can be designed to lure users into risky actions, and they gain insight into how to protect themselves against such scams.</p>
         </div>
       </main>
       
-      <footer className="border-t py-4">
-        <div className="container flex justify-between items-center">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Quantum Crypto Keybreaker. This is a hypothetical educational service.
-          </p>
-        </div>
-      </footer>
+      <AppFooter
+        isAccessUnlocked={isAccessUnlocked}
+        onToggleDeveloperAccess={handleToggleDeveloperAccess}
+      />
     </div>
   );
 };
