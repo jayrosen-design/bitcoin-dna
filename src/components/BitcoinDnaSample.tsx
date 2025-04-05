@@ -1,19 +1,31 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { Lightbox } from '@/components/ui/lightbox';
 
 const BitcoinDnaSample = () => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState({ src: '', alt: '' });
+  
   const seedPhrase = [
     "rabbit", "endless", "review", "rather", "axis", "lamp", 
     "wide", "comfort", "method", "network", "slam", "country"
   ];
 
+  const openLightbox = (src: string, alt: string) => {
+    setCurrentImage({ src, alt });
+    setLightboxOpen(true);
+  };
+
   return (
     <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6 flex flex-col items-center justify-center">
       <h2 className="text-xl font-bold mb-4 text-center">Generate Your Own Bitcoin DNA</h2>
-      <div className="relative w-full mb-6 overflow-hidden rounded-lg border border-primary/20">
+      <div 
+        className="relative w-full mb-6 overflow-hidden rounded-lg border border-primary/20 cursor-pointer"
+        onClick={() => openLightbox("https://btcdna.app/gif/22.gif", "Bitcoin DNA #22 Animation")}
+      >
         <img 
           src="https://btcdna.app/gif/22.gif" 
           alt="Bitcoin DNA Animation" 
@@ -47,6 +59,13 @@ const BitcoinDnaSample = () => {
           Create BTC DNA <ArrowRight className="ml-2" />
         </Button>
       </Link>
+
+      <Lightbox 
+        isOpen={lightboxOpen} 
+        onClose={() => setLightboxOpen(false)}
+        imageSrc={currentImage.src}
+        imageAlt={currentImage.alt}
+      />
     </div>
   );
 };
