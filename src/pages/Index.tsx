@@ -12,6 +12,7 @@ import GenerationSummary from '@/components/GenerationSummary';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import BitcoinDnaIntro from '@/components/BitcoinDnaIntro';
+import BitcoinDnaSample from '@/components/BitcoinDnaSample';
 import TabbedWalletTable from '@/components/TabbedWalletTable';
 import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
 import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSeedSimulation';
@@ -279,21 +280,7 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up" style={{ animationDelay: '500ms' }}>
-          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6 flex flex-col items-center justify-center">
-            <h2 className="text-xl font-bold mb-4 text-center">Generate Your Own Bitcoin DNA</h2>
-            <div className="relative w-full h-64 mb-6 overflow-hidden rounded-lg border border-primary/20">
-              <img 
-                src="https://btcdna.app/gif/7.gif" 
-                alt="Bitcoin DNA Animation" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <Link to="/btc-dna">
-              <Button className="px-8 py-6 text-lg">
-                Create BTC DNA <ArrowRight className="ml-2" />
-              </Button>
-            </Link>
-          </div>
+          <BitcoinDnaSample />
           
           <div className="flex flex-col space-y-6 h-full">
             <BitcoinDnaIntro 
