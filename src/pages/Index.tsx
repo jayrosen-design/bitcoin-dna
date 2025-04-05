@@ -246,7 +246,6 @@ const Index = () => {
     }
     
     return (
-     
       
       <div className="space-y-6 w-full">
                 <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>

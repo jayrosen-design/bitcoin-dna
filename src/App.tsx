@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Matrix from "./pages/Matrix";
+import BtcDna from "./pages/BtcDna";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/ThemeProvider";
 
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/matrix" element={<Matrix />} />
+            <Route path="/btc-dna" element={<BtcDna />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
