@@ -125,7 +125,7 @@ const Gallery = () => {
                 <Card key={nft.identifier} className="overflow-hidden flex flex-col h-full">
                   <div className="relative h-[300px] overflow-hidden bg-black">
                     <img 
-                      src={nft.image_url || '/placeholder.svg'} 
+                      src={`https://btcdna.app/gif/${nft.identifier}.gif`}
                       alt={nft.name}
                       className="w-full h-full object-contain"
                       onError={(e) => {
@@ -155,7 +155,7 @@ const Gallery = () => {
                   </CardContent>
                   <CardFooter>
                     <a 
-                      href={nft.permalink} 
+                      href={`https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${nft.identifier}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="w-full"
@@ -230,12 +230,12 @@ function getSampleNFTs(): OpenSeaNFT[] {
     identifier: String(i + 1),
     name: `BTC DNA #${i + 1}`,
     description: "A unique Bitcoin seed phrase with its associated wallet address and private key visualized as DNA.",
-    image_url: "/placeholder.svg",
+    image_url: `https://btcdna.app/gif/${i + 1}.gif`,
     permalink: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${i + 1}`,
     metadata: {
       name: `BTC DNA #${i + 1}`,
       description: "A unique Bitcoin seed phrase visualization",
-      image: "/placeholder.svg",
+      image: `https://btcdna.app/gif/${i + 1}.gif`,
       attributes: [
         {
           trait_type: "Background Color",
