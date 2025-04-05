@@ -1,11 +1,10 @@
 
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import { ExternalLink, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Pagination,
@@ -18,59 +17,51 @@ import {
 } from '@/components/ui/pagination';
 import { toast } from 'sonner';
 
-// OpenSea API response type
-type OpenSeaNFT = {
-  identifier: string;
-  name: string;
-  description: string;
-  image_url: string;
-  permalink: string;
-  metadata: {
-    name: string;
-    description: string;
-    image: string;
-    attributes: Array<{
-      trait_type: string;
-      value: string;
-    }>;
-  };
-};
-
+// Constants
 const COLLECTION_ADDRESS = '0xe96bc3aff65dbb7026ec955b6d949595ba2129de';
 const NETWORK = 'sepolia';
 const ITEMS_PER_PAGE = 9;
-const TOTAL_ITEMS = 50; // Assuming 50 NFTs total
+const TOTAL_ITEMS = 50; // 50 NFTs total
 
 const Gallery = () => {
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE));
+  const [isLoading, setIsLoading] = useState(false);
+  const totalPages = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
   
-  // Use react-query to fetch and cache NFT data
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['opensea-nfts', page],
-    queryFn: async () => {
-      // Using a proxy or direct API call depending on your setup
-      try {
-        const response = await fetch(`https://testnets-api.opensea.io/api/v2/chain/${NETWORK}/contract/${COLLECTION_ADDRESS}/nfts?limit=${ITEMS_PER_PAGE}&offset=${(page - 1) * ITEMS_PER_PAGE}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.nfts as OpenSeaNFT[];
-      } catch (err) {
-        console.error('Error fetching OpenSea NFTs:', err);
-        // For demo purposes, return sample data if API call fails
-        return getSampleNFTs(page);
-      }
-    },
-  });
+  // Generate NFT data for the current page
+  const generateNftsForPage = (currentPage: number) => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, TOTAL_ITEMS);
+    
+    const nfts = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      const tokenId = i + 1; // Start from 1 instead of 0
+      nfts.push({
+        id: tokenId.toString(),
+        name: `BTC DNA #${tokenId}`,
+        imageUrl: `https://btcdna.app/gif/${tokenId}.gif`,
+        openseaUrl: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${tokenId}`
+      });
+    }
+    
+    return nfts;
+  };
+  
+  // Get current NFTs
+  const currentNfts = generateNftsForPage(page);
 
   // Handle page change
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
+      setIsLoading(true);
       setPage(newPage);
       window.scrollTo(0, 0);
       toast.info(`Loading page ${newPage}`);
+      
+      // Simulate loading delay
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     }
   };
 
@@ -202,29 +193,23 @@ const Gallery = () => {
             {Array(ITEMS_PER_PAGE).fill(0).map((_, i) => (
               <Card key={i} className="overflow-hidden">
                 <Skeleton className="h-[300px] w-full" />
-                <CardHeader>
+                <CardContent className="pt-4">
                   <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2 mt-2" />
-                </CardHeader>
+                </CardContent>
+                <CardFooter>
+                  <Skeleton className="h-10 w-full" />
+                </CardFooter>
               </Card>
             ))}
-          </div>
-        ) : error ? (
-          <div className="p-6 bg-red-50 rounded-lg border border-red-200 text-center">
-            <p className="text-red-700 mb-4">Unable to load NFTs from OpenSea</p>
-            <p className="text-sm text-muted-foreground">
-              We're displaying sample data instead. In a production environment, 
-              you would need to set up a proxy server to handle API requests.
-            </p>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data?.map((nft) => (
-                <Card key={nft.identifier} className="overflow-hidden flex flex-col h-full">
+              {currentNfts.map((nft) => (
+                <Card key={nft.id} className="overflow-hidden flex flex-col h-full">
                   <div className="relative h-[300px] overflow-hidden bg-black">
                     <img 
-                      src={`https://btcdna.app/gif/${nft.identifier}.gif`}
+                      src={nft.imageUrl}
                       alt={nft.name}
                       className="w-full h-full object-contain"
                       onError={(e) => {
@@ -232,29 +217,12 @@ const Gallery = () => {
                       }}
                     />
                   </div>
-                  <CardHeader>
-                    <CardTitle>{nft.name || `BTC DNA #${nft.identifier}`}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {nft.description || "A unique Bitcoin seed phrase visualization"}
-                    </p>
-                    
-                    <div className="mt-4">
-                      <h4 className="text-sm font-medium mb-2">NFT Details:</h4>
-                      <ul className="text-sm space-y-1">
-                        <li><span className="font-medium">Token ID:</span> {nft.identifier}</li>
-                        {nft.metadata?.attributes?.slice(0, 2).map((attr, idx) => (
-                          <li key={idx}>
-                            <span className="font-medium">{attr.trait_type}:</span> {attr.value}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                  <CardContent className="pt-4 text-center">
+                    <h3 className="text-xl font-bold">{nft.name}</h3>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="pt-0">
                     <a 
-                      href={`https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${nft.identifier}`}
+                      href={nft.openseaUrl}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="w-full"
@@ -314,36 +282,5 @@ const Gallery = () => {
     </div>
   );
 };
-
-// Sample NFT data to use when API is not available
-function getSampleNFTs(currentPage: number): OpenSeaNFT[] {
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  
-  return Array(ITEMS_PER_PAGE).fill(0).map((_, i) => {
-    const tokenId = startIndex + i + 1;
-    return {
-      identifier: String(tokenId),
-      name: `BTC DNA #${tokenId}`,
-      description: "A unique Bitcoin seed phrase with its associated wallet address and private key visualized as DNA.",
-      image_url: `https://btcdna.app/gif/${tokenId}.gif`,
-      permalink: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${tokenId}`,
-      metadata: {
-        name: `BTC DNA #${tokenId}`,
-        description: "A unique Bitcoin seed phrase visualization",
-        image: `https://btcdna.app/gif/${tokenId}.gif`,
-        attributes: [
-          {
-            trait_type: "Background Color",
-            value: ["red", "blue", "green", "gold", "silver", "black"][tokenId % 6]
-          },
-          {
-            trait_type: "Bitcoin Address",
-            value: `1${Array(33).fill(0).map(() => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 62)]).join('')}`
-          }
-        ]
-      }
-    };
-  });
-}
 
 export default Gallery;
