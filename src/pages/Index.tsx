@@ -12,7 +12,6 @@ import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
 import QuantumIntro from '@/components/QuantumIntro';
 import TabbedWalletTable from '@/components/TabbedWalletTable';
-import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
 import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSeedSimulation';
 import type { WalletEntry as TableWalletEntry } from '@/components/WalletTable';
 
@@ -247,6 +246,15 @@ const Index = () => {
     
     return (
       <div className="space-y-6 w-full">
+        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '550px', minHeight: '550px' }}>
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
+            <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
+            <div className="h-[calc(100%-2rem)]">
+              <QuantumSeedSimulation />
+            </div>
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6 h-full">
             <QuantumIntro 
@@ -287,15 +295,6 @@ const Index = () => {
                 address={address}
                 cryptoType={activeCrypto}
               />
-            </div>
-          </div>
-        </div>
-        
-        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
-          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
-            <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
-            <div className="h-[calc(100%-2rem)]">
-              <QuantumSeedSimulation />
             </div>
           </div>
         </div>
