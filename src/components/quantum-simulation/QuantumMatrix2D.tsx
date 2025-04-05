@@ -193,7 +193,8 @@ export const QuantumMatrix2D: React.FC<QuantumMatrix2DProps> = ({
     });
     
     // Draw connections
-    ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+    // Changed from cyan to bitcoin orange
+    ctx.strokeStyle = 'rgba(247, 147, 26, 0.3)'; // Bitcoin orange with opacity
     ctx.lineWidth = 1;
     
     for (let i = 0; i < positions.length - 1; i++) {

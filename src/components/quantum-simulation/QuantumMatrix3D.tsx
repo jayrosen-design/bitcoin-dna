@@ -113,7 +113,8 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     dirLight2.position.set(-1, -1, -1);
     scene.add(dirLight2);
     
-    const pointLight = new THREE.PointLight(0x00aaff, 2, 140);
+    // Changed from blue to bitcoin orange
+    const pointLight = new THREE.PointLight(0xf7931a, 2, 140);
     pointLight.position.set(0, 0, 60);
     scene.add(pointLight);
     
@@ -386,9 +387,9 @@ export const QuantumMatrix3D: React.FC<QuantumMatrix3DProps> = ({
     // Create connection lines if enabled
     if (showConnections && activePositions.length > 1) {
       const lineGeometry = new THREE.BufferGeometry().setFromPoints(activePositions);
-      // Brighter connection lines that are visible through layers
+      // Changed from cyan to bitcoin orange
       const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x00ffff,
+        color: 0xf7931a, // Bitcoin orange
         transparent: true,
         opacity: 1.0,
         linewidth: 2,

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -74,13 +75,15 @@ const QuantumMatrixSimulation: React.FC = () => {
       directionalLight.position.set(50, 50, 50);
       scene.add(directionalLight);
 
-      const blueLight = new THREE.PointLight(0x3366ff, 1, 500);
-      blueLight.position.set(-100, 50, 50);
-      scene.add(blueLight);
+      // Changed from blue to bitcoin orange
+      const orangeLight = new THREE.PointLight(0xf7931a, 1, 500);
+      orangeLight.position.set(-100, 50, 50);
+      scene.add(orangeLight);
 
-      const greenLight = new THREE.PointLight(0x33ff66, 1, 500);
-      greenLight.position.set(100, -50, -50);
-      scene.add(greenLight);
+      // Changed from green to a darker bitcoin orange
+      const secondaryLight = new THREE.PointLight(0xd68112, 1, 500);
+      secondaryLight.position.set(100, -50, -50);
+      scene.add(secondaryLight);
     };
 
     // Create multi-layered word grid
@@ -294,9 +297,10 @@ const QuantumMatrixSimulation: React.FC = () => {
           
           if (mesh) {
             const material = mesh.material as THREE.MeshStandardMaterial;
-            material.color.set(0x00ffff);
+            // Changed from cyan to bitcoin orange
+            material.color.set(0xf7931a);
             material.opacity = 1.0;
-            material.emissive.set(0x003333);
+            material.emissive.set(0x3a2006);
           }
         }
       });
