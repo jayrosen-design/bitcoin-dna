@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 import UnlockModal from '@/components/UnlockModal';
 import WalletDashboard from '@/components/WalletDashboard';
 import { useLiveCryptoPrices } from '@/hooks/useLiveCryptoPrices';
@@ -15,6 +16,9 @@ import TabbedWalletTable from '@/components/TabbedWalletTable';
 import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
 import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSeedSimulation';
 import type { WalletEntry as TableWalletEntry } from '@/components/WalletTable';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { ExternalLink, ArrowRight } from 'lucide-react';
 
 const Index = () => {
   const initialBtcPrice = 65000; 
@@ -231,6 +235,24 @@ const Index = () => {
     totalGenerations: metrics.totalGenerations
   };
 
+  const featuredNfts = [
+    {
+      id: 12,
+      name: "BTC DNA #12",
+      imageUrl: "https://btcdna.app/gif/12.gif"
+    },
+    {
+      id: 24,
+      name: "BTC DNA #24",
+      imageUrl: "https://btcdna.app/gif/24.gif"
+    },
+    {
+      id: 36,
+      name: "BTC DNA #36", 
+      imageUrl: "https://btcdna.app/gif/36.gif"
+    }
+  ];
+
   const renderContent = () => {
     if (walletStatus === 'unlocked' && walletData.balance && shouldShowTransactions) {
       return (
@@ -246,9 +268,8 @@ const Index = () => {
     }
     
     return (
-      
       <div className="space-y-6 w-full">
-                <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
+        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
           <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
             <h2 className="text-xl font-bold mb-4">Bitcoin DNA Visualization</h2>
             <div className="h-[calc(100%-2rem)]">
@@ -256,7 +277,24 @@ const Index = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up" style={{ animationDelay: '500ms' }}>
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6 flex flex-col items-center justify-center">
+            <h2 className="text-xl font-bold mb-4 text-center">Generate Your Own Bitcoin DNA</h2>
+            <div className="relative w-full h-64 mb-6 overflow-hidden rounded-lg border border-primary/20">
+              <img 
+                src="https://btcdna.app/gif/7.gif" 
+                alt="Bitcoin DNA Animation" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <Link to="/btc-dna">
+              <Button className="px-8 py-6 text-lg">
+                Create BTC DNA <ArrowRight className="ml-2" />
+              </Button>
+            </Link>
+          </div>
+          
           <div className="flex flex-col space-y-6 h-full">
             <BitcoinDnaIntro 
               currentValue={totalValueUnlocked.usd} 
@@ -270,7 +308,9 @@ const Index = () => {
               />
             </div>
           </div>
-          
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6 h-full">
             <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
               <SeedPhraseGenerator
@@ -300,8 +340,6 @@ const Index = () => {
           </div>
         </div>
         
-
-        
         <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4" style={{ animationDelay: '500ms' }}>
           <h2 className="text-xl font-bold mb-4">Generated Wallets History</h2>
           <TabbedWalletTable 
@@ -312,6 +350,49 @@ const Index = () => {
             isAccessLocked={!isAccessUnlocked}
             onRequestUnlock={() => setIsUnlockModalOpen(true)}
           />
+        </div>
+
+        <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6" style={{ animationDelay: '600ms' }}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold">Featured Bitcoin DNA NFTs</h2>
+            <Link to="/gallery">
+              <Button variant="outline">
+                View Full Gallery <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredNfts.map((nft) => (
+              <Card key={nft.id} className="overflow-hidden">
+                <div className="h-48 bg-black">
+                  <img 
+                    src={nft.imageUrl}
+                    alt={nft.name}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/placeholder.svg';
+                    }}
+                  />
+                </div>
+                <CardContent className="p-4 text-center">
+                  <h3 className="text-lg font-medium">{nft.name}</h3>
+                </CardContent>
+                <CardFooter className="pt-0 pb-4 justify-center">
+                  <a 
+                    href={`https://testnets.opensea.io/assets/sepolia/0xe96bc3aff65dbb7026ec955b6d949595ba2129de/${nft.id}`}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button variant="outline" size="sm" className="w-full">
+                      View on OpenSea <ExternalLink className="ml-2 h-3 w-3" />
+                    </Button>
+                  </a>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     );
