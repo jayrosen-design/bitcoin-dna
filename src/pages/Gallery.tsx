@@ -1,176 +1,15 @@
 
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { ExternalLink, ArrowLeft, ArrowRight } from 'lucide-react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
 import AppHeader from '@/components/AppHeader';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis
-} from '@/components/ui/pagination';
-import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
 
-// OpenSea API response type
-type OpenSeaNFT = {
-  identifier: string;
-  name: string;
-  description: string;
-  image_url: string;
-  permalink: string;
-  metadata: {
-    name: string;
-    description: string;
-    image: string;
-    attributes: Array<{
-      trait_type: string;
-      value: string;
-    }>;
-  };
-};
-
+const OPENSEA_COLLECTION_URL = 'https://testnets.opensea.io/collection/btc-dna-1';
 const COLLECTION_ADDRESS = '0xe96bc3aff65dbb7026ec955b6d949595ba2129de';
-const NETWORK = 'sepolia';
-const ITEMS_PER_PAGE = 9;
-const TOTAL_ITEMS = 50; // Assuming 50 NFTs total
 
 const Gallery = () => {
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE));
-  
-  // Use react-query to fetch and cache NFT data
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['opensea-nfts', page],
-    queryFn: async () => {
-      // Using a proxy or direct API call depending on your setup
-      try {
-        const response = await fetch(`https://testnets-api.opensea.io/api/v2/chain/${NETWORK}/contract/${COLLECTION_ADDRESS}/nfts?limit=${ITEMS_PER_PAGE}&offset=${(page - 1) * ITEMS_PER_PAGE}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.nfts as OpenSeaNFT[];
-      } catch (err) {
-        console.error('Error fetching OpenSea NFTs:', err);
-        // For demo purposes, return sample data if API call fails
-        return getSampleNFTs(page);
-      }
-    },
-  });
-
-  // Handle page change
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
-      window.scrollTo(0, 0);
-      toast.info(`Loading page ${newPage}`);
-    }
-  };
-
-  // Function to generate pagination items
-  const renderPaginationItems = () => {
-    // Array to store pagination items
-    const items = [];
-    
-    // For small number of pages, show all page numbers
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              isActive={i === page}
-              onClick={() => handlePageChange(i)}
-              className="cursor-pointer"
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-      return items;
-    }
-    
-    // For larger number of pages, use ellipsis
-    // Always show first and last page
-    items.push(
-      <PaginationItem key={1}>
-        <PaginationLink
-          isActive={1 === page}
-          onClick={() => handlePageChange(1)}
-          className="cursor-pointer"
-        >
-          1
-        </PaginationLink>
-      </PaginationItem>
-    );
-    
-    // Determine start and end of the displayed range
-    let startPage = Math.max(2, page - 1);
-    let endPage = Math.min(totalPages - 1, page + 1);
-    
-    // Adjust the range if we're near the beginning or end
-    if (page <= 3) {
-      endPage = 4;
-    } else if (page >= totalPages - 2) {
-      startPage = totalPages - 3;
-    }
-    
-    // Add first ellipsis if needed
-    if (startPage > 2) {
-      items.push(
-        <PaginationItem key="ellipsis-1">
-          <PaginationEllipsis />
-        </PaginationItem>
-      );
-    }
-    
-    // Add the page numbers in the middle
-    for (let i = startPage; i <= endPage; i++) {
-      items.push(
-        <PaginationItem key={i}>
-          <PaginationLink
-            isActive={i === page}
-            onClick={() => handlePageChange(i)}
-            className="cursor-pointer"
-          >
-            {i}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-    
-    // Add last ellipsis if needed
-    if (endPage < totalPages - 1) {
-      items.push(
-        <PaginationItem key="ellipsis-2">
-          <PaginationEllipsis />
-        </PaginationItem>
-      );
-    }
-    
-    // Add last page
-    items.push(
-      <PaginationItem key={totalPages}>
-        <PaginationLink
-          isActive={totalPages === page}
-          onClick={() => handlePageChange(totalPages)}
-          className="cursor-pointer"
-        >
-          {totalPages}
-        </PaginationLink>
-      </PaginationItem>
-    );
-    
-    return items;
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <AppHeader 
@@ -197,100 +36,35 @@ const Gallery = () => {
           </Link>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array(ITEMS_PER_PAGE).fill(0).map((_, i) => (
-              <Card key={i} className="overflow-hidden">
-                <Skeleton className="h-[300px] w-full" />
-                <CardHeader>
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2 mt-2" />
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="p-6 bg-red-50 rounded-lg border border-red-200 text-center">
-            <p className="text-red-700 mb-4">Unable to load NFTs from OpenSea</p>
-            <p className="text-sm text-muted-foreground">
-              We're displaying sample data instead. In a production environment, 
-              you would need to set up a proxy server to handle API requests.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data?.map((nft) => (
-                <Card key={nft.identifier} className="overflow-hidden flex flex-col h-full">
-                  <div className="relative h-[300px] overflow-hidden bg-black">
-                    <img 
-                      src={`https://btcdna.app/gif/${nft.identifier}.gif`}
-                      alt={nft.name}
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/placeholder.svg';
-                      }}
-                    />
-                  </div>
-                  <CardHeader>
-                    <CardTitle>{nft.name || `BTC DNA #${nft.identifier}`}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {nft.description || "A unique Bitcoin seed phrase visualization"}
-                    </p>
-                    
-                    <div className="mt-4">
-                      <h4 className="text-sm font-medium mb-2">NFT Details:</h4>
-                      <ul className="text-sm space-y-1">
-                        <li><span className="font-medium">Token ID:</span> {nft.identifier}</li>
-                        {nft.metadata?.attributes?.slice(0, 2).map((attr, idx) => (
-                          <li key={idx}>
-                            <span className="font-medium">{attr.trait_type}:</span> {attr.value}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <a 
-                      href={`https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${nft.identifier}`}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-full"
-                    >
-                      <Button variant="outline" className="w-full">
-                        View on OpenSea <ExternalLink className="ml-2 h-4 w-4" />
-                      </Button>
-                    </a>
-                  </CardFooter>
-                </Card>
-              ))}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-semibold">OpenSea Testnet Collection</h2>
+                <p className="text-muted-foreground">BTC DNA NFTs on Sepolia Testnet</p>
+              </div>
+              <a 
+                href={OPENSEA_COLLECTION_URL}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center text-primary hover:underline"
+              >
+                <span>Open in OpenSea</span>
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </a>
             </div>
+          </CardContent>
+        </Card>
 
-            <Pagination className="mt-8">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious 
-                    onClick={() => handlePageChange(page - 1)}
-                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                    aria-disabled={page === 1}
-                  />
-                </PaginationItem>
-                
-                {renderPaginationItems()}
-                
-                <PaginationItem>
-                  <PaginationNext 
-                    onClick={() => handlePageChange(page + 1)}
-                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                    aria-disabled={page === totalPages}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </>
-        )}
+        <div className="bg-white rounded-lg shadow overflow-hidden h-[700px]">
+          <iframe 
+            src={OPENSEA_COLLECTION_URL}
+            className="w-full h-full border-0"
+            title="BTC DNA OpenSea Collection"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       </main>
 
       <footer className="bg-muted py-6">
@@ -298,7 +72,7 @@ const Gallery = () => {
           <p className="text-sm text-muted-foreground">
             BTC DNA NFTs are available on OpenSea Sepolia testnet at{' '}
             <a 
-              href="https://testnets.opensea.io/collection/btc-dna-1" 
+              href={OPENSEA_COLLECTION_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:text-primary transition-colors"
@@ -314,36 +88,5 @@ const Gallery = () => {
     </div>
   );
 };
-
-// Sample NFT data to use when API is not available
-function getSampleNFTs(currentPage: number): OpenSeaNFT[] {
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  
-  return Array(ITEMS_PER_PAGE).fill(0).map((_, i) => {
-    const tokenId = startIndex + i + 1;
-    return {
-      identifier: String(tokenId),
-      name: `BTC DNA #${tokenId}`,
-      description: "A unique Bitcoin seed phrase with its associated wallet address and private key visualized as DNA.",
-      image_url: `https://btcdna.app/gif/${tokenId}.gif`,
-      permalink: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${tokenId}`,
-      metadata: {
-        name: `BTC DNA #${tokenId}`,
-        description: "A unique Bitcoin seed phrase visualization",
-        image: `https://btcdna.app/gif/${tokenId}.gif`,
-        attributes: [
-          {
-            trait_type: "Background Color",
-            value: ["red", "blue", "green", "gold", "silver", "black"][tokenId % 6]
-          },
-          {
-            trait_type: "Bitcoin Address",
-            value: `1${Array(33).fill(0).map(() => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 62)]).join('')}`
-          }
-        ]
-      }
-    };
-  });
-}
 
 export default Gallery;
