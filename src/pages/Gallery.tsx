@@ -14,7 +14,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  PaginationEllipsis
 } from '@/components/ui/pagination';
+import { toast } from 'sonner';
 
 // OpenSea API response type
 type OpenSeaNFT = {
@@ -37,29 +39,28 @@ type OpenSeaNFT = {
 const COLLECTION_ADDRESS = '0xe96bc3aff65dbb7026ec955b6d949595ba2129de';
 const NETWORK = 'sepolia';
 const ITEMS_PER_PAGE = 9;
+const TOTAL_ITEMS = 50; // Assuming 50 NFTs total
 
 const Gallery = () => {
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE));
   
   // Use react-query to fetch and cache NFT data
   const { data, isLoading, error } = useQuery({
     queryKey: ['opensea-nfts', page],
     queryFn: async () => {
       // Using a proxy or direct API call depending on your setup
-      // In a production app, you would use a backend proxy to avoid CORS and hide API keys
       try {
         const response = await fetch(`https://testnets-api.opensea.io/api/v2/chain/${NETWORK}/contract/${COLLECTION_ADDRESS}/nfts?limit=${ITEMS_PER_PAGE}&offset=${(page - 1) * ITEMS_PER_PAGE}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setTotalPages(Math.ceil(50 / ITEMS_PER_PAGE)); // Assuming 50 NFTs total
         return data.nfts as OpenSeaNFT[];
       } catch (err) {
         console.error('Error fetching OpenSea NFTs:', err);
         // For demo purposes, return sample data if API call fails
-        return getSampleNFTs();
+        return getSampleNFTs(page);
       }
     },
   });
@@ -69,7 +70,105 @@ const Gallery = () => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
       window.scrollTo(0, 0);
+      toast.info(`Loading page ${newPage}`);
     }
+  };
+
+  // Function to generate pagination items
+  const renderPaginationItems = () => {
+    // Array to store pagination items
+    const items = [];
+    
+    // For small number of pages, show all page numbers
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              isActive={i === page}
+              onClick={() => handlePageChange(i)}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+      return items;
+    }
+    
+    // For larger number of pages, use ellipsis
+    // Always show first and last page
+    items.push(
+      <PaginationItem key={1}>
+        <PaginationLink
+          isActive={1 === page}
+          onClick={() => handlePageChange(1)}
+          className="cursor-pointer"
+        >
+          1
+        </PaginationLink>
+      </PaginationItem>
+    );
+    
+    // Determine start and end of the displayed range
+    let startPage = Math.max(2, page - 1);
+    let endPage = Math.min(totalPages - 1, page + 1);
+    
+    // Adjust the range if we're near the beginning or end
+    if (page <= 3) {
+      endPage = 4;
+    } else if (page >= totalPages - 2) {
+      startPage = totalPages - 3;
+    }
+    
+    // Add first ellipsis if needed
+    if (startPage > 2) {
+      items.push(
+        <PaginationItem key="ellipsis-1">
+          <PaginationEllipsis />
+        </PaginationItem>
+      );
+    }
+    
+    // Add the page numbers in the middle
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(
+        <PaginationItem key={i}>
+          <PaginationLink
+            isActive={i === page}
+            onClick={() => handlePageChange(i)}
+            className="cursor-pointer"
+          >
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    
+    // Add last ellipsis if needed
+    if (endPage < totalPages - 1) {
+      items.push(
+        <PaginationItem key="ellipsis-2">
+          <PaginationEllipsis />
+        </PaginationItem>
+      );
+    }
+    
+    // Add last page
+    items.push(
+      <PaginationItem key={totalPages}>
+        <PaginationLink
+          isActive={totalPages === page}
+          onClick={() => handlePageChange(totalPages)}
+          className="cursor-pointer"
+        >
+          {totalPages}
+        </PaginationLink>
+      </PaginationItem>
+    );
+    
+    return items;
   };
 
   return (
@@ -175,25 +274,17 @@ const Gallery = () => {
                   <PaginationPrevious 
                     onClick={() => handlePageChange(page - 1)}
                     className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    aria-disabled={page === 1}
                   />
                 </PaginationItem>
                 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                  <PaginationItem key={pageNum}>
-                    <PaginationLink
-                      isActive={pageNum === page}
-                      onClick={() => handlePageChange(pageNum)}
-                      className="cursor-pointer"
-                    >
-                      {pageNum}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
+                {renderPaginationItems()}
                 
                 <PaginationItem>
                   <PaginationNext 
                     onClick={() => handlePageChange(page + 1)}
                     className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    aria-disabled={page === totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -225,29 +316,34 @@ const Gallery = () => {
 };
 
 // Sample NFT data to use when API is not available
-function getSampleNFTs(): OpenSeaNFT[] {
-  return Array(ITEMS_PER_PAGE).fill(0).map((_, i) => ({
-    identifier: String(i + 1),
-    name: `BTC DNA #${i + 1}`,
-    description: "A unique Bitcoin seed phrase with its associated wallet address and private key visualized as DNA.",
-    image_url: `https://btcdna.app/gif/${i + 1}.gif`,
-    permalink: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${i + 1}`,
-    metadata: {
-      name: `BTC DNA #${i + 1}`,
-      description: "A unique Bitcoin seed phrase visualization",
-      image: `https://btcdna.app/gif/${i + 1}.gif`,
-      attributes: [
-        {
-          trait_type: "Background Color",
-          value: ["red", "blue", "green", "gold", "silver", "black"][i % 6]
-        },
-        {
-          trait_type: "Bitcoin Address",
-          value: `1${Array(33).fill(0).map(() => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 62)]).join('')}`
-        }
-      ]
-    }
-  }));
+function getSampleNFTs(currentPage: number): OpenSeaNFT[] {
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+  return Array(ITEMS_PER_PAGE).fill(0).map((_, i) => {
+    const tokenId = startIndex + i + 1;
+    return {
+      identifier: String(tokenId),
+      name: `BTC DNA #${tokenId}`,
+      description: "A unique Bitcoin seed phrase with its associated wallet address and private key visualized as DNA.",
+      image_url: `https://btcdna.app/gif/${tokenId}.gif`,
+      permalink: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${tokenId}`,
+      metadata: {
+        name: `BTC DNA #${tokenId}`,
+        description: "A unique Bitcoin seed phrase visualization",
+        image: `https://btcdna.app/gif/${tokenId}.gif`,
+        attributes: [
+          {
+            trait_type: "Background Color",
+            value: ["red", "blue", "green", "gold", "silver", "black"][tokenId % 6]
+          },
+          {
+            trait_type: "Bitcoin Address",
+            value: `1${Array(33).fill(0).map(() => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 62)]).join('')}`
+          }
+        ]
+      }
+    };
+  });
 }
 
 export default Gallery;
