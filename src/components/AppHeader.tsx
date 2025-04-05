@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Bitcoin, Dna, ImageIcon, Loader } from 'lucide-react';
+import { Bitcoin, Dna, Loader } from 'lucide-react';
 import { CryptoType } from '@/utils/walletUtils';
 
 interface AppHeaderProps {
@@ -50,23 +50,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             About
           </Link>
           <Link to="/gallery" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-            <ImageIcon className="h-4 w-4 mr-1" />
             Gallery
           </Link>
           <Link to="/btc-dna" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-            <Dna className="h-4 w-4 mr-1" />
             Create
-          </Link>
-          <Link to="/matrix" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-            <svg className="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 2H6V22H2V2Z" className="fill-current" fillOpacity="0.5" />
-              <path d="M10 2H14V22H10V2Z" className="fill-current" fillOpacity="0.5" />
-              <path d="M18 2H22V22H18V2Z" className="fill-current" fillOpacity="0.5" />
-              <path d="M4 8V16H4.5V8H4Z" className="fill-current" />
-              <path d="M12 4V20H12.5V4H12Z" className="fill-current" />
-              <path d="M20 6V18H20.5V6H20Z" className="fill-current" />
-            </svg>
-            Matrix
           </Link>
         </div>
       </div>
