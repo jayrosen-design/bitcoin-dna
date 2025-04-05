@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #11",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/11.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/11.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "12nkY2A8QZ5ngXE1rpNpsPVumEys5DSZSq"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "ba84574ab9d9169a15e19e82bb4fca071e660d1f152141b518f9d20888731f5b"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "party soap ginger fuel beauty weekend face uncle evolve giggle engage spend"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "gold"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "88423efcf911f7fe0f96403b1357f6cb9f32d5f8fbda69001fc72b0d4fd19ac1"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "c9b89fc6b4501c329eed2c6f2491e3c9b0b7cc7720e59b764eb5179072f8beb12b43bd2d84cf351587879e9b1b36b1babf28a11fa5d9f10059f62d1b36d16ae0"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "party"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "soap"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "ginger"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "fuel"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "beauty"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "weekend"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "face"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "uncle"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "evolve"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "giggle"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "engage"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "spend"
+    }
+  ]
+}

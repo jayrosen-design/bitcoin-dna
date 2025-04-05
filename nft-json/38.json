@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #38",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/38.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/38.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1BrFMpAGKwc5faU4tcHV62XiRohcJvZYkF"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "cf727d2dd7eef580babe389c788e43e353a3844ec942d29eeeae37773363a5d7"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "deposit humor math machine enlist acquire parent vehicle actual proud fault between"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "59ef207dc62cf9264e7db7768fee2a7059f0760d6d33d9ab4f9e7cab34b349e4"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "db15ebf4e0cc47d267b463f3a228649c48b12f43070d5d3b3218c2718c4c99cce1636d9cc379cfe3e0a6e56ad1c73b94a2225630c7723434d4c8b6a7390912c2"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "deposit"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "humor"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "math"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "machine"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "enlist"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "acquire"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "parent"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "vehicle"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "actual"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "proud"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "fault"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "between"
+    }
+  ]
+}

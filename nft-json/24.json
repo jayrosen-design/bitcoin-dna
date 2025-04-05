@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #24",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/24.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/24.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "12Zw3NBJ7JwA8bqkGooV5HZGohggK9sDqE"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "70e1f88bf8aa6e651de00aa9c4c4622dd065d82ff0f7cb0148572ad98d47aaa5"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "anger lamp case dawn ugly innocent coil winter mixture income speed mixed"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "silver"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "288b3d4dc4eb4ce462411b09e0ad72ce95320130d2ec653d6fff630aa4e189ab"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "3b117efdbbac072476f55bffd2ae9ca8eb5bc84dcfcd71a17581aa3047daed64425e42c8b82f570258c70b053cd61cb87cc4e635be96bb2e64b4cc817fdde9dd"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "anger"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "lamp"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "case"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "dawn"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "ugly"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "innocent"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "coil"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "winter"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "mixture"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "income"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "speed"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "mixed"
+    }
+  ]
+}

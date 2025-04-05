@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #47",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/47.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/47.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1GkvhSLN3B2iuQLPxKMAyAt1b9h7daF6WX"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "cb60dfad6ed54088f6863e0d0457a7f90e4e1924e224cbe4137ac4c1cd99e26f"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "near scatter weather capable yard simple loan review valid flock address bid"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "silver"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "90e8d780da6b7797c50cc9eb06948562fc9e74666f80e5124d5e96ea4bf57ca7"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "c16c1ef04899aa98769bf64fcc39f71b4ec85af23eeb3356568be08711950b902a2ab795d0e4bc17b16a8c0b911f829a194a868c22db9cdc25be612da5e10e94"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "near"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "scatter"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "weather"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "capable"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "yard"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "simple"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "loan"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "review"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "valid"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "flock"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "address"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "bid"
+    }
+  ]
+}

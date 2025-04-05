@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #36",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/36.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/36.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1Erh94ULuUApL3vjv3VCsaJ4tkqoKvogg3"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "6366a2ae2c9641a9a7fe5730fb75888e078a6ef11b4cbb84375afa75b71f259d"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "lunar gas make detect fantasy runway zoo spend laugh renew once drill"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "green"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "d776bb01a0bda00b1e6087fdca71640459594656a9228dcc4875b077ced6f03a"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "6241b936752274879e41dc5f961c69cf50157d3bfe2fb289630e907ee979ee34114bbc6466cacc62b16c3895c19ea1359c51dff322ecf172a5e4664522b2b87a"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "lunar"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "gas"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "make"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "detect"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "fantasy"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "runway"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "zoo"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "spend"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "laugh"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "renew"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "once"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "drill"
+    }
+  ]
+}

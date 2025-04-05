@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #21",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/21.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/21.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "18TJcRBrompH85wQoRwmzJMWkbhKDDJ8Qa"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "f021fcb8ca95f3e9d381ddcab6ebdd8ef562e698b4a060ab726de3f0992b371b"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "copper service dry snack visa history wait input sand end differ hotel"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "black"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "b527dbf4161abdee53fdfeb03b8f4b7b4633da5b594b2c1191e18102329d5f60"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "5ade609d063716fc94e4542ce8d6c4bf7ef23b212ef9b14fc032129916fed58b34d4bfe83d15606184c8e0207ce8f8013e5e1e91dd3d7c8365a828b560670dee"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "copper"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "service"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "dry"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "snack"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "visa"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "history"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "wait"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "input"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "sand"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "end"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "differ"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "hotel"
+    }
+  ]
+}

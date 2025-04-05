@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #2",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/2.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/2.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "18Muwnp9CTeYg9rpvCULfzTZdfd6KjvGbQ"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "574eb3df0113536578ba6415282b9e852dfe53d55c8a4cf3227fb37b27c82f2e"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "tobacco escape gasp quality peanut lend tackle need recycle athlete blossom pill"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "red"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "f1427c4f5345d3f09e678b76b89ff9da311ae74f7b0f46394369a641d5a37f39"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "eb9d6df386605b0ffd985ed2abf70fa26870d60f5b77361d5168a944919403e5817ba4012fb4ce96962933ca52ba05c1c923f46e71dbb9f970e401ba9510c8e0"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "tobacco"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "escape"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "gasp"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "quality"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "peanut"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "lend"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "tackle"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "need"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "recycle"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "athlete"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "blossom"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "pill"
+    }
+  ]
+}

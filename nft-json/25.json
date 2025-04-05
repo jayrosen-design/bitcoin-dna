@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #25",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/25.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/25.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "19Fm3Ac2mCfsH73EB42ej2KFUSi9PsXFtg"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "efe30ade1a72a7a577333c52472fc067c722b55b5654cbaa58bb75790f1fd489"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "execute gun bird below rare sustain diagram law sunset spin plastic figure"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "black"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "6ceddeabb9fc7ced53083c68f6c749adf7913f6ec101fc8716153ee8e6bddb30"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "962a1746e5c19b63d68d63e7fe2bd392ccf9f123551f0ba8841f9e52170c05f7927157ab841ea1879e2cf710f8c61852ae5fe5fae5180548fbef2d21f37deeee"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "execute"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "gun"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "bird"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "below"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "rare"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "sustain"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "diagram"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "law"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "sunset"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "spin"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "plastic"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "figure"
+    }
+  ]
+}

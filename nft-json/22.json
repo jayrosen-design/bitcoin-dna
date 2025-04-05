@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #22",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/22.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/22.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "15Q9z73Ck3nPmJoaKPspKrgBedEaEvBmFB"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "d861c852eaad669e69b4153617b72eaca6be26b07ba972f3cd17605877735a98"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "rabbit endless review rather axis lamp wide comfort method network slam country"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "black"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "fe4afc5536297b789ce9b62608a568c1703ba6587bd366673f142ea5f76b2a5d"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "2a7a13f75276cc1b5f27613e6f31ca7ec5a2514e9140bb04e052c41413d16f4a164e6615e4780540c6cd65154a6d12708450d5e784265fc1703d4940d559dabc"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "rabbit"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "endless"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "review"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "rather"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "axis"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "lamp"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "wide"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "comfort"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "method"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "network"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "slam"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "country"
+    }
+  ]
+}

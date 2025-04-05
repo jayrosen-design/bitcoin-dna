@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #46",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/46.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/46.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1BSm1UN5SPoVdQhxkJTJTCqmDgUYtog6GE"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "5ee64fb65574c9b055c955bb45479af14aac948a6176852666403cd57ba8863e"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "actor happy verb message horse snow nice trigger evoke siren squeeze ankle"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "green"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "cfadcbb13ef87bca41f920987c31e32963008248958c8f61c89925526efa433e"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "1e5adeffff82a9d453df9da7153cb9809e8b4b23f449039cc1b14f068be526a7ff1b0f89bc98004992ff83069823505e598a5c65321015a35a3e3e5f8fc62d2f"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "actor"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "happy"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "verb"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "message"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "horse"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "snow"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "nice"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "trigger"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "evoke"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "siren"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "squeeze"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "ankle"
+    }
+  ]
+}

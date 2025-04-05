@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #42",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/42.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/42.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "12ZAQZXAL3dvPTf3nwCcdZbMw4xiAmRzGf"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "138bd63b57fb65f709492e275d490d979751cbd5b0b99be112d924792b2f4ba5"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "vehicle galaxy liquid salmon magic sausage napkin mind harvest prevent wear invite"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "indigo"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "bdb2a414ba472f4974e1d8fc98db2623554c72d9eb3ff9709be94e45c14945da"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "3fa61bf79b9ca6f67ae914525f932c0a1dcb6602ed7c220f3432c778b3d7b829761df1fbd5beb8502b6d119313831a740a86912be5028404712f72e5900fa66a"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "vehicle"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "galaxy"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "liquid"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "salmon"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "magic"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "sausage"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "napkin"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "mind"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "harvest"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "prevent"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "wear"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "invite"
+    }
+  ]
+}

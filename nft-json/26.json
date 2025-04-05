@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #26",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/26.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/26.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1KHinNoaDF2tNThf88nvg48J5TTWqobMV3"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "4e0e75f083dd7f593b33d84b8b7e0f2f4ba4e0d9bcf0c2017e76d9749b71436b"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "fun maximum merit crisp swamp ship palm size happy skull excuse valve"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "indigo"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "c3114d0854c6a3b26103758561bdf1d7ebd2e5d786e1286668af0377fbebdbec"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "2a57810832ac5e26cebb9de555ed619cfafea64f42f0ae066deb2fce08e7263dfa8a4db8d110c3cf2c297d3cec4e96ed74a35d91aa911169b279040061a4a9cd"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "fun"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "maximum"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "merit"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "crisp"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "swamp"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "ship"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "palm"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "size"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "happy"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "skull"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "excuse"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "valve"
+    }
+  ]
+}

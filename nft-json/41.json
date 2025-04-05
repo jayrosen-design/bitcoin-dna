@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #41",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/41.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/41.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1JxGRhoxgYx75r1LpUk64pVhjXAAu9Rh34"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "8466259ed964d81ab415e89b608c2bf6f1052b7109ae9839c41b1e9c310d462c"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "trigger lend giant type polar work season chief vintage entry youth play"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "cf1e3374a46093e3892c2d116d55892d5c29dd7983eafe70908840035af514fc"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "f6f5e1302da69555780198747c1460f69837a4d5387acefeea215954dda7e023d64eefe77787366c668b50315affa77a3044fff85e7f150a21a22f77225db884"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "trigger"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "lend"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "giant"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "type"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "polar"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "work"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "season"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "chief"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "vintage"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "entry"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "youth"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "play"
+    }
+  ]
+}

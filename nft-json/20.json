@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #20",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/20.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/20.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "13D6FDDhiDXcrn6GJrpo9E5D7hF1v74ged"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "adaed97b8040e7780d925de665689665177e87413139b6c81f672b413c23811c"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "pledge buyer sleep coast forest good eagle olympic element scheme cloth two"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "yellow"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "bfc2116241f76fc2b8611735252ea919b96b87bce0be3e38d5786277a4d02547"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "fe73d2cd7a76606d0904e68b46fac62e607aa51790022aca236d5a982e2c7586e7a0fbdc514a00cf7ea69d65b3d61d17d8d68f486487e7811e03114c613feb0c"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "pledge"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "buyer"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "sleep"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "coast"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "forest"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "good"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "eagle"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "olympic"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "element"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "scheme"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "cloth"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "two"
+    }
+  ]
+}

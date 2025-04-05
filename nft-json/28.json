@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #28",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/28.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/28.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1MRABvYD3jWXi3kYQZppfG2xKmXF3RtLEj"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "b505f43b42df40727abf256d00c5d63373817a7d09936b69306fb7a8cc986430"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "guilt wedding flee fragile review burger world bicycle true worry solid duck"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "edb2087170ea8eeab7cc503f31521ec3407f1d40282a6951f4da0344c7afc51b"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "455dfa4f24c4cc51b92057c9361d2ef2f2d22ec5b1b85b978437f82e132c4bfad953c9645bb56b070ed4c8391074f38fba95764eb2ed2d93a8eab0e2988aeb7d"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "guilt"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "wedding"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "flee"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "fragile"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "review"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "burger"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "world"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "bicycle"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "true"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "worry"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "solid"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "duck"
+    }
+  ]
+}

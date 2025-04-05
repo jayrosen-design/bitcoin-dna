@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #45",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/45.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/45.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "19XCi4aztrqX4ekPDTHZ7VxUgo9CKTMZeT"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "d870e08fd6c41e797d4b82d1cf835334275a136d61156d4b1123763cad8cb8ee"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "metal record angry siren valley illness fossil satisfy struggle major violin try"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "blue"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "790506233708b71f6725b68567505afb47aae76bda2758be8501561e663bdccb"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "0f05588723a759b8909ab20b349be4fa164d699622acddb0cbeca9e420e2beed61fda921096cbd2002dd2ffa3ac8ff1137fecbc3c07d211f4e1b387cd5f50294"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "metal"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "record"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "angry"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "siren"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "valley"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "illness"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "fossil"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "satisfy"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "struggle"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "major"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "violin"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "try"
+    }
+  ]
+}

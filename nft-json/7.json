@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #7",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/7.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/7.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "17z5C8QWTBiw2Z9b5jgwUzuiUxr3bwrzyJ"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "d740c7d1dbaf337afe4edaec8b50888fafa51f51fa676ab3769aea6597df5c06"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "shy detail else hundred reject pattern chalk deny clap soon reopen chief"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "green"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "fb932ee646ec9b14418edae7422fd0600d4b7af5255a80786c60c3dc8d150343"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "fd681c58f1736d34e1d761fcc72aa2e093a7783e9251cfbc889004c0b2bff46aa3942b986ee0730a2df8267438f38a60ccc705fbc9883dc77ed2c1c4238a2907"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "shy"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "detail"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "else"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "hundred"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "reject"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "pattern"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "chalk"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "deny"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "clap"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "soon"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "reopen"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "chief"
+    }
+  ]
+}

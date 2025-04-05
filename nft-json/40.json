@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #40",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/40.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/40.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "187NaFJ5fXYbr8qmfsehmrBL4PFRvj12aJ"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "6a1d3cb240bb261e943e9a6fbf53441f285dcc369d51598c6e00763a8e8b113d"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "pretty kid woman wall naive chaos museum since purpose vast make scissors"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "gray"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "8315ecb787bc9388bff6e437d74c0dda47e133b18c2fefb1da31f44b3947f6c7"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "d0549773f7f835ca7181b497dab887b269a43d41ef9e8499d8171310921d0d77cb7df842fd1983939fb88cf31944f2a360f6ccf798baf2fc78ae1f4b8320520d"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "pretty"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "kid"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "woman"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "wall"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "naive"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "chaos"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "museum"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "since"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "purpose"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "vast"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "make"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "scissors"
+    }
+  ]
+}

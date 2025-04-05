@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #32",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/32.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/32.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "14839N1uYzoRVzKZEvt2rZDa7iY5AANnU5"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "5aa22e6d0dbc0fab9a129888014bd3f9fc5fb06b6d0ab5aa3f757b3597e24169"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "just bus slush garage recall kite champion ramp desk finger habit over"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "yellow"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "a6893ef774900a64a982799755138384e63b7cc0f4f2f9b4a5aac96a759472be"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "53820dab22a05d8dfcd10ebde86232dcae404102932b5662cf2662a2ee2652513e95933a8800b12edbd209891d5c18319d90a07e9d8dd1841ed626f78aa5ce7d"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "just"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "bus"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "slush"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "garage"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "recall"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "kite"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "champion"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "ramp"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "desk"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "finger"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "habit"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "over"
+    }
+  ]
+}

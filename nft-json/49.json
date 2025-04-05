@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #49",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/49.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/49.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1QLRtR6R1vG8t1WmsWPwnmV21V6JXmpvJb"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "12426ec0c9d3bcbe7954f057493ee198d9ad0d61bfecc8c986f6bd549f3da545"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "valve like smart rug reunion young deer emotion enrich toss jaguar permit"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "yellow"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "587d6be1b842a74ae168311c30594e150065a8b89c02888964250398038195a6"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "968bc4ba19f7a40b899d653f2b6a4bf3c864eb3f0e749029660a8a4500f171ea050c7a38f8f33a77c799b0b3c237f68306d8ed51e22fe1f7526d434d52ceadc5"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "valve"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "like"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "smart"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "rug"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "reunion"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "young"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "deer"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "emotion"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "enrich"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "toss"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "jaguar"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "permit"
+    }
+  ]
+}

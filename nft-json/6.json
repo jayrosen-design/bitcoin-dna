@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #6",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/6.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/6.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "19vTMLwfg3emVr3VydHs8BMJR8EwT6nusi"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "46d1ade22451053c7445898edddf4c39bda4c1fc1ac026e68cca598d24f4336b"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "void message scrap romance gospel hawk refuse object hen member hurdle excuse"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "gray"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "1dbef052aa83779cf3b50da9af4c4c199da921ad4301d38b942d26b65f241d44"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "55f95c2b8ff886e9e1e5d7cceb4e11b6085e396d07f10ec776328048fbd81ac9353b96939b2cdabcd28b52c7ff95bc1e974e0af24a97d975ae54dcb4dcf28682"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "void"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "message"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "scrap"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "romance"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "gospel"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "hawk"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "refuse"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "object"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "hen"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "member"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "hurdle"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "excuse"
+    }
+  ]
+}

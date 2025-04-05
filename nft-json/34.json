@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #34",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/34.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/34.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "12FX9TKTNbgEgWH7ZmKjX5fYi4G58XAquE"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "c7bd31106c58d9ce78b91bfec6e5ba74f6df8150bc9c6087625529566d48c16b"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "citizen fossil day enough still ripple coconut begin ticket legend oak lucky"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "indigo"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "dd9a9444b548a6d5b8a77d84cc77813f38f9adb8f63add9f50cd2a9a42224243"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "bf579f58ec4576fbe19f39dfd78de414641fbdd20fc336a9ead9b8a37817d4d85ab0f13071e2546280df382ddbfd0fab77c1970d108094c334cb98dd9e6296b2"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "citizen"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "fossil"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "day"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "enough"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "still"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "ripple"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "coconut"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "begin"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "ticket"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "legend"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "oak"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "lucky"
+    }
+  ]
+}

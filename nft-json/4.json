@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #4",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/4.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/4.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1pGHiSDiRrd2BDGQyTUUYCvXECzdHa1oi"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "bcadaf34d91c8431d6fbff15e08bca9bedbe8510f072a4d3e5b7d238bdcd8608"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "sight problem hand huge flame obscure remember slow industry wide stage young"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "black"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "2e4446c78f6c3122ecd49a199710a84a557724919f0fc8411e8d558cfa568d15"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "59305c0e28027be29db59bf428870625a77e5dc88585475b71b268c8b2a76a5d58aa27a5a1904b1409089774c3fa152565ebf8087f5f102adb0a860ba2b90e80"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "sight"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "problem"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "hand"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "huge"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "flame"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "obscure"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "remember"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "slow"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "industry"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "wide"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "stage"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "young"
+    }
+  ]
+}

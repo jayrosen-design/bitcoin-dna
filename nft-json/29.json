@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #29",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/29.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/29.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1Cos5nasLi8fNbGpqm2iLLab5hPRBHikgC"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "dc88fe5336dbde749b6fb65f2eb9f7b25e3cad158541eb3fbc67f4c4b28a7ca5"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "hill want depart indicate evolve awake air lend split extend silly penalty"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "gray"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "59d0a62706619d7bc6e509e548089e8bfbdf0f3be7fae993488062583f341deb"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "65651b35e6e3c5291396632b031239a2f7e52892323b75e46031422fbe0903932de727fa936bec4f5d5ad6a2fbc2e091cedbad629cb0b41e4f795698e96eab86"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "hill"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "want"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "depart"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "indicate"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "evolve"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "awake"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "air"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "lend"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "split"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "extend"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "silly"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "penalty"
+    }
+  ]
+}

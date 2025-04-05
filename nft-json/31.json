@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #31",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/31.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/31.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1kX7KK5Pp76gDoMdHUCtS18qR4cuB8Cnr"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "96646e912e612f6a45819ea7bea6d269a2ab24071be87069324807c8fc379488"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "two accident segment forget siren bamboo area pull carry sense roast scout"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "orange"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "3a850c2df6fbad80a79bc303a398900a8d894579e5c13ed5cef9bdd8bddf1243"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "860c4359498030ab143d51dc60b14cdf84d7ea1b249afdedfa4950b02316dec042901de8e21dbedbe9e20b4a316ee51894634ed69e323a466d05f1a13d15861a"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "two"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "accident"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "segment"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "forget"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "siren"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "bamboo"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "area"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "pull"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "carry"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "sense"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "roast"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "scout"
+    }
+  ]
+}

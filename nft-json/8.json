@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #8",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/8.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/8.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1LoF8hAhd2in8SMmT6zi9brWcLydvZx7F5"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "bfc9739938f2c6ad3b8ecf449da57cacd793062259775f5ed4c78de796c664b1"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "harsh april kit chase buddy salt dice denial bulb nothing target symptom"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "black"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "7ed219c179439c1197129bf8def64d91bc7a1e9e3f331174cbb5a927d8da4360"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "e790d44edf5ce775fce633d321aad01e4bdffdce8e122d0e5df9e8b5b3bae91a3a7fdc410be58cee4cdbec564580346105a0294dbd5d41470b654576322f60ea"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "harsh"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "april"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "kit"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "chase"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "buddy"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "salt"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "dice"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "denial"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "bulb"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "nothing"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "target"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "symptom"
+    }
+  ]
+}

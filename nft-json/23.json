@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #23",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/23.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/23.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1C3BU8m6KudAKRRpWodsAsQZhgfwZXMfkb"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "dd42a3232a3e63676cb35d31be8e75e26c83ba0fa1ba7a48b7c0ae0cf3713a9f"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "ask soldier muffin sample hungry cushion nut fatigue better runway enroll candy"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "1d4ca699db1fe96068fabb11cf9febcc74c5ac114f906faeba6745262dda0f7e"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "cd22511d216bb067e271c61700eb73a574b13c67af1dbe610786c3d719ce16fb285d05aee955eae8bf6d1497a10925b42e99ba5c4156e9429dd7ff7f3d6eebed"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "ask"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "soldier"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "muffin"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "sample"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "hungry"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "cushion"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "nut"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "fatigue"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "better"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "runway"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "enroll"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "candy"
+    }
+  ]
+}

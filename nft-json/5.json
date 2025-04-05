@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #5",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/5.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/5.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1JeG4hYFohM9kTdVpaXqmfqiDmCFQh3ipC"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "ba9eb60556be0c81999b48bee48b1e2d7b5e13dfe9c22aa51484a596458ba917"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "jelly wall source method lobster clever wing cruel guard tomorrow equal clay"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "indigo"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "2f5d02a6c0482649477cd7bc164b9c6c642d877065f5e53c282f942a34414444"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "dce42e4efe52e1b5547490cf9366047d24d7ab7cb165061f4bb8f53f233f958a04bae2f695e19eeea28a10b0ea7395feb1780b2a4eb2e5b6fc37a876189eaa46"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "jelly"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "wall"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "source"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "method"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "lobster"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "clever"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "wing"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "cruel"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "guard"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "tomorrow"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "equal"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "clay"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #10",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/10.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/10.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1PCL6t2mLixwB88v9xKUQF5nZUEyzNUd3Z"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "1acde0adaac5b0e4d7b031264555fa5a376705f1f8706c94ac15e13a946b6ef4"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "retire advice joy path useful sunny hammer detect noise eternal square tree"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "orange"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "1c32865b18a9d314805e6d3d3d836621eacab20579b133da307fe08ae169bebf"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "c6929b7e55f5f125e57d6c086e4646c92f2d4df59f9b638620308d5ae638ab091c168bfc9e285bc3198b5584d7dcafd5db680bf11fe66172ee759e723d1e04b6"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "retire"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "advice"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "joy"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "path"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "useful"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "sunny"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "hammer"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "detect"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "noise"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "eternal"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "square"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "tree"
+    }
+  ]
+}

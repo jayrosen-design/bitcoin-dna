@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #0",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/0.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/0.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "18Zc5bhBCnovk2pxDzqz5bMcMhrYtkJ11M"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "286d1c5bb0b186a806eddf418bb83ce14c07b29bf6a4eeef3193189c47fc8e11"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "wonder decade spirit token flame hawk screen behind enable gun dignity pill"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "blue"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "e5dc11a948cba9a5453cd0e328292ada09972877748e6d975cd85275cb71625c"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "5b469041aa1d8b7868bfb4ea667b7cbf53dbb1868fb80da7f5f52e228058bd80ebd4edacc64bce9cd3c88554b96cdc2950dc87b6c12050577490328ba20aa5b1"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "wonder"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "decade"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "spirit"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "token"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "flame"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "hawk"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "screen"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "behind"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "enable"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "gun"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "dignity"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "pill"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #43",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/43.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/43.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1Pehjbo933MGVnuMG8kgzr9C9i47HBvSuC"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "e583fb82fd50b7bb7b84c61d7dede839e13bce02387854ee308811998370d711"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "order buffalo because assault invite lonely clip swing scout green system clever"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "6478c5d1165d6f37b654bd05fee602f87894a63dd12e184def711a0f03579910"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "e622725be868b0c4b170627c3e29147df5cac30eb306766f004a480d41bffa2885560158cd9600a04a7cb43a7d4e6fc7d53d812c7ec4be624ed41c3e2882a44d"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "order"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "buffalo"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "because"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "assault"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "invite"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "lonely"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "clip"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "swing"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "scout"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "green"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "system"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "clever"
+    }
+  ]
+}

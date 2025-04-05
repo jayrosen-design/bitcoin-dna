@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #44",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/44.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/44.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1KEFvqVJTn8XgRJFLbhf5uEQFsmC8wP1Z5"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "d3e4ce8f7abf2df45a5046a10bd8e668497befab0a71e40cbd8616cd8f571d86"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "enemy detect parent tip evidence enhance polar double rough ritual student guitar"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "black"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "1ba0905b0c69f231362580eaf19e3af86e477dbc8efcd79d278539f1814eaa8e"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "82082e86ec9bac6497262bcd0c1dc759cdee8ad73ab8542a71f735f77788d5d8ff4c06db4b7febdf16a5dea1cc2815ba36a9e135370b397cabee346e72c33a19"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "enemy"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "detect"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "parent"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "tip"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "evidence"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "enhance"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "polar"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "double"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "rough"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "ritual"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "student"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "guitar"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #19",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/19.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/19.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "14RPaKbVCoV6PgNiMtR6Mjgpdnt8h9FatD"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "31e6ddbd028db6676a2b25371e7b61bb8a1f9b064fcc3ddba24bd1b14b1267bb"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "phrase portion year armed hat shock warfare chief symptom tool novel balance"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "a9fc32a1ca703fec9d0c89eb6a35883170a4f35ed0d84352deb97f0ea16c43d4"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "7b096795c2b57e12a443d387ac462d9e7d0e6b68600beb60037833ceab15da4664ed5b455e8a6f1ca90e615a019975b53af4ee385140967818f11c45cfd393f7"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "phrase"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "portion"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "year"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "armed"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "hat"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "shock"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "warfare"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "chief"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "symptom"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "tool"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "novel"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "balance"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #50",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/50.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/50.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1GYdQkzx8TaCbWdc2GTtf2PPDLKaaALkmL"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "f87400c83cdb9088a0b211c7a7e75fe0c2e9964f61614f5823c077ecd8632f8d"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "armed evidence theme soap prison flock kitchen situate curve item tissue pencil"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "gray"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "2360d8f66d24b717baa3a1cef810001eb989539549573a7cdb339cc4f954a516"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "0f441df3a3dd6846161ea4a5721b720ff6272ee4ffafb8ee8e0eef9ad42f777b6cf93601d63afc3c5a7b171ab517667a712599eb3bf92048bf9079de0bce2cf2"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "armed"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "evidence"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "theme"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "soap"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "prison"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "flock"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "kitchen"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "situate"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "curve"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "item"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "tissue"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "pencil"
+    }
+  ]
+}

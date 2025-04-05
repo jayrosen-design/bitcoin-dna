@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #9",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/9.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/9.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1MrjcTKsBfEm745Ufkqs2eGWz1RpwgDZAe"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "7978da5f457b4629e68e593afa2d60367f0708fdbe8425db8e51e62fa435aa66"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "cook caught punch path horror flag insane jealous garden stay fruit picture"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "indigo"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "3f2c426594064e6e0a62fd1c3f1883aaf1c1ee85487131cd390a040a7000e94d"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "17890f772dabd706c7b26a9271b35a2713f240b9f6b85fdccbb5612fdd65e27fa90a422383eff1587d2a330eaff1d083810f039334f0a8a14f55e2df46cf30e8"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "cook"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "caught"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "punch"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "path"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "horror"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "flag"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "insane"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "jealous"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "garden"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "stay"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "fruit"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "picture"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #16",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/16.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/16.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1FPrEEt1QtVVBpgPkSVg9E7QeyWMut8868"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "94fa926f99c1135614bdd52f460eb3bf7a3d653a170e8f76e2b754daf0345bdc"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "blur rebel sphere senior bridge walk fat rabbit rule trash because another"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "60420229c1e8861414792407fb295af7e577806d6f3c800e176ec322b138ccd0"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "e849ac8df3736efd150b1f40038960705d94400f58bc0d6c7a99f93ac29cbd472b4815d17d2418ded3594e1ff4ae20bce3e1d8198584f632f3f13ddbbbd18ca4"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "blur"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "rebel"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "sphere"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "senior"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "bridge"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "walk"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "fat"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "rabbit"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "rule"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "trash"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "because"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "another"
+    }
+  ]
+}

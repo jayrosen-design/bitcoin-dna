@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #12",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/12.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/12.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1FYBDfoFGR2tc7PAdrVwrCYjb1hWzhA4MJ"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "4778ba1e601c907066722ef6a780e9a3b99a7793fd324be91a062f55d60f5ec0"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "nominee learn cook control runway need enable various kiss please almost believe"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "yellow"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "001af0b8d71968fad78c96c1a66315fb63e1f5d5ad1cde9bae5503d41386177f"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "4f9414487800f873edc092068d72b61a16dab6cf0ed05e0d84c4a0ecdb7b3027c2de486a8dcd2c7c0f6491b21d4747375f94fa3cb153f8f7e6fc300f0d0bc6e7"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "nominee"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "learn"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "cook"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "control"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "runway"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "need"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "enable"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "various"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "kiss"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "please"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "almost"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "believe"
+    }
+  ]
+}

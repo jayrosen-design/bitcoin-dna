@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #3",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/3.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/3.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "16m1F2GK3pFJoGbKELmqT16Tc3mhpSKJd5"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "33f0848a326cb9052de391601562698efbf3432818704775d2b5f4f896b7db4a"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "scorpion require size extend again warrior fit leg indoor demand false flight"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "yellow"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "4129a0bf8e0c94c517fcdab9a1ffcec0af1bcd60835f7f15b4bce32b701950bc"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "f857b21344c3afac72af61d81b6ef7f72ce57610f4c0301e7a5781e2aa39a20a59e5c6a047163093732c844dbe54ed071154c1aa2b2b603a5736ca8982751d40"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "scorpion"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "require"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "size"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "extend"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "again"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "warrior"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "fit"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "leg"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "indoor"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "demand"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "false"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "flight"
+    }
+  ]
+}

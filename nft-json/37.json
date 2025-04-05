@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #37",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/37.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/37.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "15zsSaVgeNfjVtbPnNm9ycWq2reHTC8926"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "3e23b869bccafa11628424d91600ddc7ffe557014e5b5b7f38916311551be0bb"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "turtle frame trust vacuum health attract gallery ghost wrong project luggage lobster"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "green"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "0f3e43a9ee11f9e40e4b931c076200f619962fd1a2566286e4dbd1ca5a8f9c4d"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "3332bc3770b83bb65d28a868d32e165f4db990aceb192a01f369e8489e91062edd8909362bd70da229529b69bda8633753d9c32e6ab503f36052e61cccfdae57"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "turtle"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "frame"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "trust"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "vacuum"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "health"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "attract"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "gallery"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "ghost"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "wrong"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "project"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "luggage"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "lobster"
+    }
+  ]
+}

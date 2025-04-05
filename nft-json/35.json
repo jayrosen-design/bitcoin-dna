@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #35",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/35.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/35.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1E1YZzg71r1wiwJFaYqp74X3azJMQCcUGP"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "ea8d80782a7fe48c14125b861fe0585d65d15474aed2f19ed2177a1da768af36"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "need course machine ocean educate stuff equip similar slim skin trap oxygen"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "violet"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "a662f9da4899c9d81cf208e69b33781dabdc46f1e71596477eb253185e4bf41f"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "b95da28008e1e82704143db3fc80c924da264c6bb025ab612d3fb473d7bf3db0a29d4eed144c3f600fb1cf0adb7b51037d86707ddfad75fa01e741fed0937142"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "need"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "course"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "machine"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "ocean"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "educate"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "stuff"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "equip"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "similar"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "slim"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "skin"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "trap"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "oxygen"
+    }
+  ]
+}

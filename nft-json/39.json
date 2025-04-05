@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #39",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/39.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/39.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1MjZZciQyoH2UsiRwzxgNqRPuubg5fuWAF"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "74ca9ceb8cfd29ee0c40cf71ccf955b3bab2519b58805791b4ea855dd9bb49a0"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "melody cruel wire stool conduct decline fog urge wild proof bronze question"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "indigo"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "f21af8f782772dfdf6d3b8ce55007b0743c9dc2d73be28dbd6869dd8820476d6"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "f004f110cc69e4dc36ac295f5e7e59fb854879b82c322ed496cd94b69032ac9d7e7cdc21fcbc3cfba135376939296f3a94ced0fdd04bef3152bc6cb444a1fa0c"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "melody"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "cruel"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "wire"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "stool"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "conduct"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "decline"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "fog"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "urge"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "wild"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "proof"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "bronze"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "question"
+    }
+  ]
+}

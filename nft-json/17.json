@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #17",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/17.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/17.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1EPKWYuqKnnWnuiwsgMAfpWJhVV84zPVsc"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "902b78b8688a6165b686e56e4d0136af8dc6ab48e3cb327907edc0b6b122c3e8"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "blood sing brief depart area shell dress upset robot keep convince bacon"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "violet"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "7e31edb1f75909c70f40176c71d0d1d6c20e4da6c8162ade57030d7e177fd8dc"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "94521cb84bd8dff38baee45e74054690c0cb271b5253a857e163153a05242e8f92e7e50f9cf901f473de5f8628b89dae79e06560da70c82cc0f4be2fe636de4a"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "blood"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "sing"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "brief"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "depart"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "area"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "shell"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "dress"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "upset"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "robot"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "keep"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "convince"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "bacon"
+    }
+  ]
+}

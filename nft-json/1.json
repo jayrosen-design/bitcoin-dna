@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #1",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/1.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/1.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "15eR7TVC7o5wg2LJJAeygqSQdNoEgqhLKm"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "c6f2e8753845aabc5f008db7ca20adf94b3844dfc52a61cb7def8085c5ad3b5a"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "first couch eight slush burden tray such record aspect unhappy slab ocean"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "99fb6d5720bf75eb91262279cd92eeb6de02f6faba5fad1f86600c19d409eb4e"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "3b0bbe5dfb96a8a89a518ba13d2dc5fda3f5ce4d51543eb3fee04ea302130394958d52b1c8729972ff359ded6af4b20593f2d722a792afd7cfbbdcdf1a39c036"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "first"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "couch"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "eight"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "slush"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "burden"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "tray"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "such"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "record"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "aspect"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "unhappy"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "slab"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "ocean"
+    }
+  ]
+}

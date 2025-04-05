@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #18",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/18.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/18.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1FRMBhRQ1a9u5DZMNuhoR8EEAxsB6bXnV1"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "302edf930c6be755f7010bdff1597d695e5274ba0cd5aff3f66776903912c5bd"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "hill rather solid iron offer cross cabin cloth enemy fruit post ghost"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "blue"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "2d83a44bdd3205ebba99984c79e88c4c9515e7e53fb7236c0f4238bee2faf885"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "b4609375a201f58f09044d405d65fb4b924c91c10e18b3f7900fbc927ed953d5ee4d6d46ce50d9a88e8c76d1d5383fc05cd4f421581186dcde27a92f592bcfa0"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "hill"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "rather"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "solid"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "iron"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "offer"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "cross"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "cabin"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "cloth"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "enemy"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "fruit"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "post"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "ghost"
+    }
+  ]
+}

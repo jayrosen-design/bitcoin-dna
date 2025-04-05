@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #48",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/48.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/48.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1BLeDCyZak3Yq67yuZxtGekmNjPJNa9Gpx"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "ec3461c27305851249b1adb93d9d37e29782ab9e8b5f3a22e7e5108a13a9c933"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "length sauce flip arrest south express pond pet sure stereo such joke"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "blue"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "9a4c98b5010ad7988efb24478a786431c64633caca2b2ddfabd8f96c59c238d5"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "8afa7643a8fa92b63778487f01c29b12617af9a04884a04bf3dd70a0757745dc0bd21541cb38a8661bc5ad6881f4a3a8cd810484cac1df29ccc99e56a602ce17"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "length"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "sauce"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "flip"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "arrest"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "south"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "express"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "pond"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "pet"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "sure"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "stereo"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "such"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "joke"
+    }
+  ]
+}

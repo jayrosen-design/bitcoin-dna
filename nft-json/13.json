@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #13",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/13.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/13.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1LddDTDwF7fkcTJhdeSsHgktejPaqJ6xDe"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "1cefd8b0b5d9a0043ef879c3fc2d475be39a2cf5a554a2c7e30e3df1a26e9c1f"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "shaft lazy entry trial violin crash scorpion shift lens excess swear walk"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "silver"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "6f7e9a54b6c79bc543228c6ca66d7b69cb6c7b2596cb1bfdce67e5c120e2288e"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "f78496a1d4eb5617937def503f2299c89f68c13cf2c8848fce5637092a09d42aa8bd38de065adc32a5e0552b4506d5d146d1dceca7bc4718a2032fd5d00ab503"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "shaft"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "lazy"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "entry"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "trial"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "violin"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "crash"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "scorpion"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "shift"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "lens"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "excess"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "swear"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "walk"
+    }
+  ]
+}

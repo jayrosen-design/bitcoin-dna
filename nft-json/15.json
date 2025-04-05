@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #15",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/15.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/15.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "193EX3pKEowopT9tE4kjyYUPM3jWFJbTGg"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "be271d9acb9389e682a9368bd811e2a03278398567cb4e31573ac2a26f177372"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "assist twelve island shallow angle napkin diagram behave actual more brief rail"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "brown"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "82d7abdfe00cf41fc9d5607c353317df6c9c1754d8fd819c02d6c1f8e8792891"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "7ba4635fa47c72b63527b2cc8c129e079b57ec73dcd2d09e2217151c2ed5257265ce9cb0fd9f9a5a7ca50632257bf51c582f0aa38107ecefd4f7707a3f4b1c23"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "assist"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "twelve"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "island"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "shallow"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "angle"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "napkin"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "diagram"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "behave"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "actual"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "more"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "brief"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "rail"
+    }
+  ]
+}

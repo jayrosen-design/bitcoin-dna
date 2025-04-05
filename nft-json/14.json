@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #14",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/14.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/14.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "19YbFHKCDyRxYaagzWY1CcXMbA5FxpSKy8"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "ed3c00df5cae68412e62f6b118dfb60eac2743a0243f50a6546f4f6b1b78e023"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "present nurse you mention stereo vast arm swing napkin lawn industry below"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "silver"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "c0695ae2c19d95d11e32614ebc088b3d4522f697ed429e7b5971cd23b920a93c"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "958f69f03ebf4a05abe31dbac16a2f69b7b782df5e5d34edb346a59f9adb831d209d6edb5a543a5e8c3af28311b989873611bb40894dc923f3cf7d9a4db9009b"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "present"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "you"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "mention"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "stereo"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "vast"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "arm"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "swing"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "napkin"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "lawn"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "industry"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "below"
+    }
+  ]
+}

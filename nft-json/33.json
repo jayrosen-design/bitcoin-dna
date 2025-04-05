@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #33",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/33.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/33.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "19gQFrENXrA5KnkSW6h7MVi9orrhzF7oAY"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "03a1585c5c028b9c535bb174ae8679d9f8f5296f3139051f574e7ff96c62cb24"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "mango submit angle pony absurd tackle perfect act daughter enough dirt eye"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "gray"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "51f9c39b3513fe950b74504e758ffb84c1b2fdd2bfb6e1bbf7d41207a322eb9b"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "00c6fb0d988c1356adc5b7d54825512bcb5fe7e1feb781a752670c2349ce7b680cfd8f701ae48d7f35f47899e3c5f3a2b243cd660396fd0aeb9441227ea162a6"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "mango"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "submit"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "angle"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "pony"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "absurd"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "tackle"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "perfect"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "act"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "daughter"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "enough"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "dirt"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "eye"
+    }
+  ]
+}

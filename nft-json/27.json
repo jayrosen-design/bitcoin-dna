@@ -1,0 +1,80 @@
+{
+  "name": "Bitcoin Seed #27",
+  "description": "A unique Bitcoin seed phrase with its associated wallet address and private key.",
+  "image": "ipfs://PLACEHOLDER_CID/27.png",
+  "animation_url": "ipfs://PLACEHOLDER_CID/gifs/27.gif",
+  "attributes": [
+    {
+      "trait_type": "Bitcoin Address",
+      "value": "1KbsRQJoNWc8J6jTEzqBm281BHdchW4WLM"
+    },
+    {
+      "trait_type": "Private Key",
+      "value": "d498728cf744c0d1f6ab6637a42c3cf92fe3ac011ce168ff7595f5089aadc204"
+    },
+    {
+      "trait_type": "Seed Phrase",
+      "value": "uphold lumber plug bicycle sure decorate amazing pink result snap scan sound"
+    },
+    {
+      "trait_type": "Background Color",
+      "value": "violet"
+    },
+    {
+      "trait_type": "Primary Hash",
+      "value": "eba994330b20f2844c76d2ea1fbe0fe1d5af77373a195b0488fdfbf2aa98a4a6"
+    },
+    {
+      "trait_type": "Secondary Hash",
+      "value": "c9720a6a3846c2c1d3e5ea7e3d9d4e9909060fce099fafaaaccdce4c21f5d63ef120e5b477b9b413f71054bff92b87171e13e479c258139377af3fb919e089a1"
+    },
+    {
+      "trait_type": "Word 1",
+      "value": "uphold"
+    },
+    {
+      "trait_type": "Word 2",
+      "value": "lumber"
+    },
+    {
+      "trait_type": "Word 3",
+      "value": "plug"
+    },
+    {
+      "trait_type": "Word 4",
+      "value": "bicycle"
+    },
+    {
+      "trait_type": "Word 5",
+      "value": "sure"
+    },
+    {
+      "trait_type": "Word 6",
+      "value": "decorate"
+    },
+    {
+      "trait_type": "Word 7",
+      "value": "amazing"
+    },
+    {
+      "trait_type": "Word 8",
+      "value": "pink"
+    },
+    {
+      "trait_type": "Word 9",
+      "value": "result"
+    },
+    {
+      "trait_type": "Word 10",
+      "value": "snap"
+    },
+    {
+      "trait_type": "Word 11",
+      "value": "scan"
+    },
+    {
+      "trait_type": "Word 12",
+      "value": "sound"
+    }
+  ]
+}
