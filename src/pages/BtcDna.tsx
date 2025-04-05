@@ -31,6 +31,34 @@ const COLORS: Record<string, { hex: string }> = {
   "gold": { "hex": "#B8860B" }
 };
 
+// Sample gallery data
+const GALLERY_NFTS = [
+  {
+    id: 9,
+    name: "Bitcoin Seed #9",
+    seedPhrase: "away similar scheme beef dawn tag muscle icon flame decorate gate final",
+    bgColor: "black",
+    btcAddress: "1FVqBseTaJpDCNojz6UEwqpdqLvN6tCMo6",
+    imageUrl: "https://btcdna.app/gif/9.gif"
+  },
+  {
+    id: 59,
+    name: "Bitcoin Seed #59",
+    seedPhrase: "rotate trumpet metal tape detect suffer invest unusual rather sound hip execute",
+    bgColor: "red",
+    btcAddress: "1NYZLFcgtUyEY2qysiW9AYcBxmpskJJYHz",
+    imageUrl: "https://btcdna.app/gif/59.gif"
+  },
+  {
+    id: 17,
+    name: "Bitcoin Seed #17",
+    seedPhrase: "dish school cherry tomato poverty quote bonus woman rather goddess price crater",
+    bgColor: "gray",
+    btcAddress: "1J3yN9ZTmrf6Y7oEuN1kbNpn7TconpoK8W",
+    imageUrl: "https://btcdna.app/gif/17.gif"
+  }
+];
+
 const BtcDna = () => {
   const [jsonData, setJsonData] = useState<NftData | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -80,6 +108,14 @@ const BtcDna = () => {
     if (canvas) {
       startAnimation(canvas, exampleNftData);
     }
+
+    // Create gallery animations
+    GALLERY_NFTS.forEach((nft, index) => {
+      const galleryCanvas = document.getElementById(`gallery-canvas-${index}`) as HTMLCanvasElement;
+      if (galleryCanvas) {
+        startGalleryAnimation(galleryCanvas, nft);
+      }
+    });
 
     return () => {
       if (animationFrameRef.current) {
@@ -163,6 +199,62 @@ const BtcDna = () => {
       
       // Continue the animation loop
       animationFrameRef.current = requestAnimationFrame(animate);
+    };
+    
+    animate();
+  };
+
+  // Start gallery animation
+  const startGalleryAnimation = (canvas: HTMLCanvasElement, nftData: typeof GALLERY_NFTS[0]) => {
+    // Create mock data with the required attributes
+    const mockData: NftData = {
+      name: nftData.name,
+      description: "Gallery example",
+      attributes: [
+        {
+          trait_type: "Seed Phrase",
+          value: nftData.seedPhrase
+        },
+        {
+          trait_type: "Bitcoin Address",
+          value: nftData.btcAddress
+        },
+        {
+          trait_type: "Background Color",
+          value: nftData.bgColor
+        },
+        {
+          trait_type: "Primary Hash",
+          value: "2d9df1a1efb7b791ed7a621a2ac81ce4ba8e2357d18b2fd247659bc8e1352782" // Sample hash
+        },
+        {
+          trait_type: "Secondary Hash",
+          value: "67f8fac45e265f82b7aa887ba0f5f3c9aa2a092fee2d55890e68adb7315c4f8a" // Sample hash
+        }
+      ]
+    };
+
+    let phase = 0;
+    
+    const animate = () => {
+      const seedPhrase = nftData.seedPhrase;
+      const privateKey = "sample_private_key_" + nftData.id; // Mock private key
+      const bgColor = nftData.bgColor;
+      const primaryHash = "2d9df1a1efb7b791ed7a621a2ac81ce4ba8e2357d18b2fd247659bc8e1352782"; // Sample hash
+      const secondaryHash = "67f8fac45e265f82b7aa887ba0f5f3c9aa2a092fee2d55890e68adb7315c4f8a"; // Sample hash
+      
+      renderDnaAnimation(
+        canvas, 
+        seedPhrase, 
+        privateKey, 
+        bgColor, 
+        primaryHash, 
+        secondaryHash, 
+        phase
+      );
+      
+      phase += 0.05;
+      requestAnimationFrame(animate);
     };
     
     animate();
@@ -551,6 +643,28 @@ const BtcDna = () => {
     }
   };
 
+  // Format seed phrase for display
+  const formatSeedPhrase = (phrase: string | null) => {
+    if (!phrase) return null;
+    
+    const words = phrase.split(' ');
+    if (words.length === 12) {
+      return (
+        <div className="grid grid-cols-3 gap-2 mt-2">
+          {words.map((word, idx) => (
+            <div key={idx} className="bg-muted px-2 py-1 rounded text-center text-sm">
+              {idx + 1}. {word}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    return (
+      <p className="bg-muted p-3 rounded-md text-sm">{phrase}</p>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <AppHeader 
@@ -625,16 +739,23 @@ const BtcDna = () => {
                         <h3 className="font-bold text-lg">{jsonData.name}</h3>
                         <p className="text-sm text-muted-foreground">{jsonData.description}</p>
                         
-                        <div className="mt-4 space-y-2">
-                          <h4 className="font-semibold">Seed Phrase:</h4>
-                          <p className="bg-muted p-3 rounded-md text-sm">
-                            {getAttributeValue(jsonData, 'Seed Phrase')}
-                          </p>
+                        <div className="mt-4 space-y-4">
+                          <div>
+                            <h4 className="font-semibold mb-2">Seed Phrase:</h4>
+                            {formatSeedPhrase(getAttributeValue(jsonData, 'Seed Phrase'))}
+                          </div>
                           
-                          <h4 className="font-semibold">Bitcoin Address:</h4>
-                          <p className="font-mono text-xs break-all">
-                            {getAttributeValue(jsonData, 'Bitcoin Address')}
-                          </p>
+                          <div>
+                            <h4 className="font-semibold">Bitcoin Address:</h4>
+                            <p className="font-mono text-xs break-all">
+                              {getAttributeValue(jsonData, 'Bitcoin Address')}
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="font-semibold">Background Color:</h4>
+                            <p>{getAttributeValue(jsonData, 'Background Color')}</p>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -660,12 +781,8 @@ const BtcDna = () => {
               </div>
               
               <div className="mt-4">
-                <p className="text-sm text-muted-foreground">
-                  This animation shows the DNA structure of a Bitcoin wallet with seed phrase: 
-                  <span className="font-semibold block mt-2">
-                    "rotate trumpet metal tape detect suffer invest unusual rather sound hip execute"
-                  </span>
-                </p>
+                <h4 className="font-semibold mb-2">Seed Phrase:</h4>
+                {formatSeedPhrase(getAttributeValue(exampleNftData, 'Seed Phrase'))}
                 
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <div>
@@ -680,6 +797,51 @@ const BtcDna = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+        
+        {/* Gallery Examples Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">DNA Animation Gallery</h2>
+          <p className="text-muted-foreground mb-6">
+            Each Bitcoin seed phrase creates a unique DNA animation. The patterns are deterministically 
+            generated from the cryptographic properties of the wallet.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {GALLERY_NFTS.map((nft, index) => (
+              <Card key={nft.id} className="overflow-hidden">
+                <div className="relative p-4 bg-black">
+                  <canvas 
+                    id={`gallery-canvas-${index}`}
+                    width={400} 
+                    height={400} 
+                    className="w-full h-auto"
+                  />
+                </div>
+                <CardContent className="mt-4">
+                  <h3 className="font-bold text-lg">{nft.name}</h3>
+                  
+                  <div className="mt-3 space-y-2">
+                    <div>
+                      <h4 className="text-sm font-semibold">Seed Phrase:</h4>
+                      <p className="text-xs break-words">{nft.seedPhrase}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div>
+                        <h4 className="text-sm font-semibold">Background:</h4>
+                        <p className="text-sm">{nft.bgColor}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold">Address:</h4>
+                        <p className="text-sm font-mono truncate">{nft.btcAddress.substring(0, 8)}...</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
         
         {/* Educational Section */}
