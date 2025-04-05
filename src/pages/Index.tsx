@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -338,49 +337,6 @@ const Index = () => {
             isAccessLocked={!isAccessUnlocked}
             onRequestUnlock={() => setIsUnlockModalOpen(true)}
           />
-        </div>
-
-        <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6" style={{ animationDelay: '600ms' }}>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold">Featured Bitcoin DNA NFTs</h2>
-            <Link to="/gallery">
-              <Button variant="outline">
-                View Full Gallery <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredNfts.map((nft) => (
-              <Card key={nft.id} className="overflow-hidden">
-                <div className="h-48 bg-black">
-                  <img 
-                    src={nft.imageUrl}
-                    alt={nft.name}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/placeholder.svg';
-                    }}
-                  />
-                </div>
-                <CardContent className="p-4 text-center">
-                  <h3 className="text-lg font-medium">{nft.name}</h3>
-                </CardContent>
-                <CardFooter className="pt-0 pb-4 justify-center">
-                  <a 
-                    href={`https://testnets.opensea.io/assets/sepolia/0xe96bc3aff65dbb7026ec955b6d949595ba2129de/${nft.id}`}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full"
-                  >
-                    <Button variant="outline" size="sm" className="w-full">
-                      View on OpenSea <ExternalLink className="ml-2 h-3 w-3" />
-                    </Button>
-                  </a>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
         </div>
       </div>
     );
