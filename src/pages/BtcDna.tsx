@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import AppHeader from '@/components/AppHeader';
@@ -751,18 +752,13 @@ const BtcDna = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Upload Section - Updated explanatory text */}
+          {/* Upload Section */}
           <Card>
             <CardHeader>
               <CardTitle>Generate Your DNA Visualization</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="mb-4">
-                Each Bitcoin seed phrase creates a unique DNA animation. The patterns are deterministically 
-                generated from the cryptographic properties of the wallet. SHA-256 and SHA-512 hashing 
-                algorithms create deterministic patterns unique to your keys. The hash values control DNA 
-                helix properties, creating visual patterns that are unique to your wallet
-              </p>
+              <p className="mb-4">Upload a Bitcoin Seed NFT JSON file to visualize its unique DNA pattern</p>
               
               <div className="space-y-4">
                 <input 
@@ -812,3 +808,153 @@ const BtcDna = () => {
                           <div>
                             <h4 className="font-semibold">Bitcoin Address:</h4>
                             <p className="font-mono text-xs break-all">
+                              {getAttributeValue(jsonData, 'Bitcoin Address')}
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="font-semibold">Background Color:</h4>
+                            <p>{getAttributeValue(jsonData, 'Background Color')}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Example Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{exampleTitle}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="relative">
+                <canvas 
+                  ref={exampleCanvasRef} 
+                  width={600} 
+                  height={600} 
+                  className="w-full h-auto border rounded-md bg-black"
+                />
+              </div>
+              
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Seed Phrase:</h4>
+                {formatSeedPhrase(getAttributeValue(activeNftData, 'Seed Phrase'))}
+                
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="text-sm font-semibold">Background Color:</h4>
+                    <p className="text-sm">{getAttributeValue(activeNftData, 'Background Color')}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold">Bitcoin Address:</h4>
+                    <p className="text-sm font-mono truncate">
+                      {getAttributeValue(activeNftData, 'Bitcoin Address')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Gallery Examples Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">DNA Animation Gallery</h2>
+          <p className="text-muted-foreground mb-6">
+            Each Bitcoin seed phrase creates a unique DNA animation. The patterns are deterministically 
+            generated from the cryptographic properties of the wallet.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {GALLERY_NFTS.map((nft, index) => (
+              <Card key={nft.id} className="overflow-hidden">
+                <div className="relative p-4 bg-black">
+                  <canvas 
+                    id={`gallery-canvas-${index}`}
+                    width={400} 
+                    height={400} 
+                    className="w-full h-auto"
+                  />
+                </div>
+                <CardContent className="mt-4">
+                  <h3 className="font-bold text-lg">{nft.name}</h3>
+                  
+                  <div className="mt-3 space-y-2">
+                    <div>
+                      <h4 className="text-sm font-semibold">Seed Phrase:</h4>
+                      <p className="text-xs break-words">{nft.seedPhrase}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div>
+                        <h4 className="text-sm font-semibold">Background:</h4>
+                        <p className="text-sm">{nft.bgColor}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold">Address:</h4>
+                        <p className="text-sm font-mono truncate">{nft.btcAddress.substring(0, 8)}...</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+        
+        {/* Educational Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-4">The Connection Between Bitcoin and DNA</h2>
+          <p className="text-muted-foreground mb-6">
+            Bitcoin's cryptographic principles and biological DNA share surprising similarities. 
+            Both represent fundamental information systems that encode, store, and transmit data.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Bitcoin Blockchain</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li><span className="font-semibold">Digital Ledger:</span> Records transactions in blocks linked cryptographically</li>
+                  <li><span className="font-semibold">Cryptographic Keys:</span> Uses public-private key pairs for security</li>
+                  <li><span className="font-semibold">Immutable:</span> Once recorded, data cannot be altered</li>
+                  <li><span className="font-semibold">Seed Phrases:</span> 12-24 words that generate private keys</li>
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Biological DNA</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li><span className="font-semibold">Genetic Code:</span> Sequences of nucleotides storing biological information</li>
+                  <li><span className="font-semibold">Base Pairs:</span> Uses A-T and G-C pairings for stability</li>
+                  <li><span className="font-semibold">Replication:</span> Self-copies with high fidelity</li>
+                  <li><span className="font-semibold">Mutation Resistance:</span> Error-correction mechanisms protect integrity</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="mt-8 text-center">
+            <Link to="/gallery">
+              <Button>
+                Explore BTC DNA Gallery
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default BtcDna;
