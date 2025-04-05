@@ -43,16 +43,19 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         </div>
         
         <div className="flex items-center space-x-4">
+          <Link to="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+            Home
+          </Link>
+          <Link to="/about" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+            About
+          </Link>
           <Link to="/gallery" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
             <ImageIcon className="h-4 w-4 mr-1" />
             Gallery
           </Link>
           <Link to="/btc-dna" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
             <Dna className="h-4 w-4 mr-1" />
-            BTC DNA
-          </Link>
-          <Link to="/about" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-            About
+            Create
           </Link>
           <Link to="/matrix" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
             <svg className="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
