@@ -25,9 +25,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({
     <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center">
-          <Bitcoin className="h-5 w-5 text-bitcoin mr-2" />
+          <Dna className="h-5 w-5 text-bitcoin mr-2" />
           <Link to="/" className="text-xl font-medium tracking-tight hover:text-primary/80 transition-colors">
-            Quantum Crypto Keybreaker
+            Bitcoin DNA
           </Link>
         </div>
         

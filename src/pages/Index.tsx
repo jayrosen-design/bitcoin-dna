@@ -10,7 +10,7 @@ import SeedPhraseGenerator from '@/components/SeedPhraseGenerator';
 import GenerationSummary from '@/components/GenerationSummary';
 import AppHeader from '@/components/AppHeader';
 import AppFooter from '@/components/AppFooter';
-import QuantumIntro from '@/components/QuantumIntro';
+import BitcoinDnaIntro from '@/components/BitcoinDnaIntro';
 import TabbedWalletTable from '@/components/TabbedWalletTable';
 import { useGetRandomWallets } from '@/hooks/useGetRandomWallets';
 import { QuantumSeedSimulation } from '@/components/quantum-simulation/QuantumSeedSimulation';
@@ -250,7 +250,7 @@ const Index = () => {
       <div className="space-y-6 w-full">
                 <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
           <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
-            <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
+            <h2 className="text-xl font-bold mb-4">Bitcoin DNA Visualization</h2>
             <div className="h-[calc(100%-2rem)]">
               <QuantumSeedSimulation />
             </div>
@@ -258,7 +258,7 @@ const Index = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6 h-full">
-            <QuantumIntro 
+            <BitcoinDnaIntro 
               currentValue={totalValueUnlocked.usd} 
               btcValue={totalValueUnlocked.btc}
             />
