@@ -246,7 +246,17 @@ const Index = () => {
     }
     
     return (
+     
+      
       <div className="space-y-6 w-full">
+                <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
+            <h2 className="text-xl font-bold mb-4">Quantum Seed Phrase Visualization</h2>
+            <div className="h-[calc(100%-2rem)]">
+              <QuantumSeedSimulation />
+            </div>
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col space-y-6 h-full">
             <QuantumIntro 
@@ -291,14 +301,7 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="animate-fade-up w-full" style={{ animationDelay: '400ms', height: '900px', minHeight: '900px' }}>
-          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4 h-full">
-            <h2 className="text-xl font-bold mb-4">Seed Phrase Visualization</h2>
-            <div className="h-[calc(100%-2rem)]">
-              <QuantumSeedSimulation />
-            </div>
-          </div>
-        </div>
+
         
         <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4" style={{ animationDelay: '500ms' }}>
           <h2 className="text-xl font-bold mb-4">Generated Wallets History</h2>
