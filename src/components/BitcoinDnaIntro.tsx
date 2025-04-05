@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Info, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Lightbox } from '@/components/ui/lightbox';
 
 interface BitcoinDnaIntroProps {
   currentValue: number;
@@ -11,6 +12,9 @@ interface BitcoinDnaIntroProps {
 }
 
 const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValue = 0 }) => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState({ src: '', alt: '' });
+
   const nftSamples = [
     {
       id: 12,
@@ -23,9 +27,9 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
       imageUrl: "https://btcdna.app/gif/24.gif"
     },
     {
-      id: 36,
-      name: "BTC DNA #36", 
-      imageUrl: "https://btcdna.app/gif/36.gif"
+      id: 2,
+      name: "BTC DNA #2", 
+      imageUrl: "https://btcdna.app/gif/2.gif"
     },
     {
       id: 48,
@@ -33,6 +37,11 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
       imageUrl: "https://btcdna.app/gif/48.gif"
     }
   ];
+
+  const openLightbox = (src: string, alt: string) => {
+    setCurrentImage({ src, alt });
+    setLightboxOpen(true);
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -64,11 +73,14 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
       </div>
       
       <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-3">Gallery Samples</h3>
+        <h3 className="text-lg font-semibold mb-3">BTC DNA NFTs</h3>
         <div className="grid grid-cols-2 gap-4">
           {nftSamples.map((nft) => (
             <Card key={nft.id} className="overflow-hidden">
-              <div className="h-36 bg-black">
+              <div 
+                className="h-36 bg-black cursor-pointer transition-transform hover:scale-105"
+                onClick={() => openLightbox(nft.imageUrl, nft.name)}
+              >
                 <img 
                   src={nft.imageUrl}
                   alt={nft.name}
@@ -81,17 +93,24 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
               <CardContent className="p-3 text-center">
                 <h3 className="text-sm font-medium">{nft.name}</h3>
               </CardContent>
-              <CardFooter className="p-2 pt-0 justify-center">
-                <Link to="/gallery" className="w-full">
-                  <Button variant="outline" size="sm" className="w-full text-xs">
-                    View Gallery <ExternalLink className="ml-1 h-3 w-3" />
-                  </Button>
-                </Link>
-              </CardFooter>
             </Card>
           ))}
         </div>
+        <div className="mt-4 flex justify-center">
+          <Link to="/gallery">
+            <Button className="w-full">
+              View Gallery <ExternalLink className="ml-1 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
+
+      <Lightbox 
+        isOpen={lightboxOpen} 
+        onClose={() => setLightboxOpen(false)}
+        imageSrc={currentImage.src}
+        imageAlt={currentImage.alt}
+      />
     </div>
   );
 };
