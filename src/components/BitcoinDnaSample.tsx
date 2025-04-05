@@ -13,11 +13,11 @@ const BitcoinDnaSample = () => {
   return (
     <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6 flex flex-col items-center justify-center">
       <h2 className="text-xl font-bold mb-4 text-center">Generate Your Own Bitcoin DNA</h2>
-      <div className="relative w-full h-80 mb-6 overflow-hidden rounded-lg border border-primary/20">
+      <div className="relative w-full mb-6 overflow-hidden rounded-lg border border-primary/20">
         <img 
           src="https://btcdna.app/gif/22.gif" 
           alt="Bitcoin DNA Animation" 
-          className="w-full h-full object-cover"
+          className="w-full object-contain"
           loading="lazy"
         />
       </div>

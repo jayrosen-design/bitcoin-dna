@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -282,19 +283,19 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up" style={{ animationDelay: '500ms' }}>
           <BitcoinDnaSample />
           
-          <div className="flex flex-col space-y-6 h-full">
+          <div className="bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-6">
             <BitcoinDnaIntro 
               currentValue={totalValueUnlocked.usd} 
               btcValue={totalValueUnlocked.btc}
             />
-            
-            <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4">
-              <StatusCards
-                totalValueUnlocked={totalValueUnlocked}
-                metrics={walletMetrics}
-              />
-            </div>
           </div>
+        </div>
+        
+        <div className="animate-fade-up bg-card/80 backdrop-blur-sm border-primary/10 rounded-lg p-4" style={{ animationDelay: '600ms' }}>
+          <StatusCards
+            totalValueUnlocked={totalValueUnlocked}
+            metrics={walletMetrics}
+          />
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
