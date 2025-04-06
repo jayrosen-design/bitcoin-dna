@@ -39,7 +39,7 @@ const Gallery = () => {
       nfts.push({
         id: tokenId.toString(),
         name: `BTC DNA #${tokenId}`,
-        imageUrl: `https://github.com/jayrosen-design/bitcoin-dna/blob/main/public/${tokenId}.gif`,
+        imageUrl: `https://btcdna.app/gif/${tokenId}.gif`,
         openseaUrl: `https://testnets.opensea.io/assets/sepolia/${COLLECTION_ADDRESS}/${tokenId}`
       });
     }
