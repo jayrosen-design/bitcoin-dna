@@ -31,6 +31,10 @@ const BitcoinDnaSample = () => {
           alt="Bitcoin DNA Animation" 
           className="w-full object-contain"
           loading="lazy"
+          onError={(e) => {
+            console.log("Main image failed to load");
+            (e.target as HTMLImageElement).src = '/placeholder.svg';
+          }}
         />
       </div>
       

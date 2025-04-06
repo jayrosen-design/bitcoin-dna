@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Info, ExternalLink } from 'lucide-react';
@@ -19,22 +18,22 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
     {
       id: 12,
       name: "BTC DNA #12",
-      imageUrl: "https://btcdna.app/gif/12.gif"
+      imageUrl: "https://i.imgur.com/x8iJ62Q.gif"
     },
     {
       id: 24,
       name: "BTC DNA #24",
-      imageUrl: "https://btcdna.app/gif/24.gif"
+      imageUrl: "https://i.imgur.com/fXDRv5y.gif"
     },
     {
       id: 2,
       name: "BTC DNA #2", 
-      imageUrl: "https://btcdna.app/gif/2.gif"
+      imageUrl: "https://i.imgur.com/gAn7e73.gif"
     },
     {
       id: 48,
       name: "BTC DNA #48", 
-      imageUrl: "https://btcdna.app/gif/48.gif"
+      imageUrl: "https://i.imgur.com/9e23gBW.gif"
     }
   ];
 
@@ -86,6 +85,7 @@ const BitcoinDnaIntro: React.FC<BitcoinDnaIntroProps> = ({ currentValue, btcValu
                   alt={nft.name}
                   className="w-full h-full object-contain"
                   onError={(e) => {
+                    console.log("Image failed to load:", nft.imageUrl);
                     (e.target as HTMLImageElement).src = '/placeholder.svg';
                   }}
                 />
