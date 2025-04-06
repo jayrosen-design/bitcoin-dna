@@ -250,7 +250,7 @@ const Index = () => {
     {
       id: 36,
       name: "BTC DNA #36", 
-      imageUrl: "https://i.imgur.com/gAn7e73.gif"
+      imageUrl: "https://i.imgur.com/9e23gBW.gif"
     }
   ];
 
