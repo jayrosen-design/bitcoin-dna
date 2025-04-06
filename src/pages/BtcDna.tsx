@@ -39,7 +39,7 @@ const GALLERY_NFTS = [
     seedPhrase: "away similar scheme beef dawn tag muscle icon flame decorate gate final",
     bgColor: "black",
     btcAddress: "1FVqBseTaJpDCNojz6UEwqpdqLvN6tCMo6",
-    imageUrl: "https://btcdna.app/gif/9.gif"
+    imageUrl: "https://i.imgur.com/ZgEKAmL.gif"
   },
   {
     id: 59,
@@ -47,7 +47,7 @@ const GALLERY_NFTS = [
     seedPhrase: "rotate trumpet metal tape detect suffer invest unusual rather sound hip execute",
     bgColor: "red",
     btcAddress: "1NYZLFcgtUyEY2qysiW9AYcBxmpskJJYHz",
-    imageUrl: "https://btcdna.app/gif/59.gif"
+    imageUrl: "https://i.imgur.com/a25dezB.gif"
   },
   {
     id: 17,
@@ -55,7 +55,7 @@ const GALLERY_NFTS = [
     seedPhrase: "dish school cherry tomato poverty quote bonus woman rather goddess price crater",
     bgColor: "gray",
     btcAddress: "1J3yN9ZTmrf6Y7oEuN1kbNpn7TconpoK8W",
-    imageUrl: "https://btcdna.app/gif/17.gif"
+    imageUrl: "https://i.imgur.com/36vISOv.gif"
   }
 ];
 
