@@ -1,27 +1,38 @@
 
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import HomePage from './pages/HomePage'
-import { ThemeProvider } from './components/theme-provider'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import About from "./pages/About";
+import Matrix from "./pages/Matrix";
+import BtcDna from "./pages/BtcDna";
+import Gallery from "./pages/Gallery";
+import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "./components/ThemeProvider";
 
-function App() {
-  return (
-    <ThemeProvider defaultTheme="dark" storageKey="bitcoin-dna-theme">
-      <Router>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/matrix" element={<Matrix />} />
+            <Route path="/btc-dna" element={<BtcDna />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
     </ThemeProvider>
-  )
-}
+  </QueryClientProvider>
+);
 
-export default App
+export default App;
