@@ -24,10 +24,10 @@ const BitcoinDnaSample = () => {
       <h2 className="text-xl font-bold mb-4 text-center">Generate Your Own Bitcoin DNA</h2>
       <div 
         className="relative w-full mb-6 overflow-hidden rounded-lg border border-primary/20 cursor-pointer"
-        onClick={() => openLightbox("https://btcdna.app/gif/22.gif", "Bitcoin DNA #22 Animation")}
+        onClick={() => openLightbox("https://i.imgur.com/kfvTro8.gif", "Bitcoin DNA #22 Animation")}
       >
         <img 
-          src="https://btcdna.app/gif/22.gif" 
+          src="https://i.imgur.com/kfvTro8.gif" 
           alt="Bitcoin DNA Animation" 
           className="w-full object-contain"
           loading="lazy"
