@@ -1,6 +1,15 @@
 # Bitcoin DNA
 
-Bitcoin DNA is an innovative web application that transforms Bitcoin seed phrases into unique, visually striking DNA-like patterns. Each visualization is deterministically generated from the cryptographic properties of a Bitcoin wallet, creating a unique "genetic fingerprint" that represents the wallet's underlying cryptographic data.
+Bitcoin DNA was developed for the **MIT Bitcoin Hackathon 2025**. It is an innovative web application that transforms Bitcoin seed phrases into unique, visually striking DNA-like patterns. Each visualization is deterministically generated from the cryptographic properties of a Bitcoin wallet, creating a unique "genetic fingerprint" that represents the wallet's underlying cryptographic data.
+
+**Devpost:** [https://devpost.com/software/btc-dna](https://devpost.com/software/btc-dna)
+**Demo:** [https://bitcoin-dna.lovable.app/](https://bitcoin-dna.lovable.app/)
+
+---
+
+## Animated Bitcoin DNA NFT
+
+![Animated Bitcoin DNA NFT](https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/355/370/datas/original.gif)
 
 ---
 
@@ -18,17 +27,41 @@ Bitcoin DNA merges art, technology, and education by using biological metaphors 
 - **Live Canvas Rendering:** Provides real-time animation of DNA patterns using the HTML Canvas.
 - **Customizable Views:** Offers both 2D and 3D visualization options for the DNA structures.
 
+![2D View](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191628.png)
+*2D View*
+
+![3D View 1](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191649.png)
+*3D View*
+
+![3D View 2](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191706.png)
+*Another 3D View*
+
 ### 2. Wallet Interaction & Generation
 - **Seed Phrase Generator:** Creates random Bitcoin seed phrases using the BIP39 standard.
 - **Upload Capability:** Allows users to upload seed phrase JSON files to generate visualizations.
 - **Address Display:** Shows associated Bitcoin addresses with each visualization.
 - **Auto-Generation:** Features automatic wallet generation for demonstration purposes.
 
+![Generate Bitcoin DNA 1](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191720.png)
+*Generate Bitcoin DNA*
+
+![Generate Bitcoin DNA 2](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191839.png)
+*Generate Bitcoin DNA Interface*
+
+![Table View](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191741.png)
+*Table View*
+
+![Transaction History](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191806.png)
+*Transaction History*
+
 ### 3. Gallery & NFT Collection
 - **NFT Gallery:** Browsable collection of 50 Bitcoin DNA NFTs.
 - **OpenSea Integration:** NFTs are available on the OpenSea Sepolia testnet.
-- **Pagination System:** Enables efficient browsing through multiple pages of NFT collections.
+- **Pagination System:** Enables efficient Browse through multiple pages of NFT collections.
 - **Lightbox Previews:** Provides interactive, full-size previews of NFT animations.
+
+![Bitcoin DNA Gallery](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191822.png)
+*Bitcoin DNA Gallery*
 
 ### 4. Matrix Simulation
 - **Quantum Matrix:** Simulates a "quantum computer" attempting to crack Bitcoin seed phrases.
@@ -76,6 +109,13 @@ Bitcoin DNA serves as an educational bridge between:
 - **Biological DNA Structure Metaphors**
 
 By translating complex cryptographic data into accessible visual formats, the project makes abstract concepts more tangible and engaging.
+
+---
+
+## About
+
+![About Section](https://github.com/jayrosen-design/bitcoin-dna/raw/main/website-screenshots/Screenshot%202025-04-05%20191906.png)
+*About Section*
 
 ---
 
