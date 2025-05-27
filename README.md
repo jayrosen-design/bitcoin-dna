@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15529461.svg)](https://doi.org/10.5281/zenodo.15529461)
+
 # Bitcoin DNA
 
 Bitcoin DNA was developed for the **MIT Bitcoin Hackathon 2025**. It is an innovative web application that transforms Bitcoin seed phrases into unique, visually striking DNA-like patterns. Each visualization is deterministically generated from the cryptographic properties of a Bitcoin wallet, creating a unique "genetic fingerprint" that represents the wallet's underlying cryptographic data.
